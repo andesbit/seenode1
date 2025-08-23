@@ -4,6 +4,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 
+import { ALIJIASEARCHMAINCONTENT }  from './mainFunctions.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -12,18 +14,21 @@ const port = 3000;
 
 app.get('/', (req, res) => {
 
-    //...ENTRADA....res.send('HELLO');
+    //...ENTRADA... res.send('HELLO');
+
         //...EXIST...
     const ipath = join(__dirname, 'DB/document_a.json');
     if (!existsSync(ipath)) {
             throw new Error(`data base Key no encontrado: ${ipath}`);
         }
+
         //...WRITE...
     const content =`
         {
-            "ole": "SEWA",
+            "ole": "COWA",
             "lisa": "I"
         }`;
+
     writeFileSync(ipath, content, {
         encoding: "utf8", // utf8 es el valor por defecto
         //mode: "0o666", // son los permisos, este valor puede variar dependiendo si te encuentras en Linux o Windows,
