@@ -1,0 +1,125 @@
+<h1><%= title %></h1>
+<h2>Chat en Tiempo Real</h2>
+
+<div>
+    <div id="chat-messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background: #f9f9f9;">
+        <!-- Mensajes aparecerán aquí -->
+    </div>
+
+    <form id="chat-form" style="margin-top: 15px;">
+        <input type="text" id="user-input" placeholder="Tu nombre" required 
+               style="padding: 8px; margin-right: 10px; width: 150px;">
+        <input type="text" id="message-input" placeholder="Escribe tu mensaje..." required 
+               style="padding: 8px; margin-right: 10px; width: 300px;">
+        <button type="submit" style="padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer;">
+            Enviar
+        </button>
+    </form>
+
+    <p id="typing-indicator" style="color: #666; font-style: italic; margin-top: 10px;"></p>
+</div>
+
+<!-- Incluir Socket.IO client -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    // Elementos del DOM
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const userInput = document.getElementById('user-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Recibir HISTORIAL COMPLETO al conectar
+    socket.on('chat-history', (history) => {
+        console.log('📂 Historial recibido:', history.length, 'mensajes');
+        
+        // Limpiar chat primero
+        chatMessages.innerHTML = '';
+        
+        // Agregar todos los mensajes del historial
+        history.forEach(msg => {
+            addMessage(msg.user, msg.message, msg.timestamp, msg.date);
+        });
+    });
+
+    // Recibir NUEVO MENSAJE
+    socket.on('new-message', (data) => {
+        addMessage(data.user, data.message, data.timestamp, data.date);
+    });
+
+    // Indicador de que alguien está escribiendo
+    socket.on('user-typing', (data) => {
+        typingIndicator.textContent = data.isTyping ? 
+            `✍️ ${data.user} está escribiendo...` : '';
+    });
+
+    // Enviar mensaje
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const user = userInput.value.trim();
+        const message = messageInput.value.trim();
+        
+        if (user && message) {
+            socket.emit('chat-message', { user, message });
+            messageInput.value = '';
+            
+            // Dejar de mostrar "escribiendo"
+            socket.emit('typing', { 
+                user: user, 
+                isTyping: false 
+            });
+        }
+    });
+
+    // Detectar cuando usuario escribe
+    let typingTimer;
+    messageInput.addEventListener('input', () => {
+        const user = userInput.value.trim();
+        if (user) {
+            // Emitir que está escribiendo
+            socket.emit('typing', { 
+                user: user, 
+                isTyping: true 
+            });
+            
+            // Limpiar timer anterior
+            clearTimeout(typingTimer);
+            
+            // Dejar de mostrar "escribiendo" después de 1 segundo sin escribir
+            typingTimer = setTimeout(() => {
+                socket.emit('typing', { 
+                    user: user, 
+                    isTyping: false 
+                });
+            }, 1000);
+        }
+    });
+
+    function addMessage(user, message, timestamp, date) {
+        const messageElement = document.createElement('div');
+        messageElement.style.marginBottom = '15px';
+        messageElement.style.padding = '10px';
+        messageElement.style.borderBottom = '1px solid #eee';
+        messageElement.style.background = 'white';
+        messageElement.style.borderRadius = '5px';
+        
+        messageElement.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <strong style="color: #007bff;">${user}</strong>
+                <small style="color: #666;">
+                    ${date} ${timestamp}
+                </small>
+            </div>
+            <div style="margin-top: 5px;">${message}</div>
+        `;
+        
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Focus en el input de mensaje al cargar
+    messageInput.focus();
+</script>

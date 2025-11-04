@@ -1,0 +1,445 @@
+<style type = "text/css">
+    /*********account***************/
+.porFrm{
+    max-width: 420px;
+    margin:10px auto;
+    background-color:#f3e9de;
+    border: 1px solid #8b979e;
+    text-align: left;
+    padding-right: 30px;
+    padding-left: 30px;
+    border-radius: 10px;
+}
+.porFrm label{
+    display: inline-block;
+    margin: 25px 0 15px;
+    /*font-size: 0.6em;*/
+    /*text-transform: uppercase;*/
+    letter-spacing: 1px;
+    /*font-weight: bold;*/
+}
+.porFrm input,select,textarea{
+    display: block;
+    padding: 10px 6px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    /*border-bottom:1px solid #ddd;*/
+    border: 1px solid #8b979e;
+    color: #555;
+    border-radius: 5px;
+}
+.porFrm input:focus,textarea:focus
+{
+    border-bottom:1px solid #ddd;
+}
+.porFrm .tMed{
+    display: inline;
+    width:240px;
+}
+.porFrm .inet{
+    display:inline;
+    margin-right:15px;
+    vertical-align: middle;
+    width:32px;
+    height:32px;
+}
+.porFrm input[type="checkbox"]
+{
+    display:inline-block;
+    width:16px;
+    margin:0 10px 0 0;
+    position: relative;
+    top: 2px;
+}
+.pill{
+    display: inline-block;
+    margin: 20px 20px 0 0;
+    padding: 6px 12px;
+    background: #f9d5a3;
+    border-radius: 20px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+}
+button:disabled{
+    background:#8e9092;
+    color:#eedada;
+}
+#i_read_terms{
+    background-color:#2c6b9e;
+    cursor:pointer;
+    text-align:center;
+    color:#fff;
+    margin-top:29px;
+    line-height:36px;
+    border-radius: 5px;
+}
+#terms{
+    display:none;
+    width:100%;
+    position:absolute;
+    height:auto;
+    top:0px;
+    left:0px;
+    z-index:2;
+    background-color:#f3e9de;
+    padding:16px;
+    box-sizing: border-box;
+}
+#i_close_terms
+{
+    display:block;
+    width:60px;
+    float:right;
+}
+.question{
+    display:inline;
+    font-weight:bold;
+    border:2px solid #ffffff;
+    border-radius:10px;
+}
+#dangerZone{
+    background-color: crimson;
+    display:none;
+    clear: both;
+    float: left;
+    width: 100%;
+    height: auto;
+}
+#dOther{
+    clear:both; width:100%;
+    display:block;
+    padding:5px;
+}
+#otherBtn{
+    float: right;
+    z-index:2;
+}
+#otherOptions
+{
+    display: none;
+}
+#ctnD_A{
+    background-color:aqua;
+    cursor:pointer;
+    width:100%;
+    clear:both;
+    float:left;
+}
+.otherOpts{
+    margin-top:12px;
+}
+</style>
+<br>
+<div class="auth-container">    
+    <h2>Tus datos y oferta</h2>
+    <br>
+    <div id="error-message" class="error-message" style="display: none;"></div>
+
+    <form id="form-user-data" class="auth-form">
+        <label>Ingresa nombre o sobrenombre:</label>
+        <input type= "text" id = "name"/>
+        <label>Ingresa tu oferta principal:</label>
+        <textarea id = "offert" cols=40 rows = 10>
+        </textarea> 
+        
+        <!--
+        label>Especialidades separadas con comas:</label>
+        <input type= "text" id = "espe"/-->
+
+
+
+        <label>Especializaciones o habilidades</label>
+        <input type= "text" id="tempSkill" placeholder = "habilidad,">
+
+        <div id = "skills_container">
+            <div id = "hola" style = "font-size: 0.8rem; color:#999">habilidades , se borran con click.</div>
+        </div>
+
+
+
+        <label>Datos extra:</label>
+        <textarea id = "offert" cols=40 rows = 10>
+        </textarea> 
+        <button id = "btnUpdate" type="submit">Guardar cambios</button>
+    </form>
+    <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
+
+    <h2>Ultimos Mensajes</h2>
+
+    De:
+    <% {%>
+        
+    <% }%>
+    <div>
+        <button>Ver todos los usuarios que escribieron</button>
+    </div>    
+
+    <h3>contactados:</h3>
+
+    <div class = "onta-cuadros" style = "border-bottom:0px solid #333;">
+    <div id = "portaCuadros" class = "orta-cuadros" >    
+        <% cnts.forEach(function(c) { %>
+            <div class = "uadro" style = "padding:8px;">
+                <% 
+                    const posp = c.indexOf("_");
+                    const tid = c.substring(0,posp);
+                    const iid = parseInt(tid);
+                    const p = c.substring(posp + 1);
+                %>
+                <div onclick="contactar(<%= iid %>)">
+                <%= p %>             
+                </div>
+            </div>
+        <% }); %>
+    </div>
+    </div>
+
+
+
+
+</div>
+<br>←←←
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+
+//NUEVOYVIEJO:
+const btnUpdate = document.querySelector("#btnUpdate")
+//
+
+function getCookie(nombre) {
+  const cookie = document.cookie
+    .split('; ')
+    .find(c => c.startsWith(nombre + '='));
+  
+  if (!cookie) return null;
+  
+  const valor = cookie.split('=')[1];
+  return JSON.parse(valor);
+}
+
+
+function getSessionKey() 
+{
+    //AHORA NO ESTAMOS usando localstorage
+    /*
+    const token = localStorage.getItem('authToken');
+    if (!token) 
+    {
+        alert("No hay token");
+        return null;
+    }
+    try {
+        // Decodificar el token (sin verificar, solo para obtener datos)
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.sessionKey;
+    } catch {
+        return null;
+    }
+    */    
+    // Uso:
+    const datos = getCookie('datos');
+    console.log("mioffertagetsessionkey",datos.dato1); // "valor1"
+    return datos.dato1;
+}
+
+async function updateDataSecure(datos) {  // datos es un objeto
+    try {
+        /////const token = localStorage.getItem('authToken');
+        
+        // 1. Convertir el objeto a JSON y cifrarlo
+        const datosCifrados = encryptObject(datos);
+        
+        // 2. Enviar datos cifrados
+        const response = await fetch('/user-data/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'//,
+                //'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                encryptedData: datosCifrados,
+                timestamp: Date.now()
+            })
+        });
+
+        if (response.status === 401) {
+            redirectToLogin();
+            return;
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
+// Función específica para cifrar objetos
+function encryptObject(obj) {
+    // Convertir el objeto a string JSON
+    const jsonString = JSON.stringify(obj);
+    
+    // Cifrar el string JSON
+    let encryptionKey = getSessionKey();
+    return CryptoJS.AES.encrypt(jsonString, encryptionKey).toString();
+}
+
+// Función para descifrar y convertir a objeto
+function decryptToObject(encryptedData) {
+    let encryptionKey = getSessionKey();
+    const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey);
+    const jsonString = bytes.toString(CryptoJS.enc.Utf8);
+    
+    if (!jsonString) {
+        throw new Error('Datos cifrados inválidos');
+    }
+    
+    return JSON.parse(jsonString);
+}
+
+// Función auxiliar para validar el objeto antes de enviar
+function validarYLimpiarObjeto(obj) {
+    // Eliminar propiedades undefined/null
+    const limpio = Object.fromEntries(
+        Object.entries(obj).filter(([_, v]) => v != null)
+    );
+    
+    // Validar que no esté vacío
+    if (Object.keys(limpio).length === 0) {
+        throw new Error('El objeto no puede estar vacío');
+    }
+    
+    // Validar tamaño máximo (opcional)
+    const jsonSize = JSON.stringify(limpio).length;
+    if (jsonSize > 10000) { // 10KB máximo
+        throw new Error('Objeto demasiado grande');
+    }
+    
+    return limpio;
+}
+
+
+//_________________________
+let ISkills = [];
+//____________________________
+
+
+function getFormData(){
+    const name = document.getElementById('name').value; 
+    const offer = document.getElementById('offert').value; 
+    //const espe = document.getElementById('espe').value;
+    const espe = ISkills.join(",");
+    let obj = {
+      name:name,
+      offer:offer,
+      espe:espe
+    }
+    return obj;
+}
+
+document.getElementById('form-user-data').addEventListener('submit', async function(evt){
+    evt.preventDefault();
+    let datosUsuario = getFormData()
+    const datosLimpios = validarYLimpiarObjeto(datosUsuario);
+    updateDataSecure(datosLimpios);
+    //await sendUserData();
+})
+
+
+//=========================================================================
+
+const tSkill = document.querySelector("#tempSkill");
+
+const skillsContainer = document.querySelector("#skills_container");
+
+const deleteSkill=(skill)=>
+{
+    ISkills = ISkills.filter
+    (
+        (item)=>
+        {
+            return skill !== item
+        }
+    )
+    PutSkills();
+}
+
+if(skillsContainer)skillsContainer.addEventListener('click', function(event)
+{
+    //if (event.target.tagName == "IMG")
+    let pos = 0;
+    let skill = '';
+    let id = '';
+
+    id = event.target.id;
+    pos = id.indexOf('_');
+    skill = id.substring(pos + 1);
+   /// alert("Borrando habilidad " + skill + ".  La puede volver a agregar.");
+    deleteSkill(skill);
+});
+
+function PutSkills()
+{
+    skillsContainer.innerHTML = "";
+    let svalue = "";
+    let id = "i";
+    ISkills.forEach((element, index) =>
+    {
+        id = "i" + index + "_"  + element;
+        svalue = `<div class = "pill" id = "${id}">${element}</div>`;
+        //alert(svalue);
+        skillsContainer.innerHTML += svalue;
+    });
+}
+
+if(tSkill)tSkill.addEventListener("keydown", (event) =>
+{
+    if(termsActived)btnUpdate.disabled = true;
+    //"PARAQUEALAPRETARENTERNOSEEJECUTE EL SUMIT"
+});
+
+if(tSkill)tSkill.addEventListener("keyup", (event) =>
+{
+    if(event.code === "Comma") // keyCode188 ,
+    {
+        let str = tSkill.value;
+        str = str.slice(0, str.length - 1);
+        if (str){
+            if(!ISkills.includes(str))
+            {
+                ISkills.push(str);
+            }
+        }
+        tSkill.value = "";
+        PutSkills();
+    }
+    else
+    if(event.code === "Enter")
+    {
+        let str = tSkill.value;
+        //str = str.slice(0, str.length - 1);
+        if (str){
+            if(!ISkills.includes(str))
+            {
+                ISkills.push(str);
+            }
+        }
+        tSkill.value = "";
+        PutSkills();
+    }
+    if(termsActived)btnUpdate.disabled = false;
+});
+
+function contactar(x)
+{
+    //alert(x)
+    document.getElementById("contacts").style.dsplay="none";
+    //loadContact(parseInt(x))AQUI MISMO POR AHORA
+
+}
+
+</script>

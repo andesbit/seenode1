@@ -1,0 +1,84 @@
+<h1><%= title %></h1>
+<h1>Chat en Tiempo Real</h1>
+
+<div>
+    <div id="chat-messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+        <!-- Mensajes aparecerán aquí -->
+    </div>
+
+    <form id="chat-form">
+        <input type="text" id="user-input" placeholder="Tu nombre" required>
+        <input type="text" id="message-input" placeholder="Escribe tu mensaje..." required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <p id="typing-indicator" style="color: #666; font-style: italic;"></p>
+</div>
+
+<!-- Incluir Socket.IO client -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    // Conectar al servidor Socket.IO
+    const socket = io();
+
+    // Elementos del DOM
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const userInput = document.getElementById('user-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Recibir mensajes del servidor
+    socket.on('welcome', (data) => {
+        addMessage('System', data.message);
+    });
+
+    socket.on('new-message', (data) => {
+        addMessage(data.user, data.message);
+    });
+
+    socket.on('user-typing', (data) => {
+        typingIndicator.textContent = data.isTyping ? 
+            `${data.user} está escribiendo...` : '';
+    });
+
+    // Enviar mensaje
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const user = userInput.value.trim();
+        const message = messageInput.value.trim();
+        
+        if (user && message) {
+            socket.emit('chat-message', { user, message });
+            messageInput.value = '';
+        }
+    });
+
+    // Detectar cuando usuario escribe
+    messageInput.addEventListener('input', () => {
+        const user = userInput.value.trim();
+        if (user) {
+            socket.emit('typing', { 
+                user: user, 
+                isTyping: true 
+            });
+            
+            // Dejar de mostrar "escribiendo" después de 1 segundo
+            setTimeout(() => {
+                socket.emit('typing', { 
+                    user: user, 
+                    isTyping: false 
+                });
+            }, 1000);
+        }
+    });
+
+    // Función para agregar mensajes al chat
+    function addMessage(user, message) {
+        const messageElement = document.createElement('div');
+        messageElement.innerHTML = `<strong>${user}:</strong> ${message}`;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+</script>

@@ -1,0 +1,215 @@
+[
+  {
+    "ole": 1,
+    "name": "A",
+    "email": "adocrpel@gmail.com",
+    "offer": "PARMPAMPIM",
+    "espe": "KARAMBOLASESP"
+  },
+  {
+    "ole": 2,
+    "name": "B",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 3,
+    "name": "C",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 4,
+    "name": "D",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 5,
+    "name": "E",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 6,
+    "name": "F",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 7,
+    "name": "G",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 8,
+    "name": "H",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 9,
+    "name": "I",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 10,
+    "name": "J",
+    "email": "docarpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 11,
+    "name": "K",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 12,
+    "name": "L",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 13,
+    "name": "M",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 14,
+    "name": "N",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 15,
+    "name": "O",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 16,
+    "name": "P",
+    "email": "adocrpel@gmail.com",
+    "offer": " ",
+    "role": "user"
+  },
+  {
+    "ole": 17,
+    "name": "Q",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 18,
+    "name": "R",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 19,
+    "name": "S",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 20,
+    "name": "T",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 21,
+    "name": "U",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 22,
+    "name": "V",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 23,
+    "name": "W",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 24,
+    "name": "X",
+    "email": "adocrpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 25,
+    "name": "Y",
+    "email": "adocarpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 26,
+    "name": "Z",
+    "email": "adocarpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 30,
+    "name": "AIRUK"
+  },
+  {
+    "name": "FARUK",
+    "email": "ADIM",
+    "ole": 31
+  },
+  {
+    "name": "FARUK",
+    "email": "ADIM",
+    "ole": 32
+  },
+  {
+    "name": "FARUK",
+    "email": "ADIM",
+    "ole": 33
+  },
+  {
+    "name": "FARIUK",
+    "email": "ADIIM",
+    "ole": 34
+  },
+  {
+    "name": "ARIG",
+    "email": "AIM",
+    "ole": 35
+  },
+  {
+    "ole": 36,
+    "name": "",
+    "email": "badocarpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 37,
+    "name": "",
+    "email": "badocarpel@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 38,
+    "name": "adolfo",
+    "email": "adocarpeloooooooooo@gmail.com",
+    "role": "user"
+  },
+  {
+    "ole": 39,
+    "name": "u39(isj generar nuevo)",
+    "isjic":"changemail jon",
+    "email": "adocarpel@gmail.com",
+    "role": "user", 
+    "cnts": ["1_user1"]
+  }
+]

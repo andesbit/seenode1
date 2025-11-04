@@ -1,45 +1,79 @@
-// server-express.js
+import 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
 import express from 'express';
+import cookieParser from 'cookie-parser';
+import expressLayouts from 'express-ejs-layouts';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import {injectUserToViews} from './utils/jwtUtils.js';
 
-import { ALIJIASEARCHMAINCONTENT }  from './mainFunctions.js';
+import './config/database.js'; // ← Import para inicializar el pool
+
+//PARA DESARROLLA:
+import cors from 'cors';
+
+//ENDPARADEASRRO
+//import userDataRoutes from './routes/user-data.js';
+import userRoutes from './routes/user.js';
+import userDataRoutes from './routes/user-data.js';
+import indexRoutes from './routes/index.js';
+import chatRoutes from './routes/chat.js';
+import pruRoutes from './routes/prueba.js';
+
+// Importar funciones del chat
+import { loadChatHistory, setupChatSocket } from './utils/chat.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const app = express();
 const port = 3000;
+const app = express();
 
-app.get('/', (req, res) => {
+// Configurar CORS para desarrollo
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true // Permitir cookies
+}));
 
-    //...ENTRADA... res.send('HELLO');
+app.use(cookieParser());
 
-        //...EXIST...
-    const ipath = join(__dirname, 'DB/document_a.json');
-    if (!existsSync(ipath)) {
-            throw new Error(`data base Key no encontrado: ${ipath}`);
-        }
+// 1. Crear servidor HTTP
+const httpServer = createServer(app);
 
-        //...WRITE...
-    const content =`
-        {
-            "ole": "COWA",
-            "lisa": "I"
-        }`;
+// 2. Inicializar Socket.IO
+const io = new Server(httpServer);
 
-    writeFileSync(ipath, content, {
-        encoding: "utf8", // utf8 es el valor por defecto
-        //mode: "0o666", // son los permisos, este valor puede variar dependiendo si te encuentras en Linux o Windows,
-        flag: "w", // w indica que el archivo se debe crear si no existe o su contenido se debe reemplazar si existiera
-    });
-        //...READ...
-    const st = JSON.parse(readFileSync(ipath, 'utf8'));
-    let pd = st.ole;
-    res.send(pd);
+// Configuración de Express
+app.set('views', join(__dirname, 'views'));
+
+// Servir archivos estáticos
+//app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.set('view engine', 'ejs');
+app.set('layout', 'layouts/main');
+app.use(expressLayouts);
+app.use(express.static('public'));   
+app.use(express.json());
+app.use(injectUserToViews); // Para TODAS las vistas
+
+// Rutas
+app.use('/user', userRoutes);
+app.use('/user-data', userDataRoutes);
+app.use('/chat', chatRoutes);
+app.use('/prueba', pruRoutes);
+app.use('/', indexRoutes);
+
+// Cargar historial del chat al iniciar
+loadChatHistory().then(() => {
+    console.log('✅ Servidor iniciado con historial cargado');
 });
 
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-});   
+// Configurar Socket.IO para el chat
+setupChatSocket(io);
+
+// Iniciar servidor
+httpServer.listen(port, () => {
+    console.log(`🚀 Servidor con Socket.IO en http://localhost:${port}`);
+});

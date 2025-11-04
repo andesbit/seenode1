@@ -1,0 +1,22 @@
+sADD REGISTER{name:Adolfo, edad:54}...AGREGA UN REGISTRO
+...LOS PARAMETROS SIEMPRE DEEN SER OBJETOS
+
+FUNC ADD REGISTER...SIEMPRE SE LLAMA OBJ EL PARAMETRO
+    var ndx :"my_index.json"...nombre del índice
+    NDXADD ndx OBJ
+END FUNC
+
+
+(←
+uli←
+←program
+←endprogram
+)
+(←ISJIMUTILNI)
+(←program
+    admin
+    isjimu ·hace la depura
+    insert
+    a=?b then adkim
+...
+)

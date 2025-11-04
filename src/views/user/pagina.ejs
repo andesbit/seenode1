@@ -1,0 +1,282 @@
+<style type = "text/css">
+    /*********account***************/
+.porFrm{
+    max-width: 420px;
+    margin:10px auto;
+    background-color:#f3e9de;
+    border: 1px solid #8b979e;
+    text-align: left;
+    padding-right: 30px;
+    padding-left: 30px;
+    border-radius: 10px;
+}
+.porFrm label{
+    display: inline-block;
+    margin: 25px 0 15px;
+    /*font-size: 0.6em;*/
+    /*text-transform: uppercase;*/
+    letter-spacing: 1px;
+    /*font-weight: bold;*/
+}
+.porFrm input,select,textarea{
+    display: block;
+    padding: 10px 6px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    /*border-bottom:1px solid #ddd;*/
+    border: 1px solid #8b979e;
+    color: #555;
+    border-radius: 5px;
+}
+.porFrm input:focus,textarea:focus
+{
+    border-bottom:1px solid #ddd;
+}
+.porFrm .tMed{
+    display: inline;
+    width:240px;
+}
+.porFrm .inet{
+    display:inline;
+    margin-right:15px;
+    vertical-align: middle;
+    width:32px;
+    height:32px;
+}
+.porFrm input[type="checkbox"]
+{
+    display:inline-block;
+    width:16px;
+    margin:0 10px 0 0;
+    position: relative;
+    top: 2px;
+}
+.pill{
+    display: inline-block;
+    margin: 20px 20px 0 0;
+    padding: 6px 12px;
+    background: #f9d5a3;
+    border-radius: 20px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+}
+button:disabled{
+    background:#8e9092;
+    color:#eedada;
+}
+#i_read_terms{
+    background-color:#2c6b9e;
+    cursor:pointer;
+    text-align:center;
+    color:#fff;
+    margin-top:29px;
+    line-height:36px;
+    border-radius: 5px;
+}
+#terms{
+    display:none;
+    width:100%;
+    position:absolute;
+    height:auto;
+    top:0px;
+    left:0px;
+    z-index:2;
+    background-color:#f3e9de;
+    padding:16px;
+    box-sizing: border-box;
+}
+#i_close_terms
+{
+    display:block;
+    width:60px;
+    float:right;
+}
+.question{
+    display:inline;
+    font-weight:bold;
+    border:2px solid #ffffff;
+    border-radius:10px;
+}
+#dangerZone{
+    background-color: crimson;
+    display:none;
+    clear: both;
+    float: left;
+    width: 100%;
+    height: auto;
+}
+#dOther{
+    clear:both; width:100%;
+    display:block;
+    padding:5px;
+}
+#otherBtn{
+    float: right;
+    z-index:2;
+}
+#otherOptions
+{
+    display: none;
+}
+#ctnD_A{
+    background-color:aqua;
+    cursor:pointer;
+    width:100%;
+    clear:both;
+    float:left;
+}
+.otherOpts{
+    margin-top:12px;
+}
+</style>
+
+<br>
+
+<div class="auth-container">   
+    <!--= user.email -->
+    <!--= user.id -->
+    <!--= user.name -->
+    
+    <h1><%= o.name %></h1>
+    <!--= o.ole -->
+
+    <h2>Datos y oferta</h2>
+    
+    <div>
+        <br>
+        <%= o.offer %>
+    </div>
+    <br>
+
+    <h4>Especializaciones</h4>
+
+    <div id = "skills_container">
+            
+    </div>
+    <br>
+   
+    <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
+     
+    <% if(user) { %>
+
+    <h2>Últimos Mensajes</h2>
+ <% }else { %>
+    <h2></h2>
+    <br>
+    Para acceder a los mensajes, usted debe Iniciar Sesión
+    <% }%>
+
+
+
+<div id = "on_messages" style = "border-bottom:0px solid #333;">
+<div id = "portaCuadros" class = "orta-cuadros">
+    <% a_msg.forEach(function(o) { %>
+        <div class = "uadro" style = "padding:8px;">
+           <% if (o) { %>
+            <% 
+            const posp = o.indexOf(":");
+            const n = posp !== -1 ? o.substring(0, posp) : o;
+            const p = o.substring(posp + 1);
+            %>
+            <% if (parseInt(n) === parseInt(o.ole)) { %> 
+                <%= o.name %>
+            <% } else { %>
+                <%= user.name %>
+            <% } %>    
+            :&nbsp;<%= p %>
+            <% } else { %>
+            (Falta el mensaje)
+            <% } %>
+        </div>
+    <% }); %>
+</div>
+</div>
+
+  <% if(user) { %>
+ <form id="f-msg" class="auth-form">
+        <!--label>Mensaje:</label-->
+        <br>
+        <textarea onclick="this.value = this.value.trim()" id = "mes" cols=40 rows = 5>
+        </textarea> 
+        <button type="submit">Enviar mensaje</button>
+    </form>
+  <% } %>
+
+    <div id = "sBack" style="margin-top:20px;">
+        <center>
+        <button id = "back" class = "btnSearch"><b>&nbsp;<<&nbsp;Inicio&nbsp;</b></button>
+        </center>
+    </div>
+
+
+</div>
+
+<br>←←←
+
+<script>
+
+document.getElementById('back').addEventListener('click', function(){
+    redirectDirect()
+})
+
+function redirectDirect() {
+    window.location.href = '/';
+}
+
+const mm = document.getElementById("mes");
+//const uu = document.querySelector("#message");
+document.getElementById('f-msg').addEventListener('submit', async function(evt) {
+    evt.preventDefault();
+    const message = mm.value;
+    <% if(user) { %>
+    try {
+        const response = await fetch('/user-data/message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                msg: message, 
+                from: <%= user.id %>,
+                to: <%= o.ole %>,
+                timestamp: Date.now() 
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error desconocido');
+        }
+
+        const result = await response.json();
+        //console.log('Éxito:', result);
+
+        imtobanae(result.a_msg)
+    } catch (error) {
+        console.error('Error capturado:', error.message);
+        // Mostrar el error al usuario
+        alert('Hubo un problema: ' + error.message);
+    }
+    <% } %>
+});
+
+//const chr = document.querySelector("#chara");
+
+const oms = document.querySelector("#on_messages");
+
+const imtobanae=(k)=>{  
+    let t = `<div id = "portaCuadros" class = "orta-cuadros" >`
+    k.forEach(element => {
+        t += `
+            <div class = "uadro" style = "padding:8px;">
+                ${element}
+            </div>
+        `;
+    });
+    t += "</div>"
+    oms.innerHTML=t
+}
+
+</script>

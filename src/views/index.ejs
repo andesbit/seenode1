@@ -1,0 +1,117 @@
+<div style="clear:both;float:left;display:block;width:100%;height:50px;">
+
+</div>
+
+<div style="clear:both;float:left;display:block;width:100%;margin-top:0px;">
+<h2>&nbsp;Ofertas principales</h2>
+<form class = "searchInDB" id = "form-search">
+    <br>
+    <b>&nbsp;&nbsp;&nbsp;Buscar:</b>
+    &nbsp;Nombre&nbsp;<input type ="text" id = "nam"  />
+    &nbsp;o&nbsp;Especialidad&nbsp;<input type ="text" id = "esp"  />
+    &nbsp;<button class = "btnSearch" type = "submit"><b>&nbsp;>&nbsp;</b></button>
+    <br><br>
+</form>
+
+<div id = "searchTitle">
+    <center><h3>Resultado de la búsqueda&nbsp;<button id = "btnTSalir" class = "btnSearch"><b>&nbsp;<<&nbsp;Salir&nbsp;</b></button></h3></center>
+</div>
+
+<div class = "conta-cuadros">
+<div id = "portaResCuad" class = "porta-res-cuad">
+</div>    
+<div id = "portaCuadros" class = "porta-cuadros">    
+    <% offers.forEach(function(o) { %>
+        <div class = "cuadro">
+             <!--tantoporciento-JSON.stringify(o)tantoporciento-->
+            <div class="rec-lin pname"><% if (o.name) { %><%= o.name %><% } %></div>
+            <div class="rec-lin"><% if (o.offer) { %><%= o.offer %><% } else { %> (Falta la oferta) <% } %></div>
+            <div class="rec-lin"><% if (o.espe) { %><%= o.espe %><% } %></div>
+            <div class="recl-lin">
+                <center><button onclick="toPage(<%= o.id %>)">&nbsp;&nbsp;Ver...</button></center>
+            </div>
+        </div>
+    <% }); %>
+</div>
+</div>
+<br>
+<div id = "searchBack">
+    <button id = "btnSBack" class = "btnSearch"><b>&nbsp;<<&nbsp;Volver&nbsp;</b></button>
+</div>
+
+<div class="conta-pag">    
+    <div id = "paginacion" class="paginacion">
+        <%- kpaginacion %>
+    </div>
+</div>
+</div>
+
+
+<script>
+
+function redirectDirect() {
+    window.location.href = '/';
+}
+
+document.getElementById('btnSBack').addEventListener('click', function(){
+    redirectDirect()
+})
+
+document.getElementById('btnTSalir').addEventListener('click', function(){
+    redirectDirect()
+})
+
+const searchCriteria = async() => {
+    
+    const name = document.getElementById('nam').value;
+    const espe = document.getElementById('esp').value;
+
+    const response = await fetch('/search-offer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, espe })
+    });
+
+    let x = await response.json()
+    //SIFUNCIONAconsole.log("RSEARCHCRITE>>",x.data)
+
+    if (response.ok) {
+        //document.getElementById('message').textContent = 'Search Criteria';
+        let r = x.result
+        //console.log(r.length)
+        //console.log(r[0])
+        let k = ""
+        for(let index in r){
+            //k+=r[index].name
+            k += `<div class = "cuadro">
+                <div class="rec-lin pname">${r[index].name}</div>
+                <div class="rec-lin">${r[index].offer}</div>
+                <div class="rec-lin">${r[index].espe}</div>
+                <div class="recl-lin">
+                    <center><button>&nbsp;&nbsp;Ver...</button></center>
+                </div>
+             </div>`
+        }
+        
+        document.getElementById('paginacion').style.display = "none";
+        document.getElementById('searchTitle').style.display = "block";
+        document.getElementById('portaCuadros').style.display = "none";
+        document.getElementById('portaResCuad').style.display = "flex";
+        document.getElementById('portaResCuad').innerHTML = k;
+        document.getElementById('searchBack').style.display = "block";
+        
+    } else {
+        alert('Error en la búsqueda');
+    }
+}    
+
+document.getElementById('form-search').addEventListener('submit', async function(evt){
+    evt.preventDefault();
+    await searchCriteria();
+})
+
+function toPage(n){    
+    window.location.href = `/user-data/pagina/${n}`;
+}  
+
+</script>

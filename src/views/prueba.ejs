@@ -1,0 +1,57 @@
+<br>
+<div class="auth-container">    
+        <h2><%= title %></h2>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        
+        <form id="form-send-enc-data" class="auth-form">
+                        
+            <textarea id = "texto" cols=40 rows = 10>
+            </textarea>    
+            <button type="sumit">send</button>
+        </form>
+        
+        
+        <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
+        
+        
+    </div>
+<br>←←←
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
+<script>
+
+const secretKey = "mi-clave-secreta-32-chars-12345";
+
+function encryptData(text) {
+    return CryptoJS.AES.encrypt(text, secretKey).toString();
+}
+
+async function sendEncryptedData() {
+    const texto = document.getElementById('texto').value;
+    const textoCifrado = encryptData(texto);
+
+    const response = await fetch('/prueba/y', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ encryptedData: textoCifrado })
+    });
+    
+
+    if (response.ok) {
+        document.getElementById('message').textContent = 'Se enviaron los datos';
+    } else {
+        document.getElementById('message').textContent = 'Error enviando datos';
+    }
+    //return await response.json();
+}
+
+document.getElementById('form-send-enc-data').addEventListener('submit', async function(evt){
+    evt.preventDefault();
+    await sendEncryptedData();
+})
+
+</script>
+
+

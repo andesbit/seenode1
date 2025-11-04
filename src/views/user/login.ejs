@@ -1,0 +1,129 @@
+<main>
+    <div class="auth-container">
+        <h2>Iniciar Sesión</h2>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+        
+        <div id="step1" class="auth-form">
+            <input type="email" id="email" placeholder="Correo electrónico" required>
+            <button type="button" onclick="enviarCodigo()">Enviar Código</button>
+        </div>
+
+        <div class="gif-container" id = "gif_login" style="display: none;margin-top:-50px;">
+            <img src="<%= gifPath %>" alt="<%= gifAlt %>">
+        </div>
+        
+        <div id="step2" style="display: none; margin-top:12px;" class="auth-form">
+        
+            <div id="specification" style="display:block; width:100%; clear:both; float:left; margin-top: 10px; margin-bottom: 12px; text-align: center; color: #007bff;"></div>
+            <div>
+            <input type="text" id="code" placeholder="Código de 6 dígitos" maxlength="6" required>
+            <button type="button" onclick="verificarCodigo()">INGRESAR</button>
+            </div>
+        </div>
+        
+        <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
+        
+        <!--div class="auth-toggle">
+        ¿No tienes cuenta? <a href="/register">Regístrate aquí</a>
+        </div-->
+    </div>
+</main>
+
+<script>
+        
+    let currentEmail = '';
+    
+    async function enviarCodigo() {
+        const email = document.getElementById('email').value;
+        currentEmail = email;
+        
+        document.getElementById('gif_login').style.display = 'block';
+        document.getElementById('step1').style.display = 'none';
+        
+        const response = await fetch('/user/send-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        
+        if (response.ok) {
+            
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('gif_login').style.display = 'none';
+            document.getElementById('specification').textContent = 'El código fue enviado a ' + email;
+        } else {
+            document.getElementById('message').textContent = 'Error enviando código';
+        }
+    }
+
+async function verificarCodigo() 
+{
+    const code = document.getElementById('code').value;
+    
+    try {
+        const response = await fetch('/user/verify-code', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+                email: currentEmail, 
+                code: code 
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Ahora data.token contiene el JWT seguro (no data.customToken)
+            //PORAHORANOUSADOENelindexsehaborradolodellocalstoragetambiénsignIn(data.token); // ← Cambiado de data.customToken a data.token
+            
+            // Opcional: Esperar un momento antes de redirigir
+            setTimeout(() => {
+                window.location.href = '/user/mi-oferta';
+                console.log("verificarCodigoF")
+            }, 500);
+            
+        } else {
+            document.getElementById('message').textContent = data.error;
+            document.getElementById('message').style.color = 'red';
+            console.log("userejsverificarCodigoFERROR")
+        }
+    } catch (error) {
+        console.error('Error en verificación:', error);
+        document.getElementById('message').textContent = 'Error de conexión';
+        document.getElementById('message').style.color = 'red';
+        console.log("userejsverificarCodigoFERROR2")
+    }
+}
+
+const signIn = (token) => {        
+    //localStorage.setItem('authToken', token);
+    //... x18 jia
+};
+
+// Verificar autenticación en cada request
+async function fetchWithAuth(url, options = {}) {
+    const token = localStorage.getItem('authToken');
+    
+    const config = {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            ...options.headers
+        }
+    };
+    
+    const response = await fetch(url, config);
+    
+    if (response.status === 401) {
+        // Token expirado o inválido
+        localStorage.removeItem('authToken');
+        window.location.href = '/login';
+        throw new Error('Sesión expirada');
+    }
+    
+    return response;
+}
+</script>
