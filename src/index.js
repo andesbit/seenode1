@@ -86,6 +86,13 @@ loadChatHistory().then(() => {
 setupChatSocket(io);
 
 // Iniciar servidor
+/*
 httpServer.listen(port, () => {
     console.log(`🚀 Servidor con Socket.IO en http://localhost:${port}`);
+});
+*/
+//PRODUCTION:
+const PORT = process.env.PORT || 80;
+httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });
