@@ -152,6 +152,7 @@ router.post('/verify-code', async (req, res) =>
         }    
         else console.log ("···········verifycode···",t);
     }    
+
     const NAME = "usuario"+ID;
     //console.log("/verify-code>>>>>EMAIL",email,">>>>ID:",ID)  
     const token = generateToken({
@@ -172,7 +173,7 @@ router.post('/verify-code', async (req, res) =>
 
     //en mi oferta res.cookie('datos', JSON.stringify({ dato1: 'valor1' }), { httpOnly: false });
 
-    res.json({ 
+    res.json({ //CREO QUE SI USA ESTOS DATOS
         token: token,
         user: {
             id: ID,

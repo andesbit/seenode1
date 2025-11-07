@@ -347,7 +347,12 @@ export function searchInDB (collection, field, value){
     
     //AGREGAR N
     console.log ("GGGGGGfield",field,"GGGGGGfield",value)
-    const objs = JSON.parse(readFileSync(ruta, 'utf8'));
+
+    if (existsSync(ruta)) 
+    {
+        const objs = JSON.parse(readFileSync(ruta, 'utf8'));
+    }
+
     let content = []
 
     //for(let i in objs){        
@@ -559,7 +564,7 @@ function writeIndex(collection, field, value, obj)
 }
 
 //------------------------------------------
-//FALTAAGREGARLE EL GUARD DEL AUTH PERO ESTAMOSPROBANDO
+
 export function addDocumentDB(collection,data)
 {
     //const nusers = changeInfos(collection, data)
