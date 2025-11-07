@@ -29,11 +29,23 @@ const __dirname = dirname(__filename);
 
 const port = 3000;
 const app = express();
-
+/*
 // Configurar CORS para desarrollo
 app.use(cors({
     origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true // Permitir cookies
+}));
+*/
+/*
+// En tu código
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
+*/
+app.use(cors({
+  origin: true, // Permite cualquier origen (NO recomendado para producción)
+  credentials: true
 }));
 
 app.use(cookieParser());
