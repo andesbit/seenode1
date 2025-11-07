@@ -8,7 +8,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import {injectUserToViews} from './utils/jwtUtils.js';
 
-import './config/database.js'; // ← Import para inicializar el pool
+//import './config/database.js'; // ← Import para inicializar el pool
 
 import cors from 'cors';
 
