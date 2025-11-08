@@ -348,12 +348,15 @@ export function searchInDB (collection, field, value){
     //AGREGAR N
     console.log ("GGGGGGfield",field,"GGGGGGfield",value)
 
-    if (existsSync(ruta)) 
-    {
-        const objs = JSON.parse(readFileSync(ruta, 'utf8'));
-    }
+    let content = [{}]
 
-    let content = []
+    if (!existsSync(ruta)) 
+    {
+        return content;    
+    }
+    
+    const objs = JSON.parse(readFileSync(ruta, 'utf8'));
+    
 
     //for(let i in objs){        
     //    if(objs[i].field === value)
