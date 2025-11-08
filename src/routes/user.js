@@ -154,7 +154,7 @@ router.post('/verify-code', async (req, res) =>
     }    
 
     const NAME = "usuario"+ID;
-    //console.log("/verify-code>>>>>EMAIL",email,">>>>ID:",ID)  
+    console.log("/verify-code>>>>>EMAIL",email,">>>>ID:",ID)  
     const token = generateToken({
         //id: Date.now().toString(), // ID único
         id: ID,
