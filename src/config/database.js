@@ -1,4 +1,4 @@
-import pg from 'pg';
+/*import pg from 'pg';
 const { Pool } = pg;
 
 const pool = new Pool({
@@ -21,3 +21,4 @@ pool.on('error', (err) => {
 });
 
 export default pool;
+*/
