@@ -1,5 +1,5 @@
 import express from 'express';
-import pool from '../config/database.js'; // ← Import con extensión 
+//import pool from '../config/database.js'; // ← Import con extensión 
 import {searchInDB, collectionDB, getNumPagesDB, pagesDB} from '../utils/database.js';
 const router = express.Router();
 // Función para generar botones de paginación
@@ -55,7 +55,7 @@ function buttonsPagination(paginaActual, totalPaginas)
     botonesHTML += '</div>';
     return botonesHTML;
 }
-
+/*
 router.get('/clientes', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM clientes');
@@ -65,7 +65,7 @@ router.get('/clientes', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
-
+*/
 
 router.get('/', (req, res) => 
 {
