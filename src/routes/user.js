@@ -140,14 +140,14 @@ router.post('/verify-code', async (req, res) =>
 
     if (Array.isArray(a) && a.length > 0) {
         ID = a[0].ole
-        //console.log("·····/verifycode¡EXISTE!")
+        console.log("·····/verifycode¡EXISTE!")
     }    
     else{ // LUEGO GENERAR SI NO EXISTE
         let o = {ole: 0, name:"", email: email, role: "user"}
         const t = addDocumentDB("OFFERS", o)
         if (t.success) 
         {
-            //console.log ("···verifycode se AGREGÓ DOCUMENTO",t);
+            console.log ("···verifycode se AGREGÓ DOCUMENTO",t);
             ID = t.data.ole
         }    
         else console.log ("···········verifycode···",t);

@@ -210,11 +210,15 @@ export function searchEmailDB(collection, email){
     return id;
 }
 export function searchIdDB(collection, id){
+    console.log("the id",id)
     let centena = obtenerCentena(id)
     let fileData = collection + "/D" + centena.toString() + ".json"
     let ipath = join(DBPATH, fileData)//"DATA/"data.json");
     //console.log(ipath) 
-    let offers = JSON.parse(readFileSync(ipath, 'utf8'));
+    let offers = [{}]
+    if (existsSync(ipath)) 
+        offers = JSON.parse(readFileSync(ipath, 'utf8'));
+
     //console.log(offers) 
     //console.log("IIIIIIIID",id) 
     let oid=parseInt(id) 
