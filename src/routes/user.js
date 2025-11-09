@@ -42,14 +42,16 @@ router.get('/mi-oferta', (req, res) =>
     //ENVIAR LA KOOKIEde ecriptacion AQUI
     res.clearCookie('datos', { httpOnly: false });
     const clave = crypto.randomBytes(32).toString('hex');
+    
     console.log("CCCCCusersmiofertaCCCCCCCCCCC", clave);
+    
     res.cookie('datos', JSON.stringify({ dato1: clave }), { httpOnly: false });
 
     const o = searchIdDB("OFFERS", req.user.id);
     let array = []
     if('cnts' in o) array = o.cnts
     
-    res.render('user/mi_oferta', {        
+    res.render('user/mi-oferta', {        
         cnts:array
     });    
 
