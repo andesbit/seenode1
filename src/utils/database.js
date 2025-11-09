@@ -641,6 +641,7 @@ export function addDocumentDB(collection,data)
                 console.log("no EXISTE IPATH")
                 dataArray = [];
                 dataArray.push(newObj);
+                console.log("PORRRQUEEEE",dataArray,newObj)
                 writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
 
             } catch (parseError) {
