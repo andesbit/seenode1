@@ -57,8 +57,9 @@ router.get('/', (req, res) =>
     const curPage = parseInt(req.query.pagina) || 1;
     const numElemsPerPage = 5;//AHORA DEBE SER FIJO
     const totalPages = getNumPagesDB(numElemsPerPage);
-      
-    if (curPage < 1 || curPage > totalPages) return res.redirect('/?pagina=1');
+
+    if(totalPages > 0)    
+        if (curPage < 1 || curPage > totalPages) return res.redirect('/?pagina=1');
    
     let arrayOffers = pagesDB("OFFERS", curPage, numElemsPerPage) //collectionDB ()
 
