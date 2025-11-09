@@ -107,8 +107,18 @@ export function pagesDB(collection, page, nOffersPage)
     //if(PERPECLETO==3){
     //console.log("ÂGESDBPERPLE3")
 
-    let obj_page =       infoPage(collection, page) // EXTRAERDE:collection/INFO/INFOPAGES
-    let centena =        obj_page.centena // INICIA EN CENTENA...
+    //let obj_page =       infoPage(collection, page) // EXTRAERDE:collection/INFO/INFOPAGES
+    //let centena =        obj_page.centena // INICIA EN CENTENA...
+    let saltear = 0;
+    //saltear = obj_page.start;//EN EL QUE EMPIEZA LA PAGINA
+    //
+    //ej pagina2 y noffersper = 5: 2*5-5 + 1 = 6
+    let start_in = page*nOffersPage - nOffersPage + 1 
+    let centena = obtenerCentena(start_in)
+    // Math.ceil(numero / 100) * 100
+    // (start_in - (centena-100)) - 1
+    saltear = (start_in - (centena-100)) - 1;//9;//EN EL QUE EMPIEZA LA PAGINA
+    //
     let str_centena =    centena.toString()
     let filename =       "D" + str_centena + ".json";
     let filepath =       DBPATH + collection + "/" + filename;
@@ -116,10 +126,7 @@ export function pagesDB(collection, page, nOffersPage)
     let offers =         JSON.parse("{}");
     let count_offers =   0
     
-    let saltear = 0;
     
-    saltear = obj_page.start;//EN EL QUE EMPIEZA LA PAGINA
-
     while(count_offers < nOffersPage) 
     {
         str_centena = centena.toString()
@@ -352,11 +359,12 @@ export function searchInDB (collection, field, value){
     //AGREGAR N
     console.log ("GGGGGGfield",field,"GGGGGGfield",value)
 
-    let content = [{}]
+    let content = []
 
     if (!existsSync(ruta)) 
     {
-        return content;    
+        console.log("SEARCHINDB no existe la ruta")
+        return content
     }
     
     const objs = JSON.parse(readFileSync(ruta, 'utf8'));
@@ -442,7 +450,7 @@ function incrementUsers(){
     writeFileSync(filepath, JSON.stringify(obj, null, 2), 'utf8');
     return num_users
 }
-
+/*
 function __changeInfos(collection, newObject) { 
 
     const nusers = incrementUsers()
@@ -496,9 +504,9 @@ function __changeInfos(collection, newObject) {
     console.log("INFO--NUSERS-->",nusers)
     return nusers
 }
-
+*/
 //------------------------------------------
-
+/*
 function _writeIndex(collection, field, value, centena, ID)
 {
     const twoletters = aMayusculasSinAcentos( value.slice(0,2) );
@@ -538,7 +546,7 @@ function _writeIndex(collection, field, value, centena, ID)
     // Escribir de vuelta al archivo
     writeFileSync(ipath, JSON.stringify(data_objs, null, 2), 'utf8');
 }
-
+*/
 //writeIndex(collection, "EMAIL", newObj.email, newObj)
 function writeIndex(collection, field, value, obj)
 {

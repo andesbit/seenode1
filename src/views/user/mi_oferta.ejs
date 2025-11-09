@@ -132,6 +132,10 @@ button:disabled{
 .otherOpts{
     margin-top:12px;
 }
+.contacto {
+    background-color: #dbeac6;
+    cursor:pointer;
+}
 </style>
 <br>
 <div class="auth-container">    
@@ -170,18 +174,20 @@ button:disabled{
 
     <h2>Ultimos Mensajes</h2>
 
-    De:
-    <% {%>
+    <!--De:
+    % {%
         
-    <% }%>
+    % }%
     <div>
         <button>Ver todos los usuarios que escribieron</button>
-    </div>    
+    </div-->    
 
     <h3>contactados:</h3>
 
     <div class = "onta-cuadros" style = "border-bottom:0px solid #333;">
     <div id = "portaCuadros" class = "orta-cuadros" >    
+        <% if (cnts && cnts.length > 0) { %>
+            
         <% cnts.forEach(function(c) { %>
             <div class = "uadro" style = "padding:8px;">
                 <% 
@@ -190,11 +196,12 @@ button:disabled{
                     const iid = parseInt(tid);
                     const p = c.substring(posp + 1);
                 %>
-                <div onclick="contactar(<%= iid %>)">
+                <div class = "contacto" onclick="contactar(%= iid %)">
                 <%= p %>             
                 </div>
             </div>
         <% }); %>
+        <% }; %>
     </div>
     </div>
 
@@ -437,7 +444,7 @@ if(tSkill)tSkill.addEventListener("keyup", (event) =>
 function contactar(x)
 {
     //alert(x)
-    document.getElementById("contacts").style.dsplay="none";
+    document.getElementById("contacts").style.display="none";
     //loadContact(parseInt(x))AQUI MISMO POR AHORA
 
 }

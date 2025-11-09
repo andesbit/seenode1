@@ -1,22 +1,18 @@
 import express from 'express';
-//import pool from '../config/database.js'; // ← Import con extensión 
-import {searchInDB, collectionDB, getNumPagesDB, pagesDB} from '../utils/database.js';
+import {searchInDB, getNumPagesDB, pagesDB} from '../utils/database.js';
 const router = express.Router();
-// Función para generar botones de paginación
 
 function buttonsPagination(paginaActual, totalPaginas) 
 {
     let botonesHTML = '<div class="paginacion">';
     
-    // Botón Primero
-    if (paginaActual > 1) {
+    if (paginaActual > 1) { // Botón Primero
         botonesHTML += `<a href="/?pagina=1" class="btn-pagina">« Primero</a>`;
     } else {
         botonesHTML += `<span class="btn-pagina deshabilitado">« Primero</span>`;
     }
     
-    // Botón Anterior
-    if (paginaActual > 1) {
+    if (paginaActual > 1) { // Botón Anterior
         botonesHTML += `<a href="/?pagina=${paginaActual - 1}" class="btn-pagina">‹ Anterior</a>`;
     } else {
         botonesHTML += `<span class="btn-pagina deshabilitado">‹ Anterior</span>`;
@@ -55,23 +51,9 @@ function buttonsPagination(paginaActual, totalPaginas)
     botonesHTML += '</div>';
     return botonesHTML;
 }
-/*
-router.get('/clientes', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM clientes');
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-});
-*/
 
 router.get('/', (req, res) => 
 {
-    ////const curSearch = req.query.search || "";
-    ////console.log(">>/>>curSearch>>",curSearch)
-
     const curPage = parseInt(req.query.pagina) || 1;
     const numElemsPerPage = 5;//AHORA DEBE SER FIJO
     const totalPages = getNumPagesDB(numElemsPerPage);
@@ -89,9 +71,12 @@ router.get('/', (req, res) =>
     });
 });
 
+//===============================================
+
 router.post('/search-offer', async (req, res) => {
+    
     const { name,espe } = req.body;
-    console.log("asdf",name,espe);
+    
     try {
         //updateDB("DATA",user_id,{name,offer,espe})
         let a= searchInDB ("OFFERS", "name", name);

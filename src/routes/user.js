@@ -46,14 +46,16 @@ router.get('/mi-oferta', (req, res) =>
     res.cookie('datos', JSON.stringify({ dato1: clave }), { httpOnly: false });
 
     const o = searchIdDB("OFFERS", req.user.id);
-    let array = o.cnts
+    let array = []
+    if('cnts' in o) array = o.cnts
     
-    res.render('user/mi←oferta', {
-        title: '←Acerca de....',
+    res.render('user/mi_oferta', {        
         cnts:array
     });    
 
 }); 
+
+//=============================================
 
 router.post('/send-code', async (req, res) => 
 {
@@ -136,8 +138,11 @@ router.post('/verify-code', async (req, res) =>
 
     //GENERAR ID
     let ID = 0
+    
     let a= searchInDB ("OFFERS", "email", email);
 
+    console.log("...verifyCode(array a)",a,"\n")
+    
     if (Array.isArray(a) && a.length > 0) {
         ID = a[0].ole
         console.log("·····/verifycode¡EXISTE!")

@@ -3,14 +3,16 @@ import CryptoJS from 'crypto-js';
 import {addDocumentDB} from '../utils/database.js'
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    
-    res.render('prueba', {
-        title: 'ABIT:PRUEBA'        
-    });
-});
+router.get('/test', async (req, res) => 
+{
+    res.render('user/login', {
+        //title: '←LLOGUIN',
+        gifPath: '/images/loading.gif',
+        gifAlt: 'Descripción del GIF'
+    });    
+}); 
 
-//titititittittittitttitititittititititt
+
 router.post('/x', (req, res) => 
     {
     const t = addDocumentDB("OFFERS", 
@@ -39,18 +41,5 @@ router.post('/y', (req, res) => {
         res.status(500).json({ error: 'Error al descifrar' });
     }
 });
-/*
-router.post('/y', (req, res) => 
-    {
-    const t = encript("OFFERS",
-        {name : "texto a encriptar", email: "AIM"})
-    //console.log ("ttttttttttttttttttt",t)
-    res.json({ 
-        success: true, 
-        action: 'prueba',
-        name: t.name,
-        data: "prueba de datos"
-    });
-});
-*/
 export default router
+

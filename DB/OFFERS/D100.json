@@ -207,9 +207,18 @@
   {
     "ole": 39,
     "name": "u39(isj generar nuevo)",
-    "isjic":"changemail jon",
+    "isjic": "changemail jon",
     "email": "adocarpel@gmail.com",
-    "role": "user", 
-    "cnts": ["1_user1"]
+    "role": "user",
+    "cnts": [
+      "1_user1"
+    ]
+  },
+  {
+    "ole": 43,
+    "name": "Lupakiwe",
+    "email": "lupakiwe@gmail.com",
+    "offer": "Escriba",
+    "role": "user"
   }
 ]
