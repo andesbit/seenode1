@@ -643,7 +643,10 @@ export function addDocumentDB(collection,data)
                 dataArray.push(newObj);
                 console.log("PORRRQUEEEE",dataArray,newObj)
                 writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
-
+                return { 
+                    success: true,
+                    data: newObj
+                }
             } catch (parseError) {
                 console.warn('Error parsing JSON file, starting with empty array:', parseError)
                 dataArray = []                
