@@ -45,8 +45,8 @@ export function collectionDB(collection)
 }
 
 //Sólo llamar en cambio de nElemsPerPages
-function preparePaginationDB(collection){
-
+function preparePaginationDB(collection)
+{
     //NUMERO DE DOCUMENTOS POR CADA CENTENA:
     let filename =  "INFOCENTENAS.json";
     let filepath = DBPATH + collection +"/INFO/" + filename;
@@ -229,18 +229,19 @@ function buscarInteli(array, criterios, opciones = {})
         parecidos: []
     };
 
+    let valorBuscado = "";
+    let valorElemento = "";
+    let esExacto = true;
+    let esParecido = true;
+        
     array.forEach(elemento => {
-        let esExacto = true;
-        let esParecido = true;
-
+        
         for (const clave in criterios) {
-            console.log("cccccccccccccccccccc",clave)
-            const valorBuscado = criterios[clave];
-            const valorElemento = elemento[clave];
+
+            valorBuscado = criterios[clave];
+            valorElemento = elemento[clave];
             
             if (valorElemento === undefined){
-                console.log("222","UNDEFINED")
-                //continue;
                 esExacto = false;
                 esParecido = false;
             } 
@@ -258,19 +259,68 @@ function buscarInteli(array, criterios, opciones = {})
                     esParecido = false;
                 }
             }
-        }
-
-        if (esExacto && incluirExactos) {
-            resultados.exactos.push(elemento);
-        } else if (esParecido && incluirParecidos && resultados.parecidos.length < limiteParecidos) {
-            resultados.parecidos.push(elemento);
-        }
+            if (esExacto && incluirExactos) 
+                resultados.exactos.push(elemento);
+            if (esParecido && incluirParecidos && resultados.parecidos.length < limiteParecidos) 
+                resultados.parecidos.push(elemento);        
+        }        
     });
-
-    return resultados;let offers = JSON.parse(readFileSync(filepath, 'utf8'));
+    return resultados;
 }
 
-export function searchInDB (collection, field, value){
+//=====================================================================
+
+export function searchInDB2(collection, criterios)
+{
+    let two_letters = "";
+    let cap_field = "";
+    let ruta = "";
+    let valorBuscado = "";
+
+    let content = []
+    let objs = []
+
+    let exactosCombinados = [];
+    let parecidosCombinados = [];
+    
+    let busq = []
+
+    for (const clave in criterios) {
+
+        valorBuscado = criterios[clave];
+        //const valorElemento = elemento[clave];
+        //ver archivo índice
+        two_letters = aMayusculasSinAcentos( valorBuscado.slice(0,2) );//( value.slice(0,2) );
+        cap_field = aMayusculasSinAcentos( clave )//( field )
+        ruta = DBPATH + collection + "/INDEX/" + cap_field +"/"+ two_letters + ".json";
+    
+        if (!existsSync(ruta)) 
+        {
+            console.log("SEARCHINDB no existe la ruta")
+            return content
+        }
+        
+        objs = JSON.parse(readFileSync(ruta, 'utf8'));
+            
+        busq = buscarInteli(objs, { [clave]: valorBuscado });//{ [field]: value });
+        exactosCombinados = [...exactosCombinados, ...busq.exactos];
+        parecidosCombinados = [...parecidosCombinados, ...busq.parecidos];
+    }        
+
+    let procontent = [...exactosCombinados, ...parecidosCombinados];
+    
+    busq = buscarInteli(procontent, criterios);
+    exactosCombinados = [...exactosCombinados, ...busq.exactos];    
+    parecidosCombinados = [...parecidosCombinados, ...busq.parecidos];
+        
+    content = [...exactosCombinados, ...parecidosCombinados];
+    return content ;//    
+}
+
+//=====================================================================
+
+export function searchInDB (collection, field, value)
+{
     const two_letters = aMayusculasSinAcentos( value.slice(0,2) );
     const cap_field = aMayusculasSinAcentos( field )
     const ruta = DBPATH + collection + "/INDEX/" + cap_field +"/"+ two_letters + ".json";
@@ -287,14 +337,7 @@ export function searchInDB (collection, field, value){
     }
     
     const objs = JSON.parse(readFileSync(ruta, 'utf8'));
-    
-    //for(let i in objs){        
-    //    if(objs[i].field === value)
-    //    {
-    //        content.push(obj)
-    //    }            
-    //}
-
+        
     let exactosCombinados = [];
     let parecidosCombinados = [];
     //exactosCombinados = exactosCombinados.concat(buscarInteli(productos, { nombre: "Lap" }).exactos);
@@ -312,6 +355,8 @@ export function searchInDB (collection, field, value){
     return content ;//
     //return busq.exactos
 };
+
+    
 
 export function updateDB(collection, user_id,{name,offer,espe,extra})//,timestamp})
 {
@@ -354,13 +399,24 @@ export function updateDB(collection, user_id,{name,offer,espe,extra})//,timestam
     
     newObject.ole = user_id
     newObject.name = name
-    newObject.offer = offer
     newObject.espe = espe
+    
+   ////Eliminar los índices anteriores
+    //writeIndex(collection, "NAME", newObj.email, newObj)
+    //for (let clave in criterio) {
+    //    if (criterio[clave]) { // Solo copia si el valor es "verdadero" (no vacío, no null, no undefined)
+    //        crts[clave] = criterio[clave];
+    //    }
+    // }
+
+
+    newObject.offer = offer
     newObject.extra = extra
     //newObject.timestamp = timestamp
 
     dataArray[existingIndex] = newObject;
     writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
+
 }
 
 function incrementUsers(){

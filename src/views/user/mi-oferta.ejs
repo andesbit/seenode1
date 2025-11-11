@@ -168,6 +168,7 @@ button:disabled{
 
         <label>Datos extra:</label>
         <textarea onclick="this.value = this.value.trim()" id = "extra" cols=40 rows = 10><%= u.extra %></textarea> 
+
         <button id = "btnUpdate" type="submit">Guardar cambios</button>
     </form>
 
@@ -214,9 +215,7 @@ button:disabled{
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script>
 
-//NUEVOYVIEJO:
 const btnUpdate = document.querySelector("#btnUpdate")
-//
 
 function getSessionKey() 
 {
@@ -313,11 +312,9 @@ function validarYLimpiarObjeto(obj) {
     return limpio;
 }
 
-
 //_________________________
 let ISkills = []
 //____________________________
-
 
 function getFormData(){
     const name = document.getElementById('name').value; 
@@ -341,7 +338,6 @@ document.getElementById('form-user-data').addEventListener('submit', async funct
     updateDataSecure(datosLimpios);
     //await sendUserData();
 })
-
 
 //=========================================================================
 
@@ -392,7 +388,9 @@ function PutSkills()
 if(tSkill)tSkill.addEventListener("keydown", (event) =>
 {
     //if(termsActived)btnUpdate.disabled = true;
-    //"PARAQUEALAPRETARENTERNOSEEJECUTE EL SUMIT"
+    //"PARAQUEALAPRETARENTERNOSEEJECUTE EL SUMIT
+
+    btnUpdate.disabled = true;
 });
 
 if(tSkill)tSkill.addEventListener("keyup", (event) =>
@@ -424,7 +422,8 @@ if(tSkill)tSkill.addEventListener("keyup", (event) =>
         tSkill.value = "";
         PutSkills();
     }
-    //if(termsActived)btnUpdate.disabled = false;
+    //if(termsActived)
+    btnUpdate.disabled = false;
 });
 
 function contactar(x)

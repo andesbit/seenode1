@@ -1,5 +1,5 @@
 import express from 'express';
-import {searchInDB, getNumPagesDB, pagesDB} from '../utils/database.js';
+import {searchInDB, searchInDB2, getNumPagesDB, pagesDB} from '../utils/database.js';
 const router = express.Router();
 
 function buttonsPagination(paginaActual, totalPaginas) 
@@ -65,27 +65,44 @@ router.get('/', (req, res) =>
 
     let ejsP = buttonsPagination(curPage,totalPages)
 
+    res.json({ estado: "en construcción..." })
+    /*
     res.render('index', {
         title: 'Página Principal',
         offers: arrayOffers,
         kpaginacion: ejsP
     });
+    */
 });
 
 //===============================================
 
 router.post('/search-offer', async (req, res) => {
     
-    const { name,espe } = req.body;
+    //const { name,espe } = req.body;
+    const criterio = req.body;
+    let crts = {}
+
+    for (let clave in criterio) {
+        if (criterio[clave]) { // Solo copia si el valor es "verdadero" (no vacío, no null, no undefined)
+            crts[clave] = criterio[clave];
+        }
+    }
+
+    //MAS MODERO:
+    //const destino = Object.entries(origen)
+    //    .filter(([clave, valor]) => valor) // Filtra valores no vacíos
+    //    .reduce((obj, [clave, valor]) => ({ ...obj, [clave]: valor }), {});   
     
     try {
         //updateDB("DATA",user_id,{name,offer,espe})
-        let a= searchInDB ("OFFERS", "name", name);
+        //let a= searchInDB ("OFFERS", "name", name);
+        let a = searchInDB2 ("OFFERS", crts);
         res.json({ 
             success: true,
             action: 'searchoffer',            
             data: "prueba de datos",
-            result:a
+            result: a
         });
 
     } catch (error) {
