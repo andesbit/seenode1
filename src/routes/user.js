@@ -35,29 +35,36 @@ router.get('/login', async (req, res) =>
 //ADEMAS PARA QUE ESTE EN USERS Y NO EN OPERACIONES POST SUBSECUENTES 
 //router.get('/mi-oferta',authMiddleware, (req, res) => 
 
-    //TEMPORALMENTE PARA PROBAR EL ESTILO quitamos requireAuthView,
 router.get('/mi-oferta', (req, res) => 
 //router.get('/mi-oferta',requireAuthView, (req, res) => 
 {
     //ENVIAR LA KOOKIEde ecriptacion AQUI
+    //FUNCconsole.log("----------------mi-oferta user", req.user)
     res.clearCookie('datos', { httpOnly: false });
     const clave = crypto.randomBytes(32).toString('hex');
     
-    console.log("CCCCCusersmiofertaCCCCCCCCCCC", clave);
-    
-    res.cookie('datos', JSON.stringify({ dato1: clave }), { httpOnly: false });
+    //FUNCconsole.log("CCCCCusersmiofertaCCCCCCCCCCC", clave);
+    //res.cookie('datos', JSON.stringify({ dato1: clave }), { httpOnly: false });
+
+    res.cookie('datos', JSON.stringify({ dato1: clave }), {
+        httpOnly: false
+        //secure: process.env.NODE_ENV === 'production',
+        //sameSite: 'strict'
+    });
+
 
     const o = searchIdDB("OFFERS", req.user.id);
     let array = []
+    //Si tiene contactos:
     if('cnts' in o) array = o.cnts
     
     res.render('user/mi-oferta', {        
-        cnts:array
-    });    
+        cnts:array,
+        u:o
+    });
+});
 
-}); 
-
-//=============================================
+//=========================================================
 
 router.post('/send-code', async (req, res) => 
 {

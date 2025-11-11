@@ -92,7 +92,8 @@ router.post('/new-user-data', async (req, res) => {
 router.post('/update', authMiddleware, async (req, res) => {
     try {
         const { encryptedData, timestamp } = req.body;
-        const encryptionKey = req.cookies.sessionkey;
+        //const encryptionKey = req.cookies.dato.datos1;//sessionkey;
+        const encryptionKey = JSON.parse(req.cookies.datos).dato1;
         // 1. Validar timestamp (opcional)
         if (timestamp && Date.now() - timestamp > 300000) {
             return res.status(400).json({ error: 'Datos expirados' });
@@ -102,15 +103,17 @@ router.post('/update', authMiddleware, async (req, res) => {
         const datosObjeto = decryptToObject(encryptedData,encryptionKey);
         
         // 3. Los datos ya están como objeto JavaScript
-        console.log('Datos recibidos como objeto:', datosObjeto);
-        console.log('Tipo:', typeof datosObjeto); // object
-        console.log('Propiedades:', Object.keys(datosObjeto));
+        //console.log('Datos recibidos como objeto:', datosObjeto);
+        //console.log('Tipo:', typeof datosObjeto); // object
+        //console.log('Propiedades:', Object.keys(datosObjeto));
         
-        const { name, offer, espe } = datosObjeto;//((req.body
+        const { name, offer, espe, extra } = datosObjeto;//((req.body
         const user_id = req.user.id
 
         try {
-            updateDB("DATA",user_id,{name,offer,espe})
+            updateDB("OFFERS",user_id,{name,offer,espe,extra})//,timestamp})
+
+
 
             res.json({ 
                 success: true           
@@ -147,7 +150,7 @@ router.post('/delete-user-data', authMiddleware, async (req, res) => {
 
     const { ole } = req.body;
     const centena = obtenerCentena(ole)
-    console.log("CENTENA",centena)
+    //console.log("CENTENA",centena)
     let fileData = "DATA/D" + centena.toString() + ".json"
     let ipath = join(DBPATH, fileData)//"DATA/"data.json");
 

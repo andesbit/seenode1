@@ -1,4 +1,4 @@
- import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { join, dirname } from 'path';
 
@@ -31,18 +31,17 @@ function aMayusculasSinAcentos(cadena) {
 export function collectionDB(collection)
 {
     let content = []
-    let filename =  "D" + "100" + ".json";
-    let filepath = DBPATH + collection + "/" + filename;
+    let filename =  "D" + "100" + ".json"
+    let filepath = DBPATH + collection + "/" + filename
        
     //LEERDATAFILE(){   //TECH FUNCIONES INTRINCECAS
-    let offers = JSON.parse(readFileSync(filepath, 'utf8'));
+    let offers = JSON.parse(readFileSync(filepath, 'utf8'))
 
     for (let u in offers)
     {            
       content.push({id:offers[u].ole, name:offers[u].fname, offer:offers[u].offer,  email:offers[u].email})
     }
-
-    return content ;//
+    return content
 }
 
 //Sólo llamar en cambio de nElemsPerPages
@@ -52,11 +51,6 @@ function preparePaginationDB(collection){
     let filename =  "INFOCENTENAS.json";
     let filepath = DBPATH + collection +"/INFO/" + filename;
     let infoCentenas = JSON.parse(readFileSync(filepath, 'utf8'));
-
-    //HACER EL CONTEO
-    
-    //ESCRIBIR LIMITES DE CADA PAGINA:
-
 }
 
 function limitsPage(collection, page)
@@ -101,32 +95,17 @@ export function getNumPagesDB(nElementsPag)
 export function pagesDB(collection, page, nOffersPage)
 {
     let content = []
-    //let centena = page * 100;
-    //let PERPECLETO=3
-    
-    //if(PERPECLETO==3){
-    //console.log("ÂGESDBPERPLE3")
-
-    //let obj_page =       infoPage(collection, page) // EXTRAERDE:collection/INFO/INFOPAGES
-    //let centena =        obj_page.centena // INICIA EN CENTENA...
-    let saltear = 0;
-    //saltear = obj_page.start;//EN EL QUE EMPIEZA LA PAGINA
-    //
-    //ej pagina2 y noffersper = 5: 2*5-5 + 1 = 6
+    let saltear = 0    
     let start_in = page*nOffersPage - nOffersPage + 1 
     let centena = obtenerCentena(start_in)
-    // Math.ceil(numero / 100) * 100
-    // (start_in - (centena-100)) - 1
-    saltear = (start_in - (centena-100)) - 1;//9;//EN EL QUE EMPIEZA LA PAGINA
-    //
+    saltear = (start_in - (centena-100)) - 1;//9;//EN EL QUE EMPIEZA LA PAGINA    
     let str_centena =    centena.toString()
     let filename =       "D" + str_centena + ".json";
     let filepath =       DBPATH + collection + "/" + filename;
     // console.log("PER",filepath)
-    let offers =         JSON.parse("{}");
-    let count_offers =   0
-    
-    
+    let offers = JSON.parse("{}");
+    let count_offers = 0
+        
     while(count_offers < nOffersPage) 
     {
         str_centena = centena.toString()
@@ -151,8 +130,7 @@ export function pagesDB(collection, page, nOffersPage)
                             offer:offers[u].offer,
                             espe:offers[u].espe,
                             email:offers[u].email
-                        }
-                        //console.log("pagesDB",qobj)
+                        }                        
                         content.push(qobj)
                     }    
                 }
@@ -217,7 +195,7 @@ export function searchEmailDB(collection, email){
     return id;
 }
 export function searchIdDB(collection, id){
-    console.log("the id",id)
+    //console.log("the id",id)
     let centena = obtenerCentena(id)
     let fileData = collection + "/D" + centena.toString() + ".json"
     let ipath = join(DBPATH, fileData)//"DATA/"data.json");
@@ -237,43 +215,6 @@ export function searchIdDB(collection, id){
 //function encontrarElemento(array, clave, valor) {
 //    return array.find(elemento => elemento[clave] === valor);
 //}
-
-function buscarInteligente(array, criterios, limiteParecidos = 3) {
-    const resultados = {
-        exactos: [],
-        parecidos: []
-    };    
-    array.forEach(elemento => {
-        let coincidenciaExacta = true
-        let coincidenciaParecida = true        
-        for (const clave in criterios) {
-            const valorBuscado = criterios[clave]
-            const valorElemento = elemento[clave]
-            
-            // Verificar coincidencia exacta
-            if (valorElemento !== valorBuscado) {
-                coincidenciaExacta = false;
-            }
-            
-            // Verificar coincidencia parecida
-            if (typeof valorElemento === 'string' && typeof valorBuscado === 'string') {
-                if (!valorElemento.toLowerCase().includes(valorBuscado.toLowerCase())) {
-                    coincidenciaParecida = false;
-                }
-            } else if (valorElemento != valorBuscado) {
-                coincidenciaParecida = false;
-            }
-        }
-        
-        if (coincidenciaExacta) {
-            resultados.exactos.push(elemento);
-        } else if (coincidenciaParecida && resultados.parecidos.length < limiteParecidos) {
-            resultados.parecidos.push(elemento);
-        }
-    });
-    
-    return resultados;
-}
 
 function buscarInteli(array, criterios, opciones = {}) 
 {
@@ -329,28 +270,6 @@ function buscarInteli(array, criterios, opciones = {})
     return resultados;let offers = JSON.parse(readFileSync(filepath, 'utf8'));
 }
 
-function buscarFlexible(array, criterios, exacto = true) {
-    return array.filter(elemento => {
-        return Object.keys(criterios).every(clave => {
-            const valorBuscado = criterios[clave];
-            const valorElemento = elemento[clave];
-            
-            if (exacto) {
-                return valorElemento === valorBuscado;
-            } else {
-                if (typeof valorElemento === 'string' && typeof valorBuscado === 'string') {
-                    return valorElemento.toLowerCase().includes(valorBuscado.toLowerCase());
-                }
-                return valorElemento == valorBuscado;
-            }
-        });
-    });
-}
-
-// Uso rápido
-//const exactos = buscarFlexible(productos, { categoria: "Tecnología" }, true);
-//const parecidos = buscarFlexible(productos, { nombre: "lap" }, false);
-
 export function searchInDB (collection, field, value){
     const two_letters = aMayusculasSinAcentos( value.slice(0,2) );
     const cap_field = aMayusculasSinAcentos( field )
@@ -369,7 +288,6 @@ export function searchInDB (collection, field, value){
     
     const objs = JSON.parse(readFileSync(ruta, 'utf8'));
     
-
     //for(let i in objs){        
     //    if(objs[i].field === value)
     //    {
@@ -395,10 +313,10 @@ export function searchInDB (collection, field, value){
     //return busq.exactos
 };
 
-export function updateDB(collection, user_id,{offer})
+export function updateDB(collection, user_id,{name,offer,espe,extra})//,timestamp})
 {
     const centena = obtenerCentena(user_id)
-    console.log("CENTENA",centena)
+    //console.log("CENTENA",centena)
     let fileData = collection + "/D" + centena.toString() + ".json"
     let ipath = join(DBPATH, fileData)//"DATA/"data.json");
     
@@ -429,11 +347,17 @@ export function updateDB(collection, user_id,{offer})
     const newObject = {
         ole: 0,
         offer: "",
+        extra: "",
+        //timestamp: new Date().toISOString(),
         updatedAt: new Date().toISOString() // Campo adicional para tracking
     };
     
     newObject.ole = user_id
+    newObject.name = name
     newObject.offer = offer
+    newObject.espe = espe
+    newObject.extra = extra
+    //newObject.timestamp = timestamp
 
     dataArray[existingIndex] = newObject;
     writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
@@ -450,135 +374,33 @@ function incrementUsers(){
     writeFileSync(filepath, JSON.stringify(obj, null, 2), 'utf8');
     return num_users
 }
-/*
-function __changeInfos(collection, newObject) { 
 
-    const nusers = incrementUsers()
-    console.log("ole:",newObject.ole)
-    let centena = obtenerCentena(newObject.ole)
-    //console.log("centena:",centena)
-    //centena = obtenerCentena(ole)
-    //console.log(centena)
-    let fileData = collection + "/INFO/INFOCENTENAS.json"
-    let ipath = join(DBPATH, fileData)
-    const fileContent = readFileSync(ipath,'utf8')
-    let dataArray = JSON.parse(fileContent)
-    const obj_index = dataArray.findIndex(item => item.centena === centena);//Se podría usar findIndex pero,,,
-    dataArray[obj_index].have++ 
-    //console.log(dataArray)
-    //console.log( centena,obj)
-    writeFileSync(ipath, JSON.stringify(dataArray,null,2),'utf8') 
-    //(INFOCENTENASREALIZADO)TIL
-
-    // ( ISJIMUNITIÑ )
-
-    // (INFOPAGES LONTIL) IR A LA ULTIMA PAGINA O
-    // ULTIMO OBJETO DE INFOPAGES & end_ole++    
-    // SI end_ole-start_ole > 100, generar otra pagina
-
-    fileData = collection + "/INFO/INFOPAGES.json"
-    ipath = join(DBPATH, fileData)
-    const fileContent2 = readFileSync(ipath,'utf8');
-    dataArray = JSON.parse(fileContent2);
-
-    //console.log("XXXXXXXXXXX",dataArray)
-    const last = dataArray[dataArray.length - 1];
-    
-    if(last.end_ole - last.ini_ole < 100)
-        dataArray[dataArray.length - 1].end_ole++;
-    else
-    {
-        let new_obj = {
-            page:4,
-            ini_centena:2,
-            start_in: 5, 
-            ini_ole: 101,
-            end_ole: 115 
-        }; 
-     
-        dataArray.push(new_obj);
-        // Escribir de vuelta al archivo
-        
-    }
-    writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
-    console.log("INFO--NUSERS-->",nusers)
-    return nusers
-}
-*/
-//------------------------------------------
-/*
-function _writeIndex(collection, field, value, centena, ID)
-{
-    const twoletters = aMayusculasSinAcentos( value.slice(0,2) );
-        
-    let cap_field = aMayusculasSinAcentos( field )
-
-    let fileData = collection + "/INDEX/" + cap_field +"/"+ twoletters + ".json"
-
-    let ipath = join ( DBPATH, fileData )
-    
-    let data_objs = []
-
-    if (existsSync(ipath)) {
-
-        try {
-            const fileContent = readFileSync(ipath, 'utf8');
-
-            if (fileContent.trim() !== '') 
-                {
-                data_objs = JSON.parse(fileContent);
-            }
-        } catch (parseError) {
-            console.warn('Error parsing JSON file, starting with empty array:', parseError);
-        }
-    }
-
-    for(let i in data_objs )
-        {
-        if ( data_objs[i]. centena  === centena )
-            {
-
-            data_objs[i].ids.push(ID)
-
-            break
-         }    
-    }
-    // Escribir de vuelta al archivo
-    writeFileSync(ipath, JSON.stringify(data_objs, null, 2), 'utf8');
-}
-*/
-//writeIndex(collection, "EMAIL", newObj.email, newObj)
 function writeIndex(collection, field, value, obj)
 {
     const twoletters = aMayusculasSinAcentos( value.slice(0,2) );
-        
     let cap_field = aMayusculasSinAcentos( field )
-
     let fileData = collection + "/INDEX/" + cap_field +"/"+ twoletters + ".json"
-
     let ipath = join ( DBPATH, fileData )
-    
     let data_objs = []
 
     if (existsSync(ipath)) {
-
         try {
             const fileContent = readFileSync(ipath, 'utf8');
-
-            if (fileContent.trim() !== '') 
-            {
-                data_objs = JSON.parse(fileContent);
-            }
+            data_objs = JSON.parse(fileContent);
         } catch (parseError) {
             console.warn('Error parsing JSON file, starting with empty array:', parseError);
         }
     }
-    data_objs.push(obj)
-    // Escribir de vuelta al archivo
+    else{
+        const dir = dirname(ipath);
+        if(!existsSync(dir))    // Crear el directorio si no existe
+            mkdirSync(dir, { recursive: true });
+    }
+    data_objs.push(obj)    
     writeFileSync(ipath, JSON.stringify(data_objs, null, 2), 'utf8');
 }
 
-//------------------------------------------
+//=============================================================
 
 export function addDocumentDB(collection,data)
 {
@@ -614,12 +436,7 @@ export function addDocumentDB(collection,data)
 
                 // Escribir de vuelta al archivo
                 writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
-                //
-                //writeIndex(collection, "EMAIL", newObj.email, centena, nusers)
-                //SE EVIA EL EMAIL PARA DETECTAR...
-                //LAS DOS LETRAS PARA EL IDEX...
                 writeIndex(collection, "EMAIL", newObj.email, newObj)
-
                 //PORCADA PALARA CLAVE?
                 //writeIndex(collection, field, newObj.email, centena, ID)
                 //
@@ -641,8 +458,10 @@ export function addDocumentDB(collection,data)
                 console.log("no EXISTE IPATH")
                 dataArray = [];
                 dataArray.push(newObj);
-                console.log("PORRRQUEEEE",dataArray,newObj)
+                //console.log("PORRRQUEEEE",dataArray,newObj)
                 writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
+                //console.log("====addDocumentDB newObj.email===",  newObj.email)
+                writeIndex(collection, "EMAIL", newObj.email, newObj)
                 return { 
                     success: true,
                     data: newObj

@@ -145,16 +145,19 @@ button:disabled{
 
     <form id="form-user-data" class="auth-form">
         <label>Ingresa nombre o sobrenombre:</label>
-        <input type= "text" id = "name"/>
+        <!--%   const ku = JSON.stringify(user) %    
+        USER::::::::::::%= ku %-->
+        <!--%   const ku = JSON.stringify(u) %
+        USER::::::::::::%= ku %-->
+
+        <!--UESPE:::::::::::::::%= u.espe %-->
+
+        <input type= "text" id = "name" value="<%= u.name %>"/>
         <label>Ingresa tu oferta principal:</label>
-        <textarea id = "offert" cols=40 rows = 10>
-        </textarea> 
-        
+        <textarea onclick="this.value = this.value.trim()" id = "offert" cols=40 rows = 10><%= u.offer %></textarea> 
         <!--
         label>Especialidades separadas con comas:</label>
         <input type= "text" id = "espe"/-->
-
-
 
         <label>Especializaciones o habilidades</label>
         <input type= "text" id="tempSkill" placeholder = "habilidad,">
@@ -163,13 +166,11 @@ button:disabled{
             <div id = "hola" style = "font-size: 0.8rem; color:#999">habilidades , se borran con click.</div>
         </div>
 
-
-
         <label>Datos extra:</label>
-        <textarea id = "offert" cols=40 rows = 10>
-        </textarea> 
+        <textarea onclick="this.value = this.value.trim()" id = "extra" cols=40 rows = 10><%= u.extra %></textarea> 
         <button id = "btnUpdate" type="submit">Guardar cambios</button>
     </form>
+
     <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
 
     <h2>Ultimos Mensajes</h2>
@@ -217,40 +218,20 @@ button:disabled{
 const btnUpdate = document.querySelector("#btnUpdate")
 //
 
-function getCookie(nombre) {
-  const cookie = document.cookie
-    .split('; ')
-    .find(c => c.startsWith(nombre + '='));
-  
-  if (!cookie) return null;
-  
-  const valor = cookie.split('=')[1];
-  return JSON.parse(valor);
-}
-
-
 function getSessionKey() 
 {
-    //AHORA NO ESTAMOS usando localstorage
-    /*
-    const token = localStorage.getItem('authToken');
-    if (!token) 
-    {
-        alert("No hay token");
-        return null;
-    }
-    try {
-        // Decodificar el token (sin verificar, solo para obtener datos)
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.sessionKey;
-    } catch {
-        return null;
-    }
-    */    
-    // Uso:
-    const datos = getCookie('datos');
-    console.log("mioffertagetsessionkey",datos.dato1); // "valor1"
-    return datos.dato1;
+    const cookies = document.cookie.split('; ');
+    const datosCookie = cookies.find(row => row.startsWith('datos='));
+
+    if (datosCookie) {
+        const cookieValue = datosCookie.split('=')[1];
+        // DECODIFICAR primero, luego parsear
+        const datos = JSON.parse(decodeURIComponent(cookieValue));
+        const clave = datos.dato1;
+        //console.log('Clave:', clave);
+        return datos.dato1;
+    }    
+    return null;
 }
 
 async function updateDataSecure(datos) {  // datos es un objeto
@@ -277,8 +258,11 @@ async function updateDataSecure(datos) {  // datos es un objeto
             redirectToLogin();
             return;
         }
-
-        return await response.json();
+        let resp= await response.json();
+        //console.log("==========miofertaupdateresp==========",resp)
+        
+        if(resp.success){alert("Los datos fueron guardados")}
+        return resp;
     } catch (error) {
         console.error('Error:', error);
         throw error;
@@ -331,18 +315,20 @@ function validarYLimpiarObjeto(obj) {
 
 
 //_________________________
-let ISkills = [];
+let ISkills = []
 //____________________________
 
 
 function getFormData(){
     const name = document.getElementById('name').value; 
     const offer = document.getElementById('offert').value; 
+    const extra = document.getElementById('extra').value; 
     //const espe = document.getElementById('espe').value;
     const espe = ISkills.join(",");
     let obj = {
       name:name,
       offer:offer,
+      extra:extra,
       espe:espe
     }
     return obj;
@@ -405,7 +391,7 @@ function PutSkills()
 
 if(tSkill)tSkill.addEventListener("keydown", (event) =>
 {
-    if(termsActived)btnUpdate.disabled = true;
+    //if(termsActived)btnUpdate.disabled = true;
     //"PARAQUEALAPRETARENTERNOSEEJECUTE EL SUMIT"
 });
 
@@ -438,7 +424,7 @@ if(tSkill)tSkill.addEventListener("keyup", (event) =>
         tSkill.value = "";
         PutSkills();
     }
-    if(termsActived)btnUpdate.disabled = false;
+    //if(termsActived)btnUpdate.disabled = false;
 });
 
 function contactar(x)
@@ -448,5 +434,14 @@ function contactar(x)
     //loadContact(parseInt(x))AQUI MISMO POR AHORA
 
 }
+
+
+//======================================================
+
+window.addEventListener('load', function() {
+  let ka = "<%= u.espe %>"
+  ISkills = ka.split(',')
+  PutSkills()
+});   
 
 </script>
