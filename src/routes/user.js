@@ -2,7 +2,11 @@ import express from 'express'
 import { generateToken, hashCode, verifyCode, requireAuthView } from '../utils/jwtUtils.js';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { addDocumentDB,searchIdDB, searchInDB } from '../utils/database.js'
+//import { addDocumentDB,searchIdDB, searchInDB } from '../utils/database.js'
+//import { getDatabase } from '../database/index.js';
+import { getOfferIdByEmail } from '../database/search.js';
+import { insertOffer } from '../database/crud/insert.js';
+import {getOfferById} from '../database/search.js';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
@@ -52,8 +56,10 @@ router.get('/mi-oferta', (req, res) =>
         //sameSite: 'strict'
     });
 
-
-    const o = searchIdDB("OFFERS", req.user.id);
+    
+    //const o = searchIdDB("OFFERS", req.user.id);
+    const o = getOfferById(req.user.id);
+    console.log(o)
     let array = []
     //Si tiene contactos:
     if('cnts' in o) array = o.cnts
@@ -147,16 +153,24 @@ router.post('/verify-code', async (req, res) =>
 
     //GENERAR ID
     let ID = 0
-    
-    let a= searchInDB ("OFFERS", "email", email);
+    //
+    let NAME = "";
+    //
+    //let a= searchInDB ("OFFERS", "email", email);
+    const offerId = await getOfferIdByEmail(email);
 
     ///console.log("...verifyCode(array a)",a,"\n")
     
-    if (Array.isArray(a) && a.length > 0) {
-        ID = a[0].ole
+    //if (Array.isArray(a) && a.length > 0) {
+    if (offerId) {
+        //ID = a[0].ole
+        ID = offerId;
+        NAME = "usuario"+ID //PARA EL TOKEN
+        //NAME =
         ///console.log("·····/verifycode¡EXISTE!")
     }    
     else{ // LUEGO GENERAR SI NO EXISTE
+        /*
         let o = {ole: 0, name:"", email: email, role: "user"}
         const t = addDocumentDB("OFFERS", o)
         if (t.success) 
@@ -165,9 +179,24 @@ router.post('/verify-code', async (req, res) =>
             ID = t.data.ole
         }    
         else console.log ("···········verifycode···",t);
-    }    
+        */
+        NAME = "usuario"+ID
+        ID = await insertOffer(
+        {
+                name: NAME,
+                email: email,
+                country: '',
+                city: '',
+                offer: '',
+                espe: '',
+                extra: ''
+            }
 
-    const NAME = "usuario"+ID;
+        );
+       
+    }    
+    
+    //const NAME = "usuario"+ID;
     ///console.log("/verify-code>>>>>EMAIL",email,">>>>ID:",ID)  
     const token = generateToken({
         //id: Date.now().toString(), // ID único

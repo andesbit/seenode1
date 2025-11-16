@@ -288,7 +288,10 @@ h2 {
 }
 .searchInDB{
     border-bottom: 2px solid #ffb62f;/*3498db;*/
-
+    width:100%;
+    height:auto;
+    clear:both;
+    float:left;
 }
 
 .searchInDB input{

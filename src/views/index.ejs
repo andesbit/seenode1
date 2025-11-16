@@ -4,13 +4,18 @@
 
 <div style="clear:both;float:left;display:block;width:100%;margin-top:0px;">
 <h2>&nbsp;Ofertas principales</h2>
-<form class = "searchInDB" id = "form-search">
+<form class = "searchInDB"  id = "form-search">
     <br>
-    <b>&nbsp;&nbsp;&nbsp;Buscar:</b>
+    <b>&nbsp;&nbsp;&nbsp;Buscar: &nbsp; &nbsp;</b>
     &nbsp;Nombre&nbsp;<input type ="text" id = "nam"  />
     &nbsp;o&nbsp;Especialidad&nbsp;<input type ="text" id = "esp"  />
+
+    <div style ="margin-top:10px;margin-bottom:20px;">
+    &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;País&nbsp;<input type ="text" id = "country"  />
+    &nbsp;Ciudad&nbsp;<input type ="text" id = "city"  />
     &nbsp;<button class = "btnSearch" type = "submit"><b>&nbsp;>&nbsp;</b></button>
-    <br><br>
+    </div>
+    
 </form>
 
 <div id = "searchTitle">
@@ -65,11 +70,13 @@ const searchCriteria = async() => {
     
     const name = document.getElementById('nam').value;
     const espe = document.getElementById('esp').value;
+    const country = document.getElementById('country').value;
+    const city = document.getElementById('city').value;
 
     const response = await fetch('/search-offer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, espe })
+        body: JSON.stringify({ name, espe, country, city })
     });
 
     let x = await response.json()

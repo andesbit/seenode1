@@ -1,5 +1,5 @@
 import express from 'express';
-import CryptoJS from 'crypto-js';
+//import CryptoJS from 'crypto-js';
 import {addDocumentDB} from '../utils/database.js'
 const router = express.Router();
 
@@ -28,7 +28,7 @@ router.post('/x', (req, res) =>
 
 
 const secretKey = "mi-clave-secreta-32-chars-12345";
-
+/*
 router.post('/y', (req, res) => {
     try {
         const { encryptedData } = req.body;
@@ -41,5 +41,6 @@ router.post('/y', (req, res) => {
         res.status(500).json({ error: 'Error al descifrar' });
     }
 });
+*/
 export default router
 

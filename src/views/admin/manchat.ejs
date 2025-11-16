@@ -1,0 +1,102 @@
+<style>
+    .file-list {
+        list-style: none;
+        padding: 0;
+        max-width: 600px;
+        margin: 20px auto;
+    }
+    
+    .file-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        margin: 10px 0;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: background 0.2s;
+    }
+    
+    .file-item:hover {
+        background: #e9ecef;
+    }
+    
+    .file-name {
+        font-family: monospace;
+        font-size: 14px;
+    }
+    
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    
+    .delete-btn:hover {
+        background-color: #c82333;
+    }
+</style>
+
+<div id="prueba"></div>
+
+<script>
+    const offersData = <%- JSON.stringify(offers) %>;
+</script>
+
+<script>
+    function buildList(array){
+        if (!array || array.length === 0) {
+            return '<p style="text-align: center; color: #6c757d;">No hay archivos disponibles</p>';
+        }
+        
+        return '<ul class="file-list">' + 
+            array.map(file => `
+                <li class="file-item">
+                    <span class="file-name">${file}</span>
+                    <button 
+                        onclick="deleteFile('${file}')" 
+                        class="delete-btn">
+                        🗑️ Eliminar
+                    </button>
+                </li>
+            `).join('') + 
+            '</ul>';
+    }
+    
+    async function deleteFile(filename) {
+        if (!confirm(`¿Estás seguro de eliminar "${filename}"?`)) {
+            return;
+        }
+        
+        try {
+            const response = await fetch(`/admin/chuat/${filename}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                alert(`✓ ${filename} eliminado correctamente`);
+                location.reload();
+            } else {
+                alert('❌ Error: ' + data.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('❌ Error al eliminar el archivo: ' + error.message);
+        }
+    }
+    
+    window.addEventListener("load", () => {
+        document.getElementById("prueba").innerHTML = buildList(offersData);
+    });
+</script>

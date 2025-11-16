@@ -1,0 +1,117 @@
+
+<main>
+
+<div style="clear:both;float:left;display:block;width:100%;height:50px;">
+</div>
+            
+<div class="container">
+    <h2>&nbsp;ADMIN</h2>
+
+    <div class = "p12">
+    Este software sirve para solicitar publicamente un empleo, solicirar un servicio y también para ofrecer un producto o inmueble.  Es decir para lo que corresponde al área laboral y de ventas.
+    </div>
+    
+    <% offers.forEach(function(o) { %>
+        
+        <div style = "display:block; float:left; clear:both; width:100%; ">
+    
+            <div class="lin">
+            &nbsp;id:<% if (o.id) { %><%= o.id %><% } else { %> (Falta el id) <% } %>    
+            &nbsp;name:<% if (o.name) { %><%= o.name %><% } %>
+            &nbsp;email:<% if (o.email) { %><%= o.email %><% } else { %> (Falta el email) <% } %>
+            &nbsp;offer:<% if (o.offer) { %><%= o.offer %><% } else { %> (Falta la oferta) <% } %>            
+            &nbsp;country:<% if (o.country) { %><%= o.country %><% } else { %> (Falta el país) <% } %>
+            &nbsp;city:<% if (o.city) { %><%= o.city %><% } else { %> (Falta la ciudad) <% } %>
+            &nbsp;espe:<% if (o.espe) { %><%= o.espe %><% } else { %> (Faltan las especialidades) <% } %>
+            &nbsp;extra:<% if (o.extra) { %><%= o.extra %><% } else { %> (Faltan datos extra) <% } %>
+            <button onclick="edit(<%= o.id %>)">&nbsp;&nbsp;Editar...</button>
+            <button onclick="borrar(<%= o.id %>)">&nbsp;&nbsp;Borrar...</button>
+            </div>
+
+            <% const ID = o.id  %>
+            <div id = "edit_<%= ID %>" style = "display:none">
+                Nombre:<input id ="name_<%= ID %>" type = "text"/>
+                Email:<input id ="email_<%= ID %>" type = "text"/>
+                Oferta:<input id ="offer_<%= ID %>" type = "text"/>
+                País:<input id ="country_<%= ID %>" type = "text"/>
+                Ciudad<input id ="city_<%= ID %>" type = "text"/>
+                Especialidades:<input id ="espe_<%= ID %>" type = "text"/>
+                Extra:<input id ="extra_<%= ID %>" type = "text"/>                
+                <button onclick="update(<%= ID %>)">Guardar</button>
+                <button onclick="cancelEdit(<%= ID %>)">Cancelar</button>
+            </div> 
+
+        </div>
+    <% }); %>
+<br>
+<br><br><br>
+<div>
+<form>
+    <div id = "add-record" style = "background-color:#bbe2ce">
+                Nombre:<input id ="name" type = "text"/>
+                Email:<input id ="email" type = "text"/>
+                Oferta:<input id ="offer" type = "text"/>
+                País:<input id ="country" type = "text"/>
+                Ciudad<input id ="city" type = "text"/>
+                Especialidades:<input id ="espe" type = "text"/>
+                Extra:<input id ="extra" type = "text"/>
+    </div> 
+    <center><button onclick="add()">&nbsp;&nbsp;AGREGAR...</button></center>
+</form>
+</div>
+
+<div id = "prueba"></div>
+
+</div>    <!--container-->
+
+</main>
+<script>
+
+function edit(i){
+    let id = "edit_"+i.toString()
+    document.getElementById(id).style.display = "block"
+}
+
+function cancelEdit(i){
+    let id = "edit_"+i.toString()
+    document.getElementById(id).style.display = "none"
+}
+
+function update(i){
+    let id = ""
+    id = "name_"+ i.toString()
+    let name = document.getElementById(id).value
+    id = "email_"+ i.toString()
+    let email = document.getElementById(id).value
+    id = "city_"+ i.toString()
+    let city = document.getElementById(id).value
+    id = "country_"+ i.toString()
+    let country = document.getElementById(id).value
+    id = "espe_"+ i.toString()
+    let espe = document.getElementById(id).value
+    id = "extra_"+ i.toString()
+    let extra = document.getElementById(id).value
+    let obj = {name, email, city, country, espe, extra}
+    alert(JSON.stringify(obj))
+}
+
+function borrar(i){
+    if(confirm("¿Borrar?"))
+    alert(i)
+}
+
+function add(){
+    alert("ix")
+}
+
+function buildList(array){
+    if (!Array.isArray(array)) return '';
+    
+    return array.map(item => `<li>${item.name || item}</li>`).join('');
+}
+
+window.addEventListener("load", () => {
+    const offers = <%- JSON.stringify(offers) %>;
+    document.getElementById("prueba").innerHTML = `<ul>${buildList(offers)}</ul>`;
+})
+</script>

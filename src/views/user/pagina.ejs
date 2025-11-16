@@ -182,7 +182,7 @@ button:disabled{
             const n = posp !== -1 ? o.substring(0, posp) : o;
             const p = o.substring(posp + 1);
             %>
-            <% if (parseInt(n) === parseInt(o.ole)) { %> 
+            <% if (parseInt(n) === parseInt(o.id)) { %> 
                 <%= o.name %>
             <% } else { %>
                 <%= user.name %>
@@ -240,7 +240,7 @@ document.getElementById('f-msg').addEventListener('submit', async function(evt) 
             body: JSON.stringify({ 
                 msg: message, 
                 from: <%= user.id %>,
-                to: <%= o.ole %>,
+                to: <%= o.id %>,
                 timestamp: Date.now() 
             })
         });

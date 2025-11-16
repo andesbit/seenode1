@@ -212,9 +212,12 @@ button:disabled{
 
 </div>
 <br>←←←
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<!--script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script-->
+
 <script>
 
+let publicKey; // Variable global
+  
 const btnUpdate = document.querySelector("#btnUpdate")
 
 function getSessionKey() 
@@ -238,8 +241,9 @@ async function updateDataSecure(datos) {  // datos es un objeto
         /////const token = localStorage.getItem('authToken');
         
         // 1. Convertir el objeto a JSON y cifrarlo
-        const datosCifrados = encryptObject(datos);
-        
+//        const datosCifrados = encryptObject(datos);
+        const datosCifrados = await encryptObject(datos);
+
         // 2. Enviar datos cifrados
         const response = await fetch('/user-data/update', {
             method: 'POST',
@@ -269,7 +273,8 @@ async function updateDataSecure(datos) {  // datos es un objeto
 }
 
 // Función específica para cifrar objetos
-function encryptObject(obj) {
+/*
+function __encryptObject(obj) {
     // Convertir el objeto a string JSON
     const jsonString = JSON.stringify(obj);
     
@@ -277,7 +282,27 @@ function encryptObject(obj) {
     let encryptionKey = getSessionKey();
     return CryptoJS.AES.encrypt(jsonString, encryptionKey).toString();
 }
+*/
+async function encryptObject(obj) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(JSON.stringify(obj));
 
+  async function importPublicKey(pem) {
+    const binaryDer = Uint8Array.from(atob(pem.replace(/-----[^-]+-----/g, '')), c => c.charCodeAt(0));
+    return await crypto.subtle.importKey(
+      'spki',
+      binaryDer.buffer,
+      { name: 'RSA-OAEP', hash: 'SHA-256' },
+      true,
+      ['encrypt']
+    );
+  }
+
+  const publicKey = await importPublicKey(publicKey); // Usa la variable global
+  const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, data);
+  return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+} 
+/*  
 // Función para descifrar y convertir a objeto
 function decryptToObject(encryptedData) {
     let encryptionKey = getSessionKey();
@@ -290,7 +315,7 @@ function decryptToObject(encryptedData) {
     
     return JSON.parse(jsonString);
 }
-
+*/
 // Función auxiliar para validar el objeto antes de enviar
 function validarYLimpiarObjeto(obj) {
     // Eliminar propiedades undefined/null
@@ -437,10 +462,29 @@ function contactar(x)
 
 //======================================================
 
-window.addEventListener('load', function() {
-  let ka = "<%= u.espe %>"
-  ISkills = ka.split(',')
-  PutSkills()
-});   
+window.addEventListener('load', async function() 
+{
+    let ka = "<%= u.espe %>"
+    ISkills = ka.split(',')
+    PutSkills()
+    
+    try {
+        const response = await fetch('/get-public-key');
+        const data = await response.json();
+        publicKey = data.publicKey; // Asignar al global
+        console.log('Clave pública lista para usar');
+    } catch (error) {
+        console.error('Error:', error);
+    }
 
+        // En tu función de submit
+        //async function handleSubmit() {
+        //if (!publicKey) {
+        // alert('Clave pública no cargada');
+            return;
+        //}
+        // Usar publicKey para cifrar
+        //}
+});   
+  
 </script>
