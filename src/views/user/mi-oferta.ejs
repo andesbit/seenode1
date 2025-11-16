@@ -298,8 +298,10 @@ async function encryptObject(obj) {
     );
   }
 
-  const publicKey = await importPublicKey(publicKey); // Usa la variable global
-  const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, data);
+  const pKey = await importPublicKey(publicKey); // Usa la variable global
+  
+  const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, pKey, data);
+  console.log
   return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
 } 
 /*  

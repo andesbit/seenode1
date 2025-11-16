@@ -4,9 +4,8 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 //import { addDocumentDB,searchIdDB, searchInDB } from '../utils/database.js'
 //import { getDatabase } from '../database/index.js';
-import { getOfferIdByEmail } from '../database/search.js';
+import { getOfferIdByEmail, getOfferById } from '../database/search.js';
 import { insertOffer } from '../database/crud/insert.js';
-import {getOfferById} from '../database/search.js';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
@@ -55,15 +54,11 @@ router.get('/mi-oferta', (req, res) =>
         //secure: process.env.NODE_ENV === 'production',
         //sameSite: 'strict'
     });
-
-    
-    //const o = searchIdDB("OFFERS", req.user.id);
-    const o = getOfferById(req.user.id);
+    const o = getOfferById(req.user.id)
     console.log(o)
     let array = []
     //Si tiene contactos:
-    if('cnts' in o) array = o.cnts
-    
+    if('cnts' in o) array = JSON.parse(o.cnts)
     res.render('user/mi-oferta', {        
         cnts:array,
         u:o

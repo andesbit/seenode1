@@ -1,0 +1,66 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradiente principal azul-cyan -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Gradiente secundario para brillo -->
+    <linearGradient id="shineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+    
+    <!-- Sombra suave -->
+    <filter id="softShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="4" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Fondo circular decorativo -->
+  <circle cx="200" cy="200" r="180" fill="url(#mainGradient)" opacity="0.1"/>
+  
+  <!-- Base de datos (cilindro) con sombra -->
+  <g filter="url(#softShadow)">
+    <!-- Cilindro inferior -->
+    <ellipse cx="200" cy="260" rx="80" ry="20" fill="url(#mainGradient)"/>
+    <rect x="120" y="180" width="160" height="80" fill="url(#mainGradient)"/>
+    <ellipse cx="200" cy="180" rx="80" ry="20" fill="url(#mainGradient)"/>
+    
+    <!-- Líneas de separación del cilindro -->
+    <ellipse cx="200" cy="210" rx="80" ry="20" fill="none" stroke="#0891b2" stroke-width="2" opacity="0.5"/>
+    <ellipse cx="200" cy="235" rx="80" ry="20" fill="none" stroke="#0891b2" stroke-width="2" opacity="0.5"/>
+    
+    <!-- Brillo superior -->
+    <ellipse cx="200" cy="180" rx="80" ry="20" fill="url(#shineGradient)"/>
+  </g>
+  
+  <!-- Texto MySQLite -->
+  <text x="200" y="330" font-family="Arial, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="url(#mainGradient)">
+    MySQLite
+  </text>
+  
+  <!-- Subtexto decorativo -->
+  <text x="200" y="355" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#64748b" letter-spacing="2">
+    DATABASE
+  </text>
+  
+  <!-- Detalles decorativos: puntos de conexión -->
+  <circle cx="140" cy="120" r="4" fill="#06b6d4" opacity="0.6"/>
+  <circle cx="260" cy="130" r="4" fill="#06b6d4" opacity="0.6"/>
+  <circle cx="160" cy="290" r="4" fill="#06b6d4" opacity="0.6"/>
+  <circle cx="240" cy="285" r="4" fill="#06b6d4" opacity="0.6"/>
+  
+  <!-- Líneas de conexión decorativas -->
+  <line x1="140" y1="120" x2="160" y2="170" stroke="#06b6d4" stroke-width="1.5" opacity="0.3"/>
+  <line x1="260" y1="130" x2="240" y2="170" stroke="#06b6d4" stroke-width="1.5" opacity="0.3"/>
+</svg>
