@@ -1,4 +1,6 @@
 node_modules/
 XM/
+src/data/
+DB/MESSAGES/
 *.local
 .env
