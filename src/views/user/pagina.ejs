@@ -173,27 +173,6 @@ button:disabled{
 
 
 <div id = "on_messages" style = "border-bottom:0px solid #333;">
-<div id = "portaCuadros" class = "orta-cuadros">
-    <% a_msg.forEach(function(o) { %>
-        <div class = "uadro" style = "padding:8px;">
-           <% if (o) { %>
-            <% 
-            const posp = o.indexOf(":");
-            const n = posp !== -1 ? o.substring(0, posp) : o;
-            const p = o.substring(posp + 1);
-            %>
-            <% if (parseInt(n) === parseInt(o.id)) { %> 
-                <%= o.name %>
-            <% } else { %>
-                <%= user.name %>
-            <% } %>    
-            :&nbsp;<%= p %>
-            <% } else { %>
-            (Falta el mensaje)
-            <% } %>
-        </div>
-    <% }); %>
-</div>
 </div>
 
   <% if(user) { %>
@@ -229,6 +208,7 @@ function redirectDirect() {
 
 const mm = document.getElementById("mes");
 //const uu = document.querySelector("#message");
+
 document.getElementById('f-msg').addEventListener('submit', async function(evt) {
     evt.preventDefault();
     const message = mm.value;
@@ -240,12 +220,15 @@ document.getElementById('f-msg').addEventListener('submit', async function(evt) 
             body: JSON.stringify({ 
                 msg: message, 
                 from: <%= user.id %>,
+                from_name: "<%= user.name %>",
                 to: <%= o.id %>,
+                to_name: "<%= o.name %>",
                 timestamp: Date.now() 
             })
         });
 
         if (!response.ok) {
+            alert('Hubo un problema: ' + 'Error desconocido');
             const errorData = await response.json();
             throw new Error(errorData.message || 'Error desconocido');
         }
@@ -267,11 +250,22 @@ document.getElementById('f-msg').addEventListener('submit', async function(evt) 
 const oms = document.querySelector("#on_messages");
 
 const imtobanae=(k)=>{  
+    let name= "";
+    let msg = "";
+    let posp = 0;
+    let pos2 = 0;
     let t = `<div id = "portaCuadros" class = "orta-cuadros" >`
     k.forEach(element => {
+        posp = element.indexOf("_");
+        pos2 = element.indexOf(":");
+        //tid = c.substring(0,posp);        
+        //iid = parseInt(tid);
+        name = element.substring(posp + 1, pos2)
+        msg = element.substring(pos2 + 1)
+
         t += `
             <div class = "uadro" style = "padding:8px;">
-                ${element}
+                ${name} :&nbsp; ${msg}
             </div>
         `;
     });
@@ -279,4 +273,12 @@ const imtobanae=(k)=>{
     oms.innerHTML=t
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    //console.log("Evento cargado"); // <-- Agrega esto primero
+    const a = <%- a_msg %>;
+    //console.log("Valor de a:", a); // <-- Más descriptivo
+    //console.log("Tipo de a:", typeof a); // <-- Ver qué tipo es
+    //console.log("Es array?:", Array.isArray(a)); // <-- Confirmar si es array
+    imtobanae(a);
+})
 </script>

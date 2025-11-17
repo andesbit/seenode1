@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import {getOfferById} from '../database/search.js'
 //import crypto from 'crypto';
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d'; // 7 días de expiración
@@ -93,7 +94,7 @@ const injectUserToViews = (req, res, next) => {
 
 
 
-const injectUserToViews = (req, res, next) => {
+const injectUserToViews = async(req, res, next) => {
     // Valores por defecto
     res.locals.isAuthenticated = false;
     res.locals.user = null;
@@ -113,7 +114,18 @@ const injectUserToViews = (req, res, next) => {
             });
             //console.log("\ndecoded:",decoded)
             //console.log("\nend decodedddddd\n")
+            
             res.locals.user = decoded;
+
+            /*correct name:
+                obtain name:
+                    databasegetname del id => name 
+                change name: 
+                    set name:*/
+                let un = await getOfferById(res.locals.user.id)
+                res.locals.user.name= un.name//"pliki"  
+
+
             res.locals.isAuthenticated = true;
             req.user = decoded;             
             //console.log('✅ Usuario autenticado:', decoded.email);

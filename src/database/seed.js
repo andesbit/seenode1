@@ -12,7 +12,7 @@ async function seedDatabase() {
   const usuariosExistentes = await db.get('SELECT COUNT(*) as count FROM offers');
   
   //if (usuariosExistentes.count === 0) {
-  if (usuariosExistentes.count < 7) {
+  if (usuariosExistentes.count < 2) {
     await db.transaction(async (db) => {
       const usuarios = [
         { nombre: 'Ana', email: 'anaf@example.com', pais: 'Perú', ciudad: 'Lima', offer: 'none', espe: 'espe', extra: 'extra' },

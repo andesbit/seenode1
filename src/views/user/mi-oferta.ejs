@@ -193,12 +193,20 @@ button:disabled{
         <% cnts.forEach(function(c) { %>
             <div class = "uadro" style = "padding:8px;">
                 <% 
-                    const posp = c.indexOf("_");
-                    const tid = c.substring(0,posp);
-                    const iid = parseInt(tid);
-                    const p = c.substring(posp + 1);
+                    const cStr = String(c);
+                    const posp = cStr.indexOf("_");
+                    let iid = 0;
+                    let p = "";
+                    
+                    if(posp >= 0) {
+                        const tid = cStr.substring(0, posp);
+                        iid = parseInt(tid);
+                        p = cStr.substring(posp + 1);
+                    } else {
+                        p = cStr;
+                    }
                 %>
-                <div class = "contacto" onclick="contactar(%= iid %)">
+                <div class = "contacto" onclick="contactar(<%= iid %>)">
                 <%= p %>             
                 </div>
             </div>
@@ -456,9 +464,11 @@ if(tSkill)tSkill.addEventListener("keyup", (event) =>
 function contactar(x)
 {
     //alert(x)
-    document.getElementById("contacts").style.display="none";
+    //document.getElementById("contacts").style.display="none";
+
     //loadContact(parseInt(x))AQUI MISMO POR AHORA
 
+    window.location.href = `/user-data/pagina/${x}`;
 }
 
 

@@ -28,11 +28,17 @@ async function searchOffers(filters = {}) {
     params.push(filters.city.trim());
   }
   
-  // Búsqueda en especialidades (sin índice, más lenta pero aceptable)
-  if (filters.specialty && filters.specialty.trim() !== '') {
+  if (filters.espe && filters.espe.trim() !== '') {
+    //conditions.push('name = ?');
     conditions.push('espe LIKE ?');
-    params.push(`%${filters.specialty.trim()}%`);
+    params.push(filters.espe.trim());
   }
+
+  // Búsqueda en especialidades (sin índice, más lenta pero aceptable)
+  //if (filters.specialty && filters.specialty.trim() !== '') {
+  //  conditions.push('espe LIKE ?');
+  //  params.push(`%${filters.specialty.trim()}%`);
+  //}
   
   try {
     let sql = 'SELECT * FROM offers';
@@ -49,15 +55,16 @@ async function searchOffers(filters = {}) {
     const results = await db.all(sql, params);
     
     // Convertir espe a array para facilitar su uso
-    results.forEach(offer => {
-      if (offer.espe) {
-        offer.specialties = offer.espe.split(',').map(s => s.trim());
-      } else {
-        offer.specialties = [];
-      }
-    });
-    
-    console.log(`✅ Encontrados ${results.length} registros`);
+    /*
+    //results.forEach(offer => {
+    //  if (offer.espe) {
+    //    offer.specialties = offer.espe.split(',').map(s => s.trim());
+    //  } else {
+    //    offer.specialties = [];
+    //  }
+    //});
+    */
+    //console.log(`✅ Encontrados ${results.length} registros`);
     return results;
     
   } catch (error) {
@@ -102,14 +109,17 @@ async function getOfferById(id) {
     );
     
     if (result) {
-      // Convertir espe a array si existe
-      if (result.espe) {
-        result.specialties = result.espe.split(',').map(s => s.trim());
-      } else {
-        result.specialties = [];
-      }
       
-      console.log(`✅ Oferta encontrada: ID ${result.id}, ${result.name}`);
+      /*
+      // Convertir espe a array si existe
+      //if (result.espe) {
+        //result.specialties = result.espe.split(',').map(s => s.trim());
+      //} else {
+        //result.specialties = [];
+      //}
+      */
+
+      //console.log(`✅ Oferta encontrada: ID ${result.id}, ${result.name}`);
       return result;
     } else {
       console.log(`❌ No se encontró oferta con ID: ${id}`);

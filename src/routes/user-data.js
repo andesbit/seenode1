@@ -118,8 +118,11 @@ function decryptToObject(encryptedData) {
   return JSON.parse(decrypted.toString());
 }   
 
+//====================================================
+
 // Ruta para contenido ADMIN solo
 function toFileMsg(from, to, new_msg){
+
     let first = 0;    let second = 0;
     if(from < to)
     {
@@ -158,6 +161,8 @@ function toFileMsg(from, to, new_msg){
         // Escribir de vuelta al archivo
         writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
         //              
+       
+
     } catch (parseError) {
         console.warn('Error parsing JSON file, starting with empty array:', parseError)
         dataArray = []               
@@ -212,33 +217,83 @@ router.get('/pagina/:n', async(req, res) => {
 
     if (o) {
         console.log(o);
-    }
-    
-    
+    }    
     let from = 0;
     if (req.user){ //VIENE DEL INJECTUSER
         from = req.user.id
     }
     const to = parseInt(req.params.n)
     const a_msg = fromFileMsg(from, to)
-    res.render('user/pagina', { o: o, a_msg:a_msg })
+    const ja =JSON.stringify(a_msg)
+    //console.log ("jastringify:",ja)    
+    res.render('user/pagina', { o: o, a_msg: ja })
+    
 })
 
-router.post('/message', (req, res) => 
-{
+//================================================================
+
+router.post('/message', async(req, res) => {
     try {
         console.log('Mensaje recibido:', req.body.msg);
-        let from = parseInt(req.body.from)
-        //console.log("FROMRECIBIDO",from)
+        let from = parseInt(req.body.from)       
         let to = parseInt(req.body.to)
-        let n = req.user.id
-        let msg = n+":"+req.body.msg
-        console.log("xxxxxxxxxxxxxxxxxxx",msg,from,to)
-        toFileMsg(from, to, msg)            // TO__FILE.
-        const a_msg = fromFileMsg(from, to) // FROMFILE.
-        res.json({ status: 'ok', received: true,a_msg:a_msg });
+        //let n = req.user.id
+        //console.log("FROM_TO_N",from,to,n)
+        //let msg = "user"+n+":"+req.body.msg
+        let from_id = from + "_"+req.body.from_name 
+        let to_id = to + "_"+req.body.to_name
+        console.log("TTTTTTTTTTTTTT",req.body.to_name)
+        let msg = from_id + ":" + req.body.msg
+        
+        //let lin_msg = req.body.to_name + ":" + msg
+        //console.log("xxxxxxxxxxxxxxxxxxx", msg, from, to)
+        
+        toFileMsg(from, to, msg)
+        
+        let obj = await getOfferById(req.user.id)
+        //console.log("ffffffffffff==", obj)
+        
+        let cnts = ""
+        if('cnts' in obj && obj.cnts !== null) {
+            cnts = obj.cnts
+            console.log(",,,,hay cnts...")
+        } else {
+            console.log(",,,,NO hay cnts...")
+            cnts = "[]"
+        }
+        
+        let a_cnts = JSON.parse(cnts)
+
+        //const existe = a_cnts.includes(parseInt(to));
+        const existe = a_cnts.includes(to_id);
+        
+        if(!existe) {
+            a_cnts.push(to_id)
+            cnts = JSON.stringify(a_cnts)
+            console.log("NNNNNNNNNEWW cnts!", cnts)
+            
+            try {
+                const updated = await updateOffer(req.user.id, {cnts})
+                if (updated) {
+                    console.log("Actualización exitosa");
+                }
+                //     //
+                let upt = await updateOffer(to, {cnts})
+                if (upt) {
+                    console.log("Otra actualización exitosa");
+                }
+                //    //
+            } catch (error) {
+                console.error('Error al actualizar:', error);
+                return res.status(500).json({ error: 'Error interno del servidor' }); // RETURN aquí
+            }
+        }
+        const a_msg = fromFileMsg(from, to)
+        return res.json({ status: 'ok', received: true, a_msg: a_msg }); // RETURN aquí también
+        
     } catch (error) {
-        res.status(500).json({ status: 'error', message: 'Error al procesar el mensaje' });
+        console.error('Error general:', error);
+        return res.status(500).json({ status: 'error', message: 'Error al procesar el mensaje' }); // RETURN aquí
     }
 });
 

@@ -38,7 +38,7 @@ router.get('/login', async (req, res) =>
 //ADEMAS PARA QUE ESTE EN USERS Y NO EN OPERACIONES POST SUBSECUENTES 
 //router.get('/mi-oferta',authMiddleware, (req, res) => 
 
-router.get('/mi-oferta', (req, res) => 
+router.get('/mi-oferta', async (req, res) => 
 //router.get('/mi-oferta',requireAuthView, (req, res) => 
 {
     //ENVIAR LA KOOKIEde ecriptacion AQUI
@@ -54,13 +54,23 @@ router.get('/mi-oferta', (req, res) =>
         //secure: process.env.NODE_ENV === 'production',
         //sameSite: 'strict'
     });
-    const o = getOfferById(req.user.id)
+    const o = await getOfferById(req.user.id)
     console.log(o)
-    let array = []
+    //let array = []
     //Si tiene contactos:
-    if('cnts' in o) array = JSON.parse(o.cnts)
+    //if('cnts' in o && ) array = JSON.parse(o.cnts)
+
+    let cnts = ""
+    if('cnts' in o && o.cnts !== null) {
+        cnts = o.cnts
+    } else {
+        cnts = "[]"
+    }
+    let a_cnts = JSON.parse(cnts)
+    console.log(a_cnts)
+
     res.render('user/mi-oferta', {        
-        cnts:array,
+        cnts:a_cnts,
         u:o
     });
 });
@@ -184,7 +194,8 @@ router.post('/verify-code', async (req, res) =>
                 city: '',
                 offer: '',
                 espe: '',
-                extra: ''
+                extra: '',
+                role: 'user',                
             }
 
         );

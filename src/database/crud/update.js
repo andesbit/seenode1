@@ -15,7 +15,7 @@ async function updateOffer(offerId, offerData){//, specialtiesArray) {
   
   // Convertir array a cadena (maneja el caso de array vacío)
   //const espeString = Array.isArray(specialtiesArray) ? specialtiesArray.join(',') : '';
-  
+  /*
   try {
     const result = await db.run(
       `UPDATE offers 
@@ -33,7 +33,23 @@ async function updateOffer(offerId, offerData){//, specialtiesArray) {
         offerId
       ]
     );
-    
+  */
+
+      // ⭐ AQUÍ: Extraer los campos del objeto offerData
+  const fields = Object.keys(offerData);
+  
+  // Validar que haya al menos un campo para actualizar
+  if (fields.length === 0) {
+    throw new Error('No hay campos para actualizar');
+  }
+ const setClause = fields.map(field => `${field} = ?`).join(', ');
+  const values = Object.values(offerData);
+  
+  const sql = `UPDATE offers SET ${setClause} WHERE id = ?`;
+
+  try {
+    const result = await db.run(sql, [...values, offerId]);
+      
     if (result.changes > 0) {
       console.log(`✅ Oferta ${offerId} actualizada exitosamente`);
       return {

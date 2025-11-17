@@ -30,9 +30,10 @@ const app = express();
 
 await getDatabase();
 //
+await modelsPrepare(); // AWAIT ES CRUCIAL AQUI
+//
 await seedDatabase()
 //
-await modelsPrepare(); // AWAIT ES CRUCIAL AQUI
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',

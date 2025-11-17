@@ -1,6 +1,6 @@
 import express from 'express';
 //import CryptoJS from 'crypto-js';
-import {addDocumentDB} from '../utils/database.js'
+//import {addDocumentDB} from '../utils/database.js'
 const router = express.Router();
 
 router.get('/test', async (req, res) => 
@@ -15,6 +15,7 @@ router.get('/test', async (req, res) =>
 
 router.post('/x', (req, res) => 
     {
+        /*
     const t = addDocumentDB("OFFERS", 
         {name : "ARIG", email: "AIM"})
     //console.log ("ttttttttttttttttttt",t)
@@ -24,6 +25,7 @@ router.post('/x', (req, res) =>
         name: t.name,
         data: "prueba de datos"
     });
+    */
 });
 
 
