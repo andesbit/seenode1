@@ -36,11 +36,15 @@ router.post('/update', authMiddleware, async (req, res) => {
         //console.log('Tipo:', typeof datosObjeto); // object
         //console.log('Propiedades:', Object.keys(datosObjeto));
         
-        const { name, email, country, city, offer, espe, extra } = datosObjeto;//((req.body
+        //const { name, email, country, city, offer, espe, extra } = datosObjeto;//((req.body
+        //const { name, email, country, city, offer, espe, extra } = datosObjeto;//((req.body
+        console.log(datosObjeto);
+
         const user_id = req.user.id
         try {
             //updateDB("OFFERS",user_id,{name,offer,espe,extra})//,timestamp})
-            const updated = await updateOffer(user_id, {name,email,country,city,offer,espe,extra});//, ["Cardiología"]);
+            //const updated = await updateOffer(user_id, {name,email,country,city,offer,espe,extra});//, ["Cardiología"]);
+            const updated = await updateOffer(user_id, datosObjeto);
   
             if (updated) {
                 console.log("Actualización exitosa");
