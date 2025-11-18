@@ -1,0 +1,13 @@
+<div style="padding:30px">
+    <h1>Zona no autorizada.  Debe loguearse.</h1>
+    <button id = "btnSBack" class = "btnSearch"> << VOLVER </button>
+</div>
+
+<script>
+function redirectDirect() {
+    window.location.href = '/';
+}
+document.getElementById('btnSBack').addEventListener('click', function(){
+    redirectDirect()
+})
+</script>

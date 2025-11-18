@@ -21,6 +21,7 @@ const DBPATH = join(__dirname, '../../DB/');
 const router = express.Router();
 
 //====================================================
+/*
 
 router.post('/update', authMiddleware, async (req, res) => {
 
@@ -64,6 +65,33 @@ router.post('/update', authMiddleware, async (req, res) => {
         res.status(400).json({ error: 'Error al procesar datos cifrados' });
     }
 })
+*/
+
+
+// routes/admin.js o donde tengas tu endpoint
+router.post('/update', async (req, res) => {
+    try {
+        const { offerId, encryptedData, timestamp } = req.body;
+        
+        // Desencriptar los datos
+        const datosDesencriptados = await decryptData(encryptedData);
+        
+        console.log('🔑 ID de la oferta:', offerId);
+        console.log('📦 Datos desencriptados:', datosDesencriptados);
+        
+        // ✅ Llamar a updateOffer con ID y datos por separado
+        const resultado = await updateOffer(offerId, datosDesencriptados);
+        
+        res.json(resultado);
+        
+    } catch (error) {
+        console.error('❌ Error en el servidor:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
 /*
 router.post('/__update', authMiddleware, async (req, res) => {
     try {
@@ -106,7 +134,7 @@ router.post('/__update', authMiddleware, async (req, res) => {
     }
 });
 */
-function decryptToObject(encryptedData) {
+function decryptData(encryptedData) {
   
   const buffer = Buffer.from(encryptedData, 'base64');
 

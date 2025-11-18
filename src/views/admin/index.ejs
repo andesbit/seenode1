@@ -1,73 +1,336 @@
+<!-- Solo el CSS y las modificaciones para tu index.ejs -->
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Remover el padding del body y aplicarlo solo al main */
+    main {
+        background: linear-gradient(135deg, #eaeae4 0%, #e8dab2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    h2 {
+        color: white;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .offer-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .offer-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 12px rgba(0,0,0,0.2);
+    }
+
+    .offer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .offer-id {
+        background: linear-gradient(135deg, #eabe66 0%, #bf4d30 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9em;
+    }
+
+    .offer-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit {
+        background-color: #a7b49e;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background-color: #849485;
+        transform: scale(1.05);
+    }
+
+    .btn-delete {
+        background-color: #df855f;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #b6544d;
+        transform: scale(1.05);
+    }
+
+    .btn-save {
+        background-color: #8ab4cd;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background-color: #7aa4bd;
+    }
+
+    .btn-cancel {
+        background-color: #9e9e9e;
+        color: white;
+    }
+
+    .btn-cancel:hover {
+        background-color: #757575;
+    }
+
+    .offer-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .detail-item {
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 3px solid #f0e5ad;
+    }
+
+    .detail-label {
+        font-weight: bold;
+        color: #b2b2b2;
+        font-size: 0.85em;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+    .detail-value {
+        color: #333;
+        font-size: 1em;
+    }
+
+    .detail-missing {
+        color: #999;
+        font-style: italic;
+    }
+
+    .edit-form {
+        display: none;
+        background: #e0e8e0;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 5px;
+        font-size: 0.9em;
+    }
+
+    .form-group input {
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 1em;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #eab166;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    @media (max-width: 768px) {
+        main {
+            padding: 10px;
+        }
+
+        .offer-header {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .offer-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .offer-details {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 
 <main>
-
-<div style="clear:both;float:left;display:block;width:100%;height:50px;">
-</div>
-            
+<div style = margin-top:20px; display:block;float :left;clear:both;width:100%; height:160px;">
+    &nbsp;
+</div>    
 <div class="container">
-    <h2>&nbsp;ADMIN</h2>
-
-    <div class = "p12">
-    Este software sirve para solicitar publicamente un empleo, solicirar un servicio y también para ofrecer un producto o inmueble.  Es decir para lo que corresponde al área laboral y de ventas.
-    </div>
+    <!--div>ROL:%= rol %</div-->
+    <h2>📋 PANEL DE ADMINISTRACIÓN</h2>
     
     <% offers.forEach(function(o) { %>
-        
-        <div style = "display:block; float:left; clear:both; width:100%; margin-bottom:20px; ">
-    
-            <div class="lin">
-            &nbsp;id:<% if (o.id) { %><%= o.id %><% } else { %> (Falta el id) <% } %>    
-            &nbsp;name:<% if (o.name) { %><%= o.name %><% } %>
-            &nbsp;email:<% if (o.email) { %><%= o.email %><% } else { %> (Falta el email) <% } %>
-            &nbsp;offer:<% if (o.offer) { %><%= o.offer %><% } else { %> (Falta la oferta) <% } %>            
-            &nbsp;country:<% if (o.country) { %><%= o.country %><% } else { %> (Falta el país) <% } %>
-            &nbsp;city:<% if (o.city) { %><%= o.city %><% } else { %> (Falta la ciudad) <% } %>
-            &nbsp;espe:<% if (o.espe) { %><%= o.espe %><% } else { %> (Faltan las especialidades) <% } %>
-            &nbsp;extra:<% if (o.extra) { %><%= o.extra %><% } else { %> (Faltan datos extra) <% } %>
-            <button onclick="edit(<%= o.id %>)">&nbsp;&nbsp;Editar...</button>
-            <button onclick="borrar(<%= o.id %>)">&nbsp;&nbsp;Borrar...</button>
+         <% const so=JSON.stringify(o) %>
+         <!--%= so % -->
+        <div class="offer-card">
+            <div class="offer-header">
+                <div class="offer-id">ID: <%= o.id || 'N/A' %></div>
+                <div class="offer-actions">
+                    <button class="btn btn-edit" onclick="edit(<%= o.id %>)">
+                        ✏️ Editar
+                    </button>
+                    <button class="btn btn-delete" onclick="borrar(<%= o.id %>)">
+                        🗑️ Borrar
+                    </button>
+                </div>
             </div>
 
-            <% const ID = o.id  %>
-            <div id = "edit_<%= ID %>" style = "display:none">
-                Nombre:<input id ="name_<%= ID %>" type = "text"/>
-                Email:<input id ="email_<%= ID %>" type = "text"/>
-                Oferta:<input id ="offer_<%= ID %>" type = "text"/>
-                País:<input id ="country_<%= ID %>" type = "text"/>
-                Ciudad<input id ="city_<%= ID %>" type = "text"/>
-                Especialidades:<input id ="espe_<%= ID %>" type = "text"/>
-                Extra:<input id ="extra_<%= ID %>" type = "text"/>                
-                <button onclick="update(<%= ID %>)">Guardar</button>
-                <button onclick="cancelEdit(<%= ID %>)">Cancelar</button>
-            </div> 
+            <div class="offer-details">
+                <div class="detail-item">
+                    <div class="detail-label">👤 Nombre</div>
+                    <div class="detail-value <%= !o.name ? 'detail-missing' : '' %>">
+                        <%= o.name || 'Falta el nombre' %>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">📧 Email</div>
+                    <div class="detail-value <%= !o.email ? 'detail-missing' : '' %>">
+                        <%= o.email || 'Falta el email' %>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">💼 Oferta</div>
+                    <div class="detail-value <%= !o.offer ? 'detail-missing' : '' %>">
+                        <%= o.offer || 'Falta la oferta' %>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">🌍 País</div>
+                    <div class="detail-value <%= !o.country ? 'detail-missing' : '' %>">
+                        <%= o.country || 'Falta el país' %>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">🏙️ Ciudad</div>
+                    <div class="detail-value <%= !o.city ? 'detail-missing' : '' %>">
+                        <%= o.city || 'Falta la ciudad' %>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">⭐ Especialidades</div>
+                    <div class="detail-value <%= !o.espe ? 'detail-missing' : '' %>">
+                        <%= o.espe || 'Faltan especialidades' %>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">📝 Extra</div>
+                    <div class="detail-value <%= !o.extra ? 'detail-missing' : '' %>">
+                        <%= o.extra || 'Faltan datos extra' %>
+                    </div>
+                </div>
+            </div>
 
+            <% const ID = o.id %>
+            <div id="edit_<%= ID %>" class="edit-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>👤 Nombre</label>
+                        <input id="name_<%= ID %>" type="text" value="<%= o.name || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>📧 Email</label>
+                        <input id="email_<%= ID %>" type="email" value="<%= o.email || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>💼 Oferta</label>
+                        <input id="offer_<%= ID %>" type="text" value="<%= o.offer || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>🌍 País</label>
+                        <input id="country_<%= ID %>" type="text" value="<%= o.country || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>🏙️ Ciudad</label>
+                        <input id="city_<%= ID %>" type="text" value="<%= o.city || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>⭐ Especialidades</label>
+                        <input id="espe_<%= ID %>" type="text" value="<%= o.espe || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Extra</label>
+                        <input id="extra_<%= ID %>" type="text" value="<%= o.extra || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Cnts</label>
+                        <input id="cnts_<%= ID %>" type="text" value="<%= o.cnts || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>📝 Rol</label>
+                        <input id="role_<%= ID %>" type="text" value="<%= o.role || '' %>">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-save" onclick="update(<%= ID %>)">💾 Guardar</button>
+                    <button class="btn btn-cancel" onclick="cancelEdit(<%= ID %>)">❌ Cancelar</button>
+                </div>
+            </div>
         </div>
     <% }); %>
-<br>
-<br><br><br>
-<div>
-<!--form>
-    <div id = "add-record" style = "background-color:#bbe2ce">
-                Nombre:<input id ="name" type = "text"/>
-                Email:<input id ="email" type = "text"/>
-                Oferta:<input id ="offer" type = "text"/>
-                País:<input id ="country" type = "text"/>
-                Ciudad<input id ="city" type = "text"/>
-                Especialidades:<input id ="espe" type = "text"/>
-                Extra:<input id ="extra" type = "text"/>
-    </div> 
-    <center><button onclick="add()">&nbsp;&nbsp;AGREGAR...</button></center>
-</form>
-</div-->
-
-<div id = "prueba"></div>
-
-</div>    <!--container-->
-
+</div>
 </main>
 
 <script>
-
+// Tus funciones se mantienen igual
 function edit(i){
     let id = "edit_"+i.toString()
     document.getElementById(id).style.display = "block"
@@ -78,48 +341,231 @@ function cancelEdit(i){
     document.getElementById(id).style.display = "none"
 }
 
-function update(i){
-    let id = ""
-    id = "name_"+ i.toString()
-    let name = document.getElementById(id).value
-    id = "email_"+ i.toString()
-    let email = document.getElementById(id).value
-    id = "city_"+ i.toString()
-    let city = document.getElementById(id).value
-    id = "country_"+ i.toString()
-    let country = document.getElementById(id).value
-    id = "espe_"+ i.toString()
-    let espe = document.getElementById(id).value
-    id = "extra_"+ i.toString()
-    let extra = document.getElementById(id).value
-    let obj = {name, email, city, country, espe, extra}
-    alert(JSON.stringify(obj))
+let publicKey; // Variable global
+  
+const btnUpdate = document.querySelector("#btnUpdate")
+
+function getSessionKey() 
+{
+    const cookies = document.cookie.split('; ');
+    const datosCookie = cookies.find(row => row.startsWith('datos='));
+
+    if (datosCookie) {
+        const cookieValue = datosCookie.split('=')[1];
+        // DECODIFICAR primero, luego parsear
+        const datos = JSON.parse(decodeURIComponent(cookieValue));
+        const clave = datos.dato1;
+        //console.log('Clave:', clave);
+        return datos.dato1;
+    }    
+    return null;
+}
+/*
+async function updateDataSecure(datos) {  // datos es un objeto
+    try {
+        const datosCifrados = await encryptObject(datos);
+
+        const response = await fetch('/user-data/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'//,
+                //'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                encryptedData: datosCifrados,
+                timestamp: Date.now()
+            })
+        });
+
+        if (response.status === 401) {
+            redirectToLogin();
+            return;
+        }
+        let resp= await response.json();
+        //console.log("==========miofertaupdateresp==========",resp)
+        
+        if(resp.success){alert("Los datos fueron guardados")}
+        return resp;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+*/
+async function updateDataSecure(datos, offerId) {  // Recibe el ID como parámetro
+    try {
+        const datosCifrados = await encryptObject(datos);
+        
+        const response = await fetch('/user-data/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                offerId: offerId,  // 🔑 Enviar el ID por separado
+                encryptedData: datosCifrados,
+                timestamp: Date.now()
+            })
+        });
+        
+        if (response.status === 401) {
+            redirectToLogin();
+            return;
+        }
+        
+        let resp = await response.json();
+        console.log("📩 Respuesta del servidor:", resp);
+        
+        if(resp.success) {
+            alert("Los datos fueron guardados");
+        }
+        return resp;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
 }
 
-function borrar(i){
-    if(confirm("¿Borrar?"))
-    alert(i)
-}
+async function encryptObject(obj) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(JSON.stringify(obj));
 
-function add(){
-    alert("ix")
-}
+  async function importPublicKey(pem) {
+    const binaryDer = Uint8Array.from(atob(pem.replace(/-----[^-]+-----/g, '')), c => c.charCodeAt(0));
+    return await crypto.subtle.importKey(
+      'spki',
+      binaryDer.buffer,
+      { name: 'RSA-OAEP', hash: 'SHA-256' },
+      true,
+      ['encrypt']
+    );
+  }
 
-//function buildList(array){
- //   if (!Array.isArray(array)) return '';
+  const pKey = await importPublicKey(publicKey); // Usa la variable global
+  
+  const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, pKey, data);
+  
+  return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+} 
+
+// Función auxiliar para validar el objeto antes de enviar
+function validarYLimpiarObjeto(obj) {
+    // Eliminar propiedades undefined/null
+    const limpio = Object.fromEntries(
+        Object.entries(obj).filter(([_, v]) => v != null)
+    );
     
-   // return array.map(item => `<li>${item.name || item}</li>`).join('');
-//}
-
-
-function buildList(array){
-    if (!Array.isArray(array)) return '';
+    // Validar que no esté vacío
+    if (Object.keys(limpio).length === 0) {
+        throw new Error('El objeto no puede estar vacío');
+    }
     
-    return array.map(item => `<li>${item.name || item}</li>`).join('');
+    // Validar tamaño máximo (opcional)
+    const jsonSize = JSON.stringify(limpio).length;
+    if (jsonSize > 10000) { // 10KB máximo
+        throw new Error('Objeto demasiado grande');
+    }
+    
+    return limpio;
+}
+/*
+async function update(i){
+    let name = document.getElementById(`name_${i}`).value
+    let email = document.getElementById(`email_${i}`).value
+    let offer = document.getElementById(`offer_${i}`).value
+    let city = document.getElementById(`city_${i}`).value
+    let country = document.getElementById(`country_${i}`).value
+    let espe = document.getElementById(`espe_${i}`).value
+    let extra = document.getElementById(`extra_${i}`).value
+    let cnts = document.getElementById(`cnts_${i}`).value
+    let role = document.getElementById(`role_${i}`).value
+    let obj = {name, email, offer, city, country, espe, extra, cnts, role}
+    alert(JSON.stringify(obj, null, 2))
+
+     //let datosUsuario = getFormData()
+    const datosLimpios = validarYLimpiarObjeto(obj);
+    await updateDataSecure(datosLimpios);
+}
+*/
+
+async function update(i){
+    if (!publicKey) {
+        alert('La clave de encriptación aún no está lista.');
+        return;
+    }
+
+    // 🚫 NO incluyas 'id' ni 'created_at' aquí
+    let name = document.getElementById(`name_${i}`).value;
+    let email = document.getElementById(`email_${i}`).value;
+    let offer = document.getElementById(`offer_${i}`).value;
+    let city = document.getElementById(`city_${i}`).value;
+    let country = document.getElementById(`country_${i}`).value;
+    let espe = document.getElementById(`espe_${i}`).value;
+    let extra = document.getElementById(`extra_${i}`).value;
+    let cnts = document.getElementById(`cnts_${i}`).value;
+    let role = document.getElementById(`role_${i}`).value;
+    
+    // ✅ Solo los campos editables, SIN id ni created_at
+    let obj = {
+        name, 
+        email, 
+        offer, 
+        city, 
+        country, 
+        espe, 
+        extra, 
+        cnts, 
+        role
+    };
+    
+    console.log('📤 Datos a enviar (sin id ni created_at):', obj);
+    
+    try {
+        const datosLimpios = validarYLimpiarObjeto(obj);
+        
+        // 🔑 Enviar el ID por separado en la URL o en el body
+        await updateDataSecure(datosLimpios, i); // Pasar el ID como segundo parámetro
+        
+        alert('✅ Datos actualizados correctamente');
+        cancelEdit(i);
+    } catch (error) {
+        console.error('Error al actualizar:', error);
+        alert('Error al guardar los datos: ' + error.message);
+    }
 }
 
-window.addEventListener("load", () => {
-    const offers = <%- JSON.stringify(offers) %>;
-   ////// document.getElementById("prueba").innerHTML = `<ul>${buildList(offers)}</ul>`;
-})
+async function borrar(id) {
+    if (!confirm('¿Estás seguro de eliminar esta oferta?')) return;
+    
+    try {
+        const response = await fetch(`/admin/usuarios/${id}?permanente=true`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(data.mensaje);
+            location.reload();
+        } else {
+            alert('Error: ' + data.error);
+        }
+    } catch (error) {
+        alert('Error al eliminar');
+    }
+}
+
+window.addEventListener('load', async function() 
+{    
+    try {
+        const response = await fetch('/get-public-key');
+        const data = await response.json();
+        publicKey = data.publicKey; // Asignar al global
+        console.log('Clave pública lista para usar');
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    return;      
+});   
+  
 </script>

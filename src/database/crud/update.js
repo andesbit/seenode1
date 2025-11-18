@@ -44,7 +44,7 @@ async function updateOffer(offerId, offerData){//, specialtiesArray) {
   }
  const setClause = fields.map(field => `${field} = ?`).join(', ');
   const values = Object.values(offerData);
-  
+
   const sql = `UPDATE offers SET ${setClause} WHERE id = ?`;
 
   try {

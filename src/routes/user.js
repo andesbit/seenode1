@@ -41,27 +41,33 @@ router.get('/login', async (req, res) =>
 router.get('/mi-oferta', async (req, res) => 
 //router.get('/mi-oferta',requireAuthView, (req, res) => 
 {
+    if(!req.user){
+        res.render('user/unauthorized', {});
+        return    
+    }
+    
     //ENVIAR LA KOOKIEde ecriptacion AQUI
     //FUNCconsole.log("----------------mi-oferta user", req.user)
-    res.clearCookie('datos', { httpOnly: false });
-    const clave = crypto.randomBytes(32).toString('hex');
+    //res.clearCookie('datos', { httpOnly: false });
+    //const clave = crypto.randomBytes(32).toString('hex');
     
     //FUNCconsole.log("CCCCCusersmiofertaCCCCCCCCCCC", clave);
     //res.cookie('datos', JSON.stringify({ dato1: clave }), { httpOnly: false });
 
-    res.cookie('datos', JSON.stringify({ dato1: clave }), {
-        httpOnly: false
+    //res.cookie('datos', JSON.stringify({ dato1: clave }), {
+    //    httpOnly: false
         //secure: process.env.NODE_ENV === 'production',
         //sameSite: 'strict'
-    });
+    //})      
+
     const o = await getOfferById(req.user.id)
-    console.log(o)
+    //console.log(o)
     //let array = []
     //Si tiene contactos:
     //if('cnts' in o && ) array = JSON.parse(o.cnts)
 
     let cnts = ""
-    if('cnts' in o && o.cnts !== null) {
+    if('cnts' in o && o.cnts !== null && o.cnts !== "") {
         cnts = o.cnts
     } else {
         cnts = "[]"
@@ -174,18 +180,8 @@ router.post('/verify-code', async (req, res) =>
         //NAME =
         ///console.log("·····/verifycode¡EXISTE!")
     }    
-    else{ // LUEGO GENERAR SI NO EXISTE
-        /*
-        let o = {ole: 0, name:"", email: email, role: "user"}
-        const t = addDocumentDB("OFFERS", o)
-        if (t.success) 
-        {
-            ///console.log ("···verifycode se AGREGÓ DOCUMENTO",t);
-            ID = t.data.ole
-        }    
-        else console.log ("···········verifycode···",t);
-        */
-        NAME = "usuario"+ID
+    else{ // LUEGO GENERAR SI NO EXISTE        
+        NAME = "usuario_" + email.substring(0,4)
         ID = await insertOffer(
         {
                 name: NAME,
@@ -195,13 +191,12 @@ router.post('/verify-code', async (req, res) =>
                 offer: '',
                 espe: '',
                 extra: '',
-                role: 'user',                
+                cnts: '[]',
+                role: 'user'                
             }
-
         );
        
-    }    
-    
+    }
     //const NAME = "usuario"+ID;
     ///console.log("/verify-code>>>>>EMAIL",email,">>>>ID:",ID)  
     const token = generateToken({

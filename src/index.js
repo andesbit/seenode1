@@ -12,7 +12,7 @@ import { closeDatabase } from './database/index.js';
 import {injectUserToViews} from './utils/jwtUtils.js';
 
 //para uso en las pruebas..
-import { seedDatabase } from './database/seed.js'
+//import { seedDatabase } from './database/seed.js'
 //
 
 import cors from 'cors';
@@ -32,7 +32,7 @@ await getDatabase();
 //
 await modelsPrepare(); // AWAIT ES CRUCIAL AQUI
 //
-await seedDatabase()
+//await seedDatabase()
 //
 
 app.use(cors({

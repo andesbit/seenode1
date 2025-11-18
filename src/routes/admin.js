@@ -1,112 +1,84 @@
 import express from 'express'
 import { getDatabase } from '../database/index.js';
+import {authMiddleware} from '../utils/jwtUtils.js'
 //import { getOfferIdByEmail } from '../database/search.js';
 //import { insertOffer } from '../database/crud/insert.js';
+import { deleteOffer } from '../database/crud/delete.js';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-
 const router = express.Router();
 
-function buttonsPagination(paginaActual, totalPaginas) 
-{
-    let botonesHTML = '<div class="paginacion">';
-    
-    if (paginaActual > 1) { // Botón Primero
-        botonesHTML += `<a href="/?pagina=1" class="btn-pagina">« Primero</a>`;
-    } else {
-        botonesHTML += `<span class="btn-pagina deshabilitado">« Primero</span>`;
+router.get('/', /*NOPUEDOUSARAHORAauthMiddleware,PORQUE METE EL USER DEL TOKEN*/ async (req, res) =>
+{    
+    if(!req.user){
+        res.render('user/unauthorized', {});
+        return    
     }
-    
-    if (paginaActual > 1) { // Botón Anterior
-        botonesHTML += `<a href="/?pagina=${paginaActual - 1}" class="btn-pagina">‹ Anterior</a>`;
-    } else {
-        botonesHTML += `<span class="btn-pagina deshabilitado">‹ Anterior</span>`;
-    }
-    
-    // Botones numerados (mostramos máximo 5 números)
-    let inicioNumero = Math.max(1, paginaActual - 2);
-    let finNumero = Math.min(totalPaginas, inicioNumero + 4);
-    
-    // Ajustar inicio si estamos cerca del final
-    if (finNumero - inicioNumero < 4) {
-        inicioNumero = Math.max(1, finNumero - 4);
-    }
-    for (let i = inicioNumero; i <= finNumero; i++) {
-        if (i === paginaActual) {
-            botonesHTML += `<span class="btn-pagina activo">${i}</span>`;
-        } else {
-            botonesHTML += `<a href="/?pagina=${i}" class="btn-pagina">${i}</a>`;
+    try {
+        // Verificar si es administrador
+        ///*
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ 
+                error: `Acceso denegado. Se requiere rol de administrador. Su rol actual es ${req.user.role}` 
+
+            });
         }
+         //*/             
+        console.log(req.user.role)
+        const db = await getDatabase()
+        const arrayOffers = await db.all('SELECT * FROM offers')
+        //res.json({ success: true, data: arrayOffers });        
+        res.render('admin/index', { rol: req.user.role, offers: arrayOffers });
+    } catch (error) {
+        res.status(500).json({ error: 'Error en panel admin' });
     }
-    
-    // Botón Siguiente
-    if (paginaActual < totalPaginas) {
-        botonesHTML += `<a href="/?pagina=${paginaActual + 1}" class="btn-pagina">Siguiente ›</a>`;
-    } else {
-        botonesHTML += `<span class="btn-pagina deshabilitado">Siguiente ›</span>`;
-    }
-    
-    // Botón Último
-    if (paginaActual < totalPaginas) {
-        botonesHTML += `<a href="/?pagina=${totalPaginas}" class="btn-pagina">Último »</a>`;
-    } else {
-        botonesHTML += `<span class="btn-pagina deshabilitado">Último »</span>`;
-    }
-    
-    botonesHTML += '</div>';
-    return botonesHTML;
-}
-
-router.get('/', async (req, res) =>
-{
-    const db = await getDatabase()
-    //const { nombre, email, edad, ciudad } = req.body
-    let nombre = "b"
-    let email = "bc@"    
-    let ciudad = "c"
-
-    //?await runMigrations(db);
-    /*
-    // SQL directo sin modelos
-    const result = await db.run(
-    'INSERT INTO offers (name, email, city) VALUES (?, ?, ?)',
-    [nombre, email, ciudad]
-    );
-    */
-    ///////
-
-    const curPage = parseInt(req.query.pagina) || 1;
-    const numElemsPerPage = 5;//AHORA DEBE SER FIJO
-    const totalPages = 1;//getNumPagesDB(numElemsPerPage);
-
-    if(totalPages > 0)    
-        if (curPage < 1 || curPage > totalPages) return res.redirect('/?pagina=1');
-    
-    //let arrayOffers = pagesDB("OFFERS", curPage, numElemsPerPage) //collectionDB ()
-
-    let ejsP = buttonsPagination(curPage,totalPages)
-
-    //////////7
-    const arrayOffers = await db.all('SELECT * FROM offers')
-    
-    //res.json({ success: true, data: arrayOffers });
-    
-     res.render('admin/index', {
-        title: 'ADMIN',        
-        offers: arrayOffers,
-        kpaginacion: ejsP
-    });
 });
 
+// Ruta para eliminar un registro
+router.delete('/usuarios/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { permanente } = req.query; // Para usar: DELETE /usuarios/123?permanente=true
+    
+    // Validar que el ID sea válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({ 
+        error: 'ID inválido' 
+      });
+    }
+    
+    // Ejecutar el borrado
+    const resultado = await deleteOffer(parseInt(id), permanente === 'true');
+    
+    if (resultado) {
+      return res.status(200).json({ 
+        mensaje: permanente === 'true' 
+          ? 'Usuario eliminado permanentemente' 
+          : 'Usuario desactivado',
+        id: id
+      });
+    } else {
+      return res.status(404).json({ 
+        error: 'Usuario no encontrado' 
+      });
+    }
+    
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    return res.status(500).json({ 
+      error: 'Error al eliminar el usuario',
+      detalle: error.message 
+    });
+  }
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 //SELECTEDSTYLE!
 router.get('/chat-man', async (req, res) => {
     const chatPath = path.join(__dirname, '..', '..', 'DB/MESSAGES');
-    
     
     try {
         const allFiles = await fs.readdir(chatPath);
@@ -147,19 +119,7 @@ router.get('/pru', async (req, res) =>
     res.render('admin/pru', { offers });
 })
 
-
-////////ENDPRUEBA
-
-
-//import fs from 'fs/promises';
-//import path from 'path';
-//import { fileURLToPath } from 'url';
-
-//const __filename = fileURLToPath(import.meta.url);
-//const __dirname = path.dirname(__filename);
-
-// Ruta DELETE para eliminar archivos
-router.delete('/chuat/:filename', async (req, res) => {
+router.delete('/del-file/:filename', async (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(__dirname, '..', '..', 'DB/MESSAGES', filename);
     
@@ -170,8 +130,7 @@ router.delete('/chuat/:filename', async (req, res) => {
                 success: false, 
                 error: 'Solo se pueden eliminar archivos .json' 
             });
-        }
-        
+        }      
         await fs.unlink(filePath);
         res.json({ success: true, message: `${filename} eliminado` });
     } catch (error) {
@@ -182,7 +141,6 @@ router.delete('/chuat/:filename', async (req, res) => {
         });
     }
 });
-
 
 //EEEEEEEEXAMPLE
 /*

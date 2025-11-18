@@ -124,6 +124,7 @@ const injectUserToViews = async(req, res, next) => {
                     set name:*/
                 let un = await getOfferById(res.locals.user.id)
                 res.locals.user.name= un.name//"pliki"  
+                res.locals.user.role= un.role
 
 
             res.locals.isAuthenticated = true;

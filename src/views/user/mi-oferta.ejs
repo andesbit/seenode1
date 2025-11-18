@@ -225,7 +225,8 @@ button:disabled{
 <script>
 
 let publicKey; // Variable global
-  
+const i = <%= user.id %>;
+
 const btnUpdate = document.querySelector("#btnUpdate")
 
 function getSessionKey() 
@@ -243,7 +244,7 @@ function getSessionKey()
     }    
     return null;
 }
-
+/*
 async function updateDataSecure(datos) {  // datos es un objeto
     try {
         /////const token = localStorage.getItem('authToken');
@@ -273,6 +274,40 @@ async function updateDataSecure(datos) {  // datos es un objeto
         //console.log("==========miofertaupdateresp==========",resp)
         
         if(resp.success){alert("Los datos fueron guardados")}
+        return resp;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}*/
+
+async function updateDataSecure(datos, offerId) {  // Recibe el ID como parámetro
+    try {
+        const datosCifrados = await encryptObject(datos);
+        
+        const response = await fetch('/user-data/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                offerId: offerId,  // 🔑 Enviar el ID por separado
+                encryptedData: datosCifrados,
+                timestamp: Date.now()
+            })
+        });
+        
+        if (response.status === 401) {
+            redirectToLogin();
+            return;
+        }
+        
+        let resp = await response.json();
+        console.log("📩 Respuesta del servidor:", resp);
+        
+        if(resp.success) {
+            alert("Los datos fueron guardados");
+        }
         return resp;
     } catch (error) {
         console.error('Error:', error);
@@ -309,7 +344,7 @@ async function encryptObject(obj) {
   const pKey = await importPublicKey(publicKey); // Usa la variable global
   
   const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, pKey, data);
-  console.log
+  
   return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
 } 
 /*  
@@ -370,7 +405,7 @@ document.getElementById('form-user-data').addEventListener('submit', async funct
     evt.preventDefault();
     let datosUsuario = getFormData()
     const datosLimpios = validarYLimpiarObjeto(datosUsuario);
-    updateDataSecure(datosLimpios);
+    updateDataSecure(datosLimpios, i);
     //await sendUserData();
 })
 
@@ -488,6 +523,7 @@ window.addEventListener('load', async function()
     } catch (error) {
         console.error('Error:', error);
     }
+
 
         // En tu función de submit
         //async function handleSubmit() {

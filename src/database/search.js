@@ -118,8 +118,8 @@ async function getOfferById(id) {
         //result.specialties = [];
       //}
       */
-
-      //console.log(`✅ Oferta encontrada: ID ${result.id}, ${result.name}`);
+      const sobj=JSON.stringify(result)
+      console.log(`✅ Oferta encontrada: ID ${result.id}, ${sobj}`);
       return result;
     } else {
       console.log(`❌ No se encontró oferta con ID: ${id}`);

@@ -15,9 +15,9 @@ async function seedDatabase() {
   if (usuariosExistentes.count < 2) {
     await db.transaction(async (db) => {
       const usuarios = [
-        { nombre: 'Ana', email: 'anaf@example.com', pais: 'Perú', ciudad: 'Lima', offer: 'none', espe: 'espe', extra: 'extra' },
-        { nombre: 'arlos López', email: 'carlos@example.com', pais: 'Perú', ciudad: 'Lima', offer: 'none', espe: 'espi', extra: 'extra' },
-        { nombre: 'María', email: 'mariaf@example.com', pais: 'Perú', ciudad: 'Cusco', offer: 'none', espe: 'espe', extra: 'extra'  }
+        { nombre: 'Ana', email: 'anaf@example.com', pais: 'Perú', ciudad: 'Lima', offer: 'none', espe: 'espe', extra: 'extra', cnts: '[]', role: 'user' },
+        { nombre: 'arlos López', email: 'carlos@example.com', pais: 'Perú', ciudad: 'Lima', offer: 'none', espe: 'espi', extra: 'extra', cnts: '[]', role: 'user' },
+        { nombre: 'María', email: 'mariaf@example.com', pais: 'Perú', ciudad: 'Cusco', offer: 'none', espe: 'espe', extra: 'extra', cnts: '[]', role: 'user'  }
       ];
       
       for (const u of usuarios) {

@@ -5,7 +5,7 @@ async function deleteOffer(id, permanente = false) {
   const db = await getDatabase();
   
   if (permanente) {
-    const result = await db.run('DELETE FROM usuarios WHERE id = ?', [id]);
+    const result = await db.run('DELETE FROM offers WHERE id = ?', [id]);
     return result.changes > 0;
   } else {
     ;
