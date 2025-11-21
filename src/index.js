@@ -1,3 +1,4 @@
+///web
 import 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
 import express from 'express';
 import cookieParser from 'cookie-parser';
