@@ -190,6 +190,14 @@ function toFileMsg(from, to, new_msg){
         }
         //dataArray.push(newObject);
         dataArray.push(new_msg);
+
+
+        
+        console.log("_______________msg______",new_msg)
+        console.log("_______________array______",dataArray)
+        console.log("______________stringify_a_______",JSON.stringify(dataArray))
+        console.log("______________stringify_a_______",JSON.stringify(dataArray, null, 2)))
+        
         // Escribir de vuelta al archivo
         writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
         //              
