@@ -1,7 +1,5 @@
 node_modules/
 Tutoriales/
-src/data/
-DB/MESSAGES/
 *.local
 .env
 lindex.js
