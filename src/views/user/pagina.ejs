@@ -151,14 +151,15 @@ button:disabled{
         <%= o.offer %>
     </div>
     <br>
-
+    <% if(o.espe) { %>
     <h4>Especializaciones</h4>
 
     <div id = "skills_container">
-            
+          <%= o.espe %>  
     </div>
     <br>
-   
+    <% } %>
+
     <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
      
     <% if(user) { %>

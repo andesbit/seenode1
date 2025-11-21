@@ -266,16 +266,16 @@ router.get('/pagina/:n', async(req, res) => {
 
 router.post('/message', async(req, res) => {
     try {
-        console.log('Mensaje recibido:', req.body.msg);
+        //console.log('Mensaje recibido:', req.body.msg);
         let from = parseInt(req.body.from)       
         let to = parseInt(req.body.to)
         //let n = req.user.id
         //console.log("FROM_TO_N",from,to,n)
         //let msg = "user"+n+":"+req.body.msg
-        let from_id = from + "_"+req.body.from_name 
-        let to_id = to + "_"+req.body.to_name
-        console.log("TTTTTTTTTTTTTT",req.body.to_name)
-        let msg = from_id + ":" + req.body.msg
+        let from_phrase = from + "_"+req.body.from_name 
+        let to_phrase = to + "_"+req.body.to_name
+        //console.log("TTTTTTTTTTTTTT",req.body.to_name)
+        let msg = from_phrase + ":" + req.body.msg
         
         //let lin_msg = req.body.to_name + ":" + msg
         //console.log("xxxxxxxxxxxxxxxxxxx", msg, from, to)
@@ -283,37 +283,63 @@ router.post('/message', async(req, res) => {
         toFileMsg(from, to, msg)
         
         let obj = await getOfferById(req.user.id)
+        let obj_to = await getOfferById(to)
         //console.log("ffffffffffff==", obj)
         
         let cnts = ""
+        let cnts_to = ""
         if('cnts' in obj && obj.cnts !== null) {
-            cnts = obj.cnts
-            console.log(",,,,hay cnts...")
+            if(obj.cnts.trim().startsWith("[") && obj.cnts.trim().endsWith("]")){    
+                cnts = obj.cnts
+            }
+            else    
+            {
+                cnts = "[]"    
+            }
+            //console.log(",,,,hay cnts...")
         } else {
-            console.log(",,,,NO hay cnts...")
+            //console.log(",,,,NO hay cnts...")
             cnts = "[]"
+        }
+
+        if('cnts' in obj_to && obj_to.cnts !== null) {
+            if(obj_to.cnts.trim().startsWith("[") && obj_to.cnts.trim().endsWith("]")){    
+                cnts_to = obj_to.cnts
+            }
+            else    
+            {
+                cnts_to = "[]"    
+            }
+            //console.log(",,,,hay cnts...")
+        } else {
+            //console.log(",,,,NO hay cnts...")
+            cnts_to = "[]"
         }
         
         let a_cnts = JSON.parse(cnts)
 
         //const existe = a_cnts.includes(parseInt(to));
-        const existe = a_cnts.includes(to_id);
+        const existe = a_cnts.includes(to_phrase);
         
         if(!existe) {
-            a_cnts.push(to_id)
+            a_cnts.push(to_phrase)
             cnts = JSON.stringify(a_cnts)
             console.log("NNNNNNNNNEWW cnts!", cnts)
             
             try {
                 const updated = await updateOffer(req.user.id, {cnts})
-                if (updated) {
-                    console.log("Actualización exitosa");
-                }
+                //if (updated) {
+                //    console.log("Actualización exitosa");
+                //}
                 //     //
+                a_cnts = JSON.parse(cnts_to)
+                a_cnts.push(from_phrase)
+                cnts = JSON.stringify(a_cnts)
+
                 let upt = await updateOffer(to, {cnts})
-                if (upt) {
-                    console.log("Otra actualización exitosa");
-                }
+                //if (upt) {
+                //    console.log("Otra actualización exitosa");
+                //}
                 //    //
             } catch (error) {
                 console.error('Error al actualizar:', error);

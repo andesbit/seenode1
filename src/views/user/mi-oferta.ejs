@@ -191,7 +191,7 @@ button:disabled{
         <% if (cnts && cnts.length > 0) { %>
             
         <% cnts.forEach(function(c) { %>
-            <div class = "uadro" style = "padding:8px;">
+
                 <% 
                     const cStr = String(c);
                     const posp = cStr.indexOf("_");
@@ -206,10 +206,14 @@ button:disabled{
                         p = cStr;
                     }
                 %>
+            <% if (iid !== user.id) { %>
+            <div class = "uadro" style = "padding:8px;">
+               
                 <div class = "contacto" onclick="contactar(<%= iid %>)">
                 <%= p %>             
                 </div>
             </div>
+            <% } %>
         <% }); %>
         <% }; %>
     </div>

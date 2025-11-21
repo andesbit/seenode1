@@ -2,7 +2,7 @@ import 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import expressLayouts from 'express-ejs-layouts';
-import '../src/utils/keys.js'; // Genera las claves al iniciar
+import './utils/keys.js'; // Genera las claves al iniciar
 import { createServer } from 'http';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -21,7 +21,7 @@ import userRoutes from './routes/user.js';
 import userDataRoutes from './routes/user-data.js';
 import indexRoutes from './routes/index.js';
 import pruRoutes from './routes/test.js';
-import adminRoutes from '../src/routes/admin.js';
+import adminRoutes from './routes/admin.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

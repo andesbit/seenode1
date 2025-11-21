@@ -7,7 +7,8 @@
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
-    padding-top: 70px; /* Altura del navbar */
+    padding-top: 70px; 
+    /* Altura del navbar */
 
     min-height: 100vh;/*PARA EWMPUJAR AL FOOTER*/
     display: flex;
@@ -17,9 +18,10 @@ body {
 .navbar {
     /*background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);*/
     /*background: #ffb62f; */
-    background: #333;
-    padding: 1rem 0;
+    background: #696868;
+    padding: 0px;/*1rem 0;*/
     position: fixed;
+    height: 70px; /* Fijar altura específica */
     width: 100%;
     top: 0;
     z-index: 1000;
@@ -37,11 +39,12 @@ body {
 
 .nav-logo {
     color: white;
-    
+    font-size:24px;
     /*font-size: 1.8rem;
     font-weight: bold;*/
     text-decoration: none;
     transition: color 0.3s ease;
+    
 }
 
 .o{
@@ -321,9 +324,10 @@ h2 {
 /*----------------------FOOTER--------------------*/
 #footer{
     width:100%;
-    height:100px;
+    height:190px;
     color:#fff;
-    background-color: #777;     
+    background-color: #d2d1d1;
+    /*#777;     */
     margin-top: auto;
 }
 
