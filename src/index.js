@@ -37,13 +37,13 @@ await modelsPrepare(); // AWAIT ES CRUCIAL AQUI
 //
 //await seedDatabase()
 //
-/*
+///*
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }));
 //*/
-///*
+/*
 // Configurar CORS para desarrollo LOCAL:
 app.use(cors({
     origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
@@ -83,13 +83,13 @@ process.on('SIGINT', async () => {
 });
 
 // Iniciar servidor
-/*
+///*
 const PORT = process.env.PORT || 80;
 httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 //*/
-///*
+/*
 httpServer.listen(3000, () => {
     console.log(`🚀 Servidor con Socket.IO en http://localhost:3000`);
 });
