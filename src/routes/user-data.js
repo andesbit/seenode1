@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { mkdirSync,existsSync, readFileSync, writeFileSync } from 'fs';
 //import CryptoJS from 'crypto-js';
 import crypto from 'crypto'
 import express from 'express'
