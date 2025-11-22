@@ -22,80 +22,96 @@
 </form---------->
 
 
-</style
-.search-box {
-    display: flex;
-    align-items: center;
-    border: 2px solid #e0e0e0;
-    border-radius: 50px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
+<style>
+.search-container {
+            max-width: 350px;
+            width: 100%;
+            margin-top:10px;
+            /*background-color:#c0c0c0;*/
+        }
 
-.search-box:focus-within {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
+        .search-box {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            overflow: visible;
+            transition: all 0.3s ease;
+        }
 
-.search-input {
-    flex: 1;
-    border: none;
-    padding: 15px 20px;
-    font-size: 16px;
-    outline: none;
-    background: transparent;
-}
+        .search-box:focus-within {
+            border-color: #ffe2a7;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
 
-.search-input::placeholder {
-    color: #999;
-}
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 12px 15px;
+            font-size: 14px;
+            outline: none;
+            background: transparent;
+            min-width: 0;
+        }
 
-.search-button {
-    background: #667eea;
-    border: none;
-    padding: 15px 25px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .search-input::placeholder {
+            color: #999;
+        }
 
-.search-button:hover {
-    background: #5568d3;
-}
+        .search-button {
+            background: #f3ce85;/*#ffb62f;*/
+            border: none;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border-radius: 0 50px 50px 0;
+        }
 
-.search-button:active {
-    transform: scale(0.95);
-}
+        .search-button:hover {
+            background: #ffb62f;
+        }
 
-.search-icon {
-    width: 20px;
-    height: 20px;
-    stroke: white;
-    stroke-width: 2;
-    fill: none;
-}
+        .search-button:active {
+            transform: scale(0.95);
+        }
+
+        .search-icon {
+            width: 18px;
+            height: 18px;
+            min-width: 18px;
+            min-height: 18px;
+            stroke: white;
+            stroke-width: 2.5;
+            fill: none;
+            display: block;
+        }
+
 </style>
 
 
+<div class="search-container">
+        <div class="search-box">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="searchInput"
+                placeholder="Escribe tu búsqueda..."
+                autocomplete="off"
+            >
+            <button class="search-button" id="searchButton" onclick="realizarBusqueda()">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+            </button>
+        </div>
 
- <div class="search-box">
-    <input 
-        type="text" 
-        class="search-input" 
-        id="searchInput"
-        placeholder="Escribe tu búsqueda..."
-        autocomplete="off"
-    >
-    <button class="search-button" id="searchButton" onclick="realizarBusqueda()">
-        <svg class="search-icon" viewBox="0 0 24 24">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.35-4.35"></path>
-        </svg>
-    </button>
-</div>
-
+        <!--div class="result" id="result"></div-->
+    </div>
 
 
 
@@ -279,7 +295,7 @@ const buscar = async(valor) => {
 
 
 
-            await buscar(searchTerm)
+            buscar(searchTerm)
 
 
 

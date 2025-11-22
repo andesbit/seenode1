@@ -44,7 +44,7 @@ async function searchOffers(filters = {}) {
     let sql = 'SELECT * FROM offers';
     
     if (conditions.length > 0) {
-      sql += ' WHERE ' + conditions.join(' AND ');
+      sql += ' WHERE ' + conditions.join(' OR ');//ERAAND
     }
     
     sql += ' ORDER BY id DESC';  // Mostrar las más recientes primero
