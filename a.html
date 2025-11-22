@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda con Lupa</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .search-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            outline: none;
+            background: transparent;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-button {
+            background: #667eea;
+            border: none;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-button:hover {
+            background: #5568d3;
+        }
+
+        .search-button:active {
+            transform: scale(0.95);
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            color: #333;
+            text-align: center;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h2>Buscador</h2>
+        
+        <div class="search-box">
+            <input 
+                type="text" 
+                class="search-input" 
+                id="searchInput"
+                placeholder="Escribe tu búsqueda..."
+                autocomplete="off"
+            >
+            <button class="search-button" id="searchButton" onclick="realizarBusqueda()">
+                <svg class="search-icon" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const resultDiv = document.getElementById('result');
+
+        // Función que se ejecuta al buscar
+        function realizarBusqueda() {
+            const searchTerm = searchInput.value.trim();
+            
+            if (searchTerm === '') {
+                resultDiv.textContent = 'Por favor, escribe algo para buscar';
+                resultDiv.classList.add('show');
+                return;
+            }
+
+            // Aquí puedes agregar tu lógica de búsqueda
+            resultDiv.textContent = `Buscando: "${searchTerm}"`;
+            resultDiv.classList.add('show');
+
+            // Ejemplo: podrías hacer una llamada a una API aquí
+            console.log('Término de búsqueda:', searchTerm);
+            
+            // Simular resultado
+            setTimeout(() => {
+                resultDiv.textContent = `Resultados encontrados para: "${searchTerm}"`;
+            }, 500);
+        }
+
+        // Escuchar el evento Enter en el input
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                realizarBusqueda();
+            }
+        });
+
+        // Limpiar el resultado cuando se empieza a escribir de nuevo
+        searchInput.addEventListener('input', function() {
+            if (searchInput.value === '') {
+                resultDiv.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
