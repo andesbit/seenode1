@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Deslizante</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Contenedor principal con animación */
+        .main-content {
+            animation: slideInFromRight 0.8s ease-out;
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .open-button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .open-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .open-button:active {
+            transform: translateY(0);
+        }
+
+        /* Overlay oscuro de fondo */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 998;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Panel deslizante */
+        .slide-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.3);
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            overflow-y: auto;
+        }
+
+        .slide-panel.active {
+            right: 0;
+        }
+
+        /* Contenido del panel */
+        .panel-header {
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .close-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .panel-content {
+            padding: 30px;
+        }
+
+        .panel-content h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .panel-content p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .panel-content .info-box {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .slide-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenedor principal con animación -->
+    <div class="main-content">
+        <!-- Botón para abrir el panel -->
+        <button class="open-button" onclick="abrirPanel()">
+            Abrir Panel
+        </button>
+    </div>
+
+    <!-- Overlay oscuro -->
+    <div class="overlay" id="overlay" onclick="cerrarPanel()"></div>
+
+    <!-- Panel deslizante -->
+    <div class="slide-panel" id="slidePanel">
+        <div class="panel-header">
+            <h2>Panel de Información</h2>
+            <button class="close-button" onclick="cerrarPanel()">×</button>
+        </div>
+        
+        <div class="panel-content">
+            <h3>¡Bienvenido!</h3>
+            <p>Este es un panel que se desliza desde la derecha hacia la izquierda.</p>
+            
+            <div class="info-box">
+                <h4 style="margin: 0 0 10px 0; color: #667eea;">Información destacada</h4>
+                <p style="margin: 0;">Puedes agregar cualquier contenido aquí: formularios, listas, imágenes, etc.</p>
+            </div>
+
+            <h3>Características</h3>
+            <p>✅ Animación suave de deslizamiento</p>
+            <p>✅ Overlay oscuro en el fondo</p>
+            <p>✅ Se cierra al hacer clic fuera</p>
+            <p>✅ Botón de cerrar (×)</p>
+            <p>✅ Responsive para móviles</p>
+
+            <h3>Contenido adicional</h3>
+            <p>El panel tiene scroll automático si el contenido es demasiado largo. Puedes agregar todo el contenido que necesites y el usuario podrá hacer scroll dentro del panel.</p>
+            
+            <div class="info-box">
+                <h4 style="margin: 0 0 10px 0; color: #667eea;">Personalizable</h4>
+                <p style="margin: 0;">Puedes cambiar el ancho, colores, velocidad de animación y más.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slidePanel = document.getElementById('slidePanel');
+        const overlay = document.getElementById('overlay');
+
+        // Función para abrir el panel
+        function abrirPanel() {
+            slidePanel.classList.add('active');
+            overlay.classList.add('active');
+            // Prevenir scroll del body cuando el panel está abierto
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Función para cerrar el panel
+        function cerrarPanel() {
+            slidePanel.classList.remove('active');
+            overlay.classList.remove('active');
+            // Restaurar scroll del body
+            document.body.style.overflow = '';
+        }
+
+        // Cerrar con la tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && slidePanel.classList.contains('active')) {
+                cerrarPanel();
+            }
+        });
+    </script>
+</body>
+</html>

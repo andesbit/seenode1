@@ -342,7 +342,22 @@ h2 {
     margin-bottom:12px;
     padding-bottom:12px;
     border-bottom: 2px solid #ffb62f;/*3498db;*/
+
+
+        animation: slideInFromRight 0.8s ease-out;
 }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
 /* CONTENEDOR PRINCIPAL - Aplica flexbox aquí */
 .porta-cuadros {
     display: flex;
