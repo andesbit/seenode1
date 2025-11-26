@@ -21,55 +21,6 @@ const DBPATH = join(__dirname, '../../DB/');
 
 const router = express.Router();
 
-//====================================================
-/*
-
-router.post('/update', authMiddleware, async (req, res) => {
-
-    try {
-        const { encryptedData, timestamp } = req.body;
-        if (timestamp && Date.now() - timestamp > 300000) {
-            return res.status(400).json({ error: 'Datos expirados' });
-        }
-        // 2. Descifrar y convertir a objeto
-        const datosObjeto = decryptToObject(encryptedData);//,encryptionKey);
-        // 3. Los datos ya están como objeto JavaScript
-        //console.log('Datos recibidos como objeto:', datosObjeto);
-        //console.log('Tipo:', typeof datosObjeto); // object
-        //console.log('Propiedades:', Object.keys(datosObjeto));
-        
-        //const { name, email, country, city, offer, espe, extra } = datosObjeto;//((req.body
-        //const { name, email, country, city, offer, espe, extra } = datosObjeto;//((req.body
-        console.log(datosObjeto);
-
-        const user_id = req.user.id
-        try {
-            //updateDB("OFFERS",user_id,{name,offer,espe,extra})//,timestamp})
-            //const updated = await updateOffer(user_id, {name,email,country,city,offer,espe,extra});//, ["Cardiología"]);
-            const updated = await updateOffer(user_id, datosObjeto);
-  
-            if (updated) {
-                console.log("Actualización exitosa");
-            }
-            
-            res.json({ 
-                success: true           
-            });
-
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Error interno del servidor' });
-        }
-
-    } catch (error) {
-        console.error('Error al descifrar objeto:', error);
-        res.status(400).json({ error: 'Error al procesar datos cifrados' });
-    }
-})
-*/
-
-
-// routes/admin.js o donde tengas tu endpoint
 router.post('/update', async (req, res) => {
     try {
         const { offerId, encryptedData, timestamp } = req.body;
@@ -93,48 +44,7 @@ router.post('/update', async (req, res) => {
         });
     }
 });
-/*
-router.post('/__update', authMiddleware, async (req, res) => {
-    try {
-        const { encryptedData, timestamp } = req.body;
-        //const encryptionKey = req.cookies.dato.datos1;//sessionkey;
-        //const encryptionKey = JSON.parse(req.cookies.datos).dato1;
-        // 1. Validar timestamp (opcional)
-        if (timestamp && Date.now() - timestamp > 300000) {
-            return res.status(400).json({ error: 'Datos expirados' });
-        }
-        
-        // 2. Descifrar y convertir a objeto
-        const datosObjeto = decryptToObject(encryptedData);//,encryptionKey);
-        
-        // 3. Los datos ya están como objeto JavaScript
-        //console.log('Datos recibidos como objeto:', datosObjeto);
-        //console.log('Tipo:', typeof datosObjeto); // object
-        //console.log('Propiedades:', Object.keys(datosObjeto));
-        
-        const { name, offer, espe, extra } = datosObjeto;//((req.body
-        const user_id = req.user.id
 
-        try {
-            updateDB("OFFERS",user_id,{name,offer,espe,extra})//,timestamp})
-
-
-
-            res.json({ 
-                success: true           
-            });
-
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).json({ error: 'Error interno del servidor' });
-        }
-
-    } catch (error) {
-        console.error('Error al descifrar objeto:', error);
-        res.status(400).json({ error: 'Error al procesar datos cifrados' });
-    }
-});
-*/
 function decryptData(encryptedData) {
   
   const buffer = Buffer.from(encryptedData, 'base64');
@@ -161,7 +71,7 @@ function toFileMsg(from, to, new_msg){
     {
         first = from
         second = to
-        console.log("DDDDDDDDD")
+        //console.log("DDDDDDDDD")
     }
     else {
         first = to
@@ -201,12 +111,10 @@ function toFileMsg(from, to, new_msg){
         }
         //dataArray.push(newObject);
         dataArray.push(new_msg);
-
-
         
-        console.log("_______________msg______",new_msg)
-        console.log("_______________array______",dataArray)
-        console.log("______________stringify_a_______",JSON.stringify(dataArray))
+        //console.log("_______________msg______",new_msg)
+        //console.log("_______________array______",dataArray)
+        //console.log("______________stringify_a_______",JSON.stringify(dataArray))
                 
         // Escribir de vuelta al archivo
         writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
@@ -264,8 +172,23 @@ function fromFileMsg(from, to){
 router.get('/pagina/:n', async(req, res) => {    
     //const o = searchIdDB("OFFERS", req.params.n);
     const o = await getOfferById(req.params.n)//(123);
-
+        
     if (!o) {
+        //Borrar el contacto de la ofeta propia:
+        const yo = await getOfferById(req.user.id)//(123);
+        let subcadena = req.params.n.toString() + "_"
+        //var cnts = yo.cnts.filter(function(elemento) {return !elemento.includes('xyz');});
+        //let array = yo.cnts.split(',')
+        let array = JSON.parse(yo.cnts)        
+        const cnts = array.filter(elemento => !elemento.startsWith(subcadena));
+        //const existe = a_cnts.includes(to_phrase);
+        //console.log("---------array_>",array)
+        //const cnts = array.filter(elemento => !elemento.startsWith(subcadena));
+        //console.log("---------cnts_>",cnts)
+        yo.cnts = JSON.stringify(cnts) //cnts.join(',');
+        console.log("---------yocnts_>",yo.cnts)
+        const resultado = await updateOffer(req.user.id, yo);
+        
         res.render('user/deleted', {  })
         return
     }  
