@@ -91,34 +91,7 @@ router.get('/chat-man', async (req, res) => {
         res.render('chat', { offers: [] });
     }
 });
-
-///////////////////PRUEBA
-//SELECTEDSTYLE!
-router.get('/pru', async (req, res) =>
-{
-    // Backend - Supongamos que envías esto:
-
-    const offers = [
-        {
-            id: 1,
-            nombreArchivo: "documento.json",
-            fechaCreacion: "2024-11-14",
-            tamaño: "15KB",
-            autor: "Usuario1",
-            descripcion: "Este es un archivo de prueba con una descripción más larga"
-        },
-        {
-            id: 2,
-            nombreArchivo: "datos.json",
-            fechaCreacion: "2024-11-13",
-            tamaño: "8KB",
-            autor: "Usuario2",
-            descripcion: "Otro archivo"
-        }
-    ];
-    res.render('admin/pru', { offers });
-})
-
+/*
 router.delete('/del-file/:filename', async (req, res) => {
     const filename = req.params.filename;
     const filePath = path.join(__dirname, '..', '..', 'DB/MESSAGES', filename);
@@ -131,7 +104,7 @@ router.delete('/del-file/:filename', async (req, res) => {
                 error: 'Solo se pueden eliminar archivos .json' 
             });
         }      
-        await fs.unlink(filePath);
+        await unlink(filePath);
         res.json({ success: true, message: `${filename} eliminado` });
     } catch (error) {
         console.error('Error al eliminar:', error);
@@ -141,7 +114,7 @@ router.delete('/del-file/:filename', async (req, res) => {
         });
     }
 });
-
+*/
 //EEEEEEEEXAMPLE
 /*
 router.get('/admin', authMiddleware, async (req, res) => {

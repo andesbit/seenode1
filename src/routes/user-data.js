@@ -1,4 +1,5 @@
-import { mkdirSync,existsSync, readFileSync, writeFileSync } from 'fs';
+import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
+import { unlink } from 'fs/promises';
 //import CryptoJS from 'crypto-js';
 import crypto from 'crypto'
 import express from 'express'
@@ -28,8 +29,8 @@ router.post('/update', async (req, res) => {
         // Desencriptar los datos
         const datosDesencriptados = await decryptData(encryptedData);
         
-        console.log('🔑 ID de la oferta:', offerId);
-        console.log('📦 Datos desencriptados:', datosDesencriptados);
+        //console.log('🔑 ID de la oferta:', offerId);
+        //console.log('📦 Datos desencriptados:', datosDesencriptados);
         
         // ✅ Llamar a updateOffer con ID y datos por separado
         const resultado = await updateOffer(offerId, datosDesencriptados);
@@ -63,6 +64,37 @@ function decryptData(encryptedData) {
 
 //====================================================
 
+async function delFileMsg(from, to){
+
+    let first = 0;    let second = 0;
+    if(from < to)
+    {
+        first = from
+        second = to
+        //console.log("DDDDDDDDD")
+    }
+    else {
+        first = to
+        second = from
+    }
+
+    const namef = first+"_"+second+".json"
+    //console.log("namefffff",namef)
+    //return namef
+    let ipath = DBPATH + "MESSAGES" + "/" + namef;
+    
+    const dirPath = dirname(ipath); // Obtiene '/usr/src/app/DB/MESSAGES'
+
+    if (!existsSync(dirPath)) return
+    if (!existsSync(ipath)) return
+    
+    try {        
+        await unlink(ipath);        
+    } catch (error) {
+        console.error('Error al eliminar el archivo de mensajes:', error);        
+    }        
+}
+
 // Ruta para contenido ADMIN solo
 function toFileMsg(from, to, new_msg){
 
@@ -85,16 +117,13 @@ function toFileMsg(from, to, new_msg){
     
     const dirPath = dirname(ipath); // Obtiene '/usr/src/app/DB/MESSAGES'
 
-        // Crear la carpeta si no existe (recursive: true crea todas las carpetas necesarias)
+    // Crear la carpeta si no existe (recursive: true crea todas las carpetas necesarias)
     if (!existsSync(dirPath)) {
         console.log(`📁 Creando carpeta: ${dirPath}`);
         mkdirSync(dirPath, { recursive: true });
     }
 
-
-
     let dataArray = [];
-
     // Leer y parsear el archivo existente
     try {
         //const fileContent = readFileSync(ipath, 'utf8');
@@ -119,8 +148,6 @@ function toFileMsg(from, to, new_msg){
         // Escribir de vuelta al archivo
         writeFileSync(ipath, JSON.stringify(dataArray, null, 2), 'utf8');
         //              
-       
-
     } catch (parseError) {
         console.warn('Error parsing JSON file, starting with empty array:', parseError)
         dataArray = []               
@@ -186,9 +213,11 @@ router.get('/pagina/:n', async(req, res) => {
         //const cnts = array.filter(elemento => !elemento.startsWith(subcadena));
         //console.log("---------cnts_>",cnts)
         yo.cnts = JSON.stringify(cnts) //cnts.join(',');
-        console.log("---------yocnts_>",yo.cnts)
-        const resultado = await updateOffer(req.user.id, yo);
+        //console.log("---------yocnts_>",yo.cnts)
         
+        await updateOffer(req.user.id, yo);
+        await delFileMsg(req.user.id,req.params.n)
+
         res.render('user/deleted', {  })
         return
     }  
