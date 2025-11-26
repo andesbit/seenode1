@@ -3,6 +3,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import expressLayouts from 'express-ejs-layouts';
 import './utils/keys.js'; // Genera las claves al iniciar
+import { mkdirSync, existsSync } from 'fs';
 import { createServer } from 'http';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -25,8 +26,8 @@ const __dirname = dirname(__filename);
 const app = express();
 
 const dbPath = path.join(__dirname, 'data');
-if (!fs.existsSync(dbPath)) {
-    fs.mkdirSync(dbPath, { recursive: true });
+if (!existsSync(dbPath)) {
+    mkdirSync(dbPath, { recursive: true });
     console.log('📁 Carpeta data creada');
 }
 
