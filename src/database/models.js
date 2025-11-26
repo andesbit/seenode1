@@ -38,40 +38,6 @@ async function createOffersTable() {
         );
     `;
 
-    // PostgreSQL y SQLite manejan triggers de forma diferente
-    let CREATE_TRIGGER_SQL;
-    
-    if (isPostgres) {
-        // PostgreSQL: ejecutar en pasos separados
-        CREATE_TRIGGER_SQL = [
-            `CREATE OR REPLACE FUNCTION update_offers_timestamp()
-             RETURNS TRIGGER AS $
-             BEGIN
-                 NEW.updated_at = CURRENT_TIMESTAMP;
-                 RETURN NEW;
-             END;
-             $ LANGUAGE plpgsql`,
-            
-            `DROP TRIGGER IF EXISTS update_offers_timestamp ON offers`,
-            
-            `CREATE TRIGGER update_offers_timestamp
-             BEFORE UPDATE ON offers
-             FOR EACH ROW
-             EXECUTE FUNCTION update_offers_timestamp()`
-        ];
-    } else {
-        // SQLite
-        CREATE_TRIGGER_SQL = [`
-            CREATE TRIGGER IF NOT EXISTS update_offers_timestamp 
-            AFTER UPDATE ON offers
-            FOR EACH ROW
-            BEGIN
-                UPDATE offers SET updated_at = CURRENT_TIMESTAMP
-                WHERE id = NEW.id;
-            END
-        `];
-    }
-
     const CREATE_INDEXES_SQL = [
         'CREATE INDEX IF NOT EXISTS idx_offers_email ON offers(email);',
         'CREATE INDEX IF NOT EXISTS idx_offers_name ON offers(name);',
@@ -85,11 +51,23 @@ async function createOffersTable() {
         await db.exec(CREATE_TABLE_SQL);
         console.log('✅ Tabla "offers" creada o ya existía.');
 
-        console.log('⏳ Creando trigger para updated_at...');
-        for (const triggerSQL of CREATE_TRIGGER_SQL) {
-            await db.exec(triggerSQL);
+        // Solo crear trigger en SQLite (es más simple)
+        if (!isPostgres) {
+            console.log('⏳ Creando trigger para updated_at (SQLite)...');
+            const SQLITE_TRIGGER = `
+                CREATE TRIGGER IF NOT EXISTS update_offers_timestamp 
+                AFTER UPDATE ON offers
+                FOR EACH ROW
+                BEGIN
+                    UPDATE offers SET updated_at = CURRENT_TIMESTAMP
+                    WHERE id = NEW.id;
+                END;
+            `;
+            await db.exec(SQLITE_TRIGGER);
+            console.log('✅ Trigger creado exitosamente.');
+        } else {
+            console.log('ℹ️  PostgreSQL: updated_at se manejará en el código de la aplicación.');
         }
-        console.log('✅ Trigger creado exitosamente.');
 
         console.log('⏳ Creando índices...');
         for (const indexSQL of CREATE_INDEXES_SQL) {
