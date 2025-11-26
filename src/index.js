@@ -24,6 +24,12 @@ const __dirname = dirname(__filename);
 
 const app = express();
 
+const dbPath = path.join(__dirname, 'data');
+if (!fs.existsSync(dbPath)) {
+    fs.mkdirSync(dbPath, { recursive: true });
+    console.log('📁 Carpeta data creada');
+}
+
 await getDatabase();
 //
 await modelsPrepare(); // AWAIT ES CRUCIAL AQUI
