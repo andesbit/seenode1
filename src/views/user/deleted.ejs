@@ -1,0 +1,13 @@
+<div style="padding:30px">
+    <h1>El usuario ha borrado su cuenta.</h1>
+    <button id = "btnSBack" class = "btnSearch">&nbsp;Volver&nbsp;</button>
+</div>
+
+<script>
+function redirectDirect() {
+    window.location.href = '/user/mi-oferta';
+}
+document.getElementById('btnSBack').addEventListener('click', function(){
+    redirectDirect()
+})
+</script>

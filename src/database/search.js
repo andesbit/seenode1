@@ -119,10 +119,10 @@ async function getOfferById(id) {
       //}
       */
       const sobj=JSON.stringify(result)
-      console.log(`✅ Oferta encontrada: ID ${result.id}, ${sobj}`);
+      //console.log(`✅ Oferta encontrada: ID ${result.id}, ${sobj}`);
       return result;
     } else {
-      console.log(`❌ No se encontró oferta con ID: ${id}`);
+      //console.log(`❌ No se encontró oferta con ID: ${id}`);
       return null;
     }
   } catch (error) {

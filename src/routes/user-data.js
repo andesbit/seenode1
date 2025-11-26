@@ -265,9 +265,11 @@ router.get('/pagina/:n', async(req, res) => {
     //const o = searchIdDB("OFFERS", req.params.n);
     const o = await getOfferById(req.params.n)//(123);
 
-    if (o) {
-        console.log(o);
-    }    
+    if (!o) {
+        res.render('user/deleted', {  })
+        return
+    }  
+
     let from = 0;
     if (req.user){ //VIENE DEL INJECTUSER
         from = req.user.id
