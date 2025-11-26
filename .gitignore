@@ -1,6 +1,7 @@
 node_modules/
 Tutoriales/
 src/data/
+*.db
 DB/MESSAGES/
 *.local
 .env
