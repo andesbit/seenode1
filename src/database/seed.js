@@ -33,4 +33,5 @@ async function seedDatabase() {
     console.log('ℹ️  Base de datos ya contiene datos');
   }
 }
+//
 export {seedDatabase}
