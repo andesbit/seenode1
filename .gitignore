@@ -9,3 +9,7 @@ DB/MESSAGES/
 .env
 lindex.js
 windex.js
+
+# Ignorar contenido de data/ pero mantener la carpeta
+data/*
+!data/.gitkeep

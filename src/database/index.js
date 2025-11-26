@@ -11,18 +11,15 @@ let instance = null;
 
 async function getDatabase() {
     if (!instance) {
-        // Subir DOS niveles: de src/database/ a /usr/src/
-        const dataDir = join(__dirname, '../../data');
+        // Usar /tmp en producción, data/ en desarrollo
+        const isProduction = process.env.NODE_ENV === 'production';
+        const dataDir = isProduction ? '/tmp' : join(__dirname, '../../data');
         
-        // Crear la carpeta si no existe
-        if (!existsSync(dataDir)) {
+        if (!isProduction && !existsSync(dataDir)) {
             mkdirSync(dataDir, { recursive: true });
-            console.log('📁 Carpeta data creada en:', dataDir);
         }
         
         const dbPath = join(dataDir, 'app.db');
-        console.log('📍 Ruta de BD configurada:', dbPath);
-        
         instance = new Database(dbPath);
         await instance.connect();
     }
