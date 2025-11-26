@@ -38,31 +38,39 @@ async function createOffersTable() {
         );
     `;
 
-    // PostgreSQL usa funciones, SQLite usa triggers
-    const CREATE_TRIGGER_SQL = isPostgres ? `
-        CREATE OR REPLACE FUNCTION update_offers_timestamp()
-        RETURNS TRIGGER AS $$
-        BEGIN
-            NEW.updated_at = CURRENT_TIMESTAMP;
-            RETURN NEW;
-        END;
-        $$ LANGUAGE plpgsql;
-
-        DROP TRIGGER IF EXISTS update_offers_timestamp ON offers;
-        
-        CREATE TRIGGER update_offers_timestamp
-        BEFORE UPDATE ON offers
-        FOR EACH ROW
-        EXECUTE FUNCTION update_offers_timestamp();
-    ` : `
-        CREATE TRIGGER IF NOT EXISTS update_offers_timestamp 
-        AFTER UPDATE ON offers
-        FOR EACH ROW
-        BEGIN
-            UPDATE offers SET updated_at = CURRENT_TIMESTAMP
-            WHERE id = NEW.id;
-        END;
-    `;
+    // PostgreSQL y SQLite manejan triggers de forma diferente
+    let CREATE_TRIGGER_SQL;
+    
+    if (isPostgres) {
+        // PostgreSQL: ejecutar en pasos separados
+        CREATE_TRIGGER_SQL = [
+            `CREATE OR REPLACE FUNCTION update_offers_timestamp()
+             RETURNS TRIGGER AS $
+             BEGIN
+                 NEW.updated_at = CURRENT_TIMESTAMP;
+                 RETURN NEW;
+             END;
+             $ LANGUAGE plpgsql`,
+            
+            `DROP TRIGGER IF EXISTS update_offers_timestamp ON offers`,
+            
+            `CREATE TRIGGER update_offers_timestamp
+             BEFORE UPDATE ON offers
+             FOR EACH ROW
+             EXECUTE FUNCTION update_offers_timestamp()`
+        ];
+    } else {
+        // SQLite
+        CREATE_TRIGGER_SQL = [`
+            CREATE TRIGGER IF NOT EXISTS update_offers_timestamp 
+            AFTER UPDATE ON offers
+            FOR EACH ROW
+            BEGIN
+                UPDATE offers SET updated_at = CURRENT_TIMESTAMP
+                WHERE id = NEW.id;
+            END
+        `];
+    }
 
     const CREATE_INDEXES_SQL = [
         'CREATE INDEX IF NOT EXISTS idx_offers_email ON offers(email);',
@@ -78,7 +86,9 @@ async function createOffersTable() {
         console.log('✅ Tabla "offers" creada o ya existía.');
 
         console.log('⏳ Creando trigger para updated_at...');
-        await db.exec(CREATE_TRIGGER_SQL);
+        for (const triggerSQL of CREATE_TRIGGER_SQL) {
+            await db.exec(triggerSQL);
+        }
         console.log('✅ Trigger creado exitosamente.');
 
         console.log('⏳ Creando índices...');

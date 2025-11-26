@@ -59,15 +59,20 @@ class PostgresDatabase {
     }
 
     async exec(sql) {
-        // Ejecutar múltiples statements
-        const statements = sql.split(';').filter(s => s.trim());
-        for (const statement of statements) {
-            if (statement.trim()) {
-                await this.pool.query(statement);
+        // Si tiene dollar-quoted strings, ejecutar todo junto
+        if (sql.includes('$$')) {
+            await this.pool.query(sql);
+        } else {
+            // Dividir por ; solo si no hay dollar quotes
+            const statements = sql.split(';').filter(s => s.trim());
+            for (const statement of statements) {
+                if (statement.trim()) {
+                    await this.pool.query(statement);
+                }
             }
         }
     }
-
+    
     async close() {
         await this.pool.end();
         console.log('✅ PostgreSQL cerrado');
