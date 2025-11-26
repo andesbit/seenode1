@@ -1,5 +1,3 @@
-///web...
-//....
 import 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -12,13 +10,8 @@ import { getDatabase } from './database/index.js';
 import { modelsPrepare } from './database/models.js';
 import { closeDatabase } from './database/index.js';
 import {injectUserToViews} from './utils/jwtUtils.js';
-
-//para uso en las pruebas..
 //import { seedDatabase } from './database/seed.js'
-//
-
 import cors from 'cors';
-
 import userRoutes from './routes/user.js';
 import userDataRoutes from './routes/user-data.js';
 import indexRoutes from './routes/index.js';
@@ -50,8 +43,6 @@ app.use(cors({
     credentials: true // Permitir cookies
 }));
 //*/
-
-
 
 app.use(cookieParser());
 

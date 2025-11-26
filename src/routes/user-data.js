@@ -10,6 +10,7 @@ import {privateKey} from '../utils/keys.js';
 //import { updateDB, searchIdDB } from '../utils/database.js'
 import { updateOffer } from '../database/crud/update.js';
 import { getOfferById } from '../database/search.js';
+import { deleteOffer } from '../database/crud/delete.js';
 
 // Almacenar códigos temporalmente (en producción usa Redis o base de datos)
 //const pendingCodes = new Map();
@@ -369,6 +370,39 @@ router.post('/message', async(req, res) => {
     } catch (error) {
         console.error('Error general:', error);
         return res.status(500).json({ status: 'error', message: 'Error al procesar el mensaje' }); // RETURN aquí
+    }
+});
+
+const SaveDeletes=(id)=>{    
+    try{
+    let ids = readFileSync("DELETESFILE.json", 'utf8');
+    ids.push(id)
+    fs.writeFileSync("DELETESFILE.json", JSON.stringify(dataArray, null, 2), 'utf8'); 
+    }
+    catch{
+
+    }
+}
+router.post('/delete', async (req, res) => {
+    try {
+        const { offerId, timestamp } = req.body;
+        
+        
+        console.log('🔑 ID de la oferta a borrar:', offerId);
+                
+        // ✅ Llamar a updateOffer con ID y datos por separado
+        const resultado = await deleteOffer(offerId);
+        
+        SaveDeletes(offerId) 
+        let r = {changes:resultado, success:true}
+        res.json(r);
+        
+    } catch (error) {
+        console.error('❌ Error en el servidor:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
     }
 });
 

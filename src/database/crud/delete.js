@@ -1,7 +1,7 @@
 // database/delete.js
 import { getDatabase } from '../index.js';
 
-async function deleteOffer(id, permanente = false) {
+async function deleteOffer(id, permanente = true){//false) {
   const db = await getDatabase();
   
   if (permanente) {

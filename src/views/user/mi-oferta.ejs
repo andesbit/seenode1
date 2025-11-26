@@ -1,5 +1,5 @@
-<style type = "text/css">
-    /*********account***************/
+<style type = "text/css">  
+/*
 .porFrm{
     max-width: 420px;
     margin:10px auto;
@@ -52,6 +52,7 @@
     position: relative;
     top: 2px;
 }
+*/
 .pill{
     display: inline-block;
     margin: 20px 20px 0 0;
@@ -174,17 +175,7 @@ button:disabled{
 
     <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
 
-    <h2>Ultimos Mensajes</h2>
-
-    <!--De:
-    % {%
-        
-    % }%
-    <div>
-        <button>Ver todos los usuarios que escribieron</button>
-    </div-->    
-
-    <h3>contactados:</h3>
+    <h2>Contactos...</h2>
 
     <div class = "onta-cuadros" style = "border-bottom:0px solid #333;">
     <div id = "portaCuadros" class = "orta-cuadros" >    
@@ -223,6 +214,19 @@ button:disabled{
 
 
 </div>
+<h2>Configuración de la cuenta</h2>
+<div style="font-size:20px">
+
+<div style = "cursor:pointer;margin-top:20px; font-size:20px;/*background-color:darkorange; color:#fff;*/" id = "delAccount" onclick="delDialogDisplay()">Zona de eliminació de la cuenta >></div>
+
+<div style = "display:none;background-color:#eedada;" id="deleteDialog">
+    <form id ="form-delete" style="margin:20px;">
+    <!--label>Coloque su nomre de usuario</label>&nbsp;&nbsp;<input type=" text"/><br><br-->
+    <label>Estoy de acuerdo en elmiminar mis datos del programa ofertio</label>&nbsp;&nbsp;&nbsp;<input id = "delCheck" type = "checkbox"/><br><br>
+    <button type = "submit" style = "font-size:20px;margin:10px;width:200px;height:60px;background-color:darkorange">Delete Account</button>
+    </form>
+</div>
+</div>
 <br>←←←
 <!--script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script-->
 
@@ -232,58 +236,6 @@ let publicKey; // Variable global
 const i = <%= user.id %>;
 
 const btnUpdate = document.querySelector("#btnUpdate")
-
-function getSessionKey() 
-{
-    const cookies = document.cookie.split('; ');
-    const datosCookie = cookies.find(row => row.startsWith('datos='));
-
-    if (datosCookie) {
-        const cookieValue = datosCookie.split('=')[1];
-        // DECODIFICAR primero, luego parsear
-        const datos = JSON.parse(decodeURIComponent(cookieValue));
-        const clave = datos.dato1;
-        //console.log('Clave:', clave);
-        return datos.dato1;
-    }    
-    return null;
-}
-/*
-async function updateDataSecure(datos) {  // datos es un objeto
-    try {
-        /////const token = localStorage.getItem('authToken');
-        
-        // 1. Convertir el objeto a JSON y cifrarlo
-//        const datosCifrados = encryptObject(datos);
-        const datosCifrados = await encryptObject(datos);
-
-        // 2. Enviar datos cifrados
-        const response = await fetch('/user-data/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'//,
-                //'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                encryptedData: datosCifrados,
-                timestamp: Date.now()
-            })
-        });
-
-        if (response.status === 401) {
-            redirectToLogin();
-            return;
-        }
-        let resp= await response.json();
-        //console.log("==========miofertaupdateresp==========",resp)
-        
-        if(resp.success){alert("Los datos fueron guardados")}
-        return resp;
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
-    }
-}*/
 
 async function updateDataSecure(datos, offerId) {  // Recibe el ID como parámetro
     try {
@@ -319,17 +271,6 @@ async function updateDataSecure(datos, offerId) {  // Recibe el ID como parámet
     }
 }
 
-// Función específica para cifrar objetos
-/*
-function __encryptObject(obj) {
-    // Convertir el objeto a string JSON
-    const jsonString = JSON.stringify(obj);
-    
-    // Cifrar el string JSON
-    let encryptionKey = getSessionKey();
-    return CryptoJS.AES.encrypt(jsonString, encryptionKey).toString();
-}
-*/
 async function encryptObject(obj) {
   const encoder = new TextEncoder();
   const data = encoder.encode(JSON.stringify(obj));
@@ -351,20 +292,7 @@ async function encryptObject(obj) {
   
   return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
 } 
-/*  
-// Función para descifrar y convertir a objeto
-function decryptToObject(encryptedData) {
-    let encryptionKey = getSessionKey();
-    const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey);
-    const jsonString = bytes.toString(CryptoJS.enc.Utf8);
-    
-    if (!jsonString) {
-        throw new Error('Datos cifrados inválidos');
-    }
-    
-    return JSON.parse(jsonString);
-}
-*/
+
 // Función auxiliar para validar el objeto antes de enviar
 function validarYLimpiarObjeto(obj) {
     // Eliminar propiedades undefined/null
@@ -539,4 +467,55 @@ window.addEventListener('load', async function()
         //}
 });   
   
+  let x = false
+  const delDialogDisplay=()=>{
+    x= !x
+    if(x) document.getElementById("deleteDialog").style.display="block"
+    else document.getElementById("deleteDialog").style.display="none"
+  }
+
+
+async function deleteUser(id) {  // Recibe el ID como parámetro
+    try {
+        const response = await fetch('/user-data/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                offerId: id,  //                 
+                timestamp: Date.now()
+            })
+        });
+        
+        if (response.status === 401) {
+            redirectToLogin();
+            return;
+        }
+        
+        let resp = await response.json();
+        console.log("📩 Respuesta del servidor:", resp);
+        
+        if(resp.success) {
+            alert("Los datos fueron eliminados");
+            window.location.href = '/';
+        }
+        return resp;
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
+document.getElementById('form-delete').addEventListener('submit', async function(evt){
+    evt.preventDefault();
+    var isChecked = document.getElementById("delCheck").checked;
+
+    if(!isChecked) alert("Debe estar de acuerdo con borrar la cuenta. Marque el checkbox.")
+    else deleteUser(<%= u.id %>)
+})
+
+
+
+
 </script>
