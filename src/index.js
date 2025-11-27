@@ -63,7 +63,13 @@ app.use(cors({
     credentials: true
 }));
 //*/
-
+/*
+// Configurar CORS para desarrollo LOCAL:
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true // Permitir cookies
+}));
+//*/
 app.use(cookieParser());
 const httpServer = createServer(app);
 
@@ -90,9 +96,15 @@ process.on('SIGINT', async () => {
     await closeDatabase();
     process.exit(0);
 });
-
+///*
 // Iniciar servidor
 const PORT = process.env.PORT || 80;
 httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+//*/
+/*
+httpServer.listen(3000, () => {
+    console.log(`🚀 Servidor en http://localhost:3000`);
+});
+//*/

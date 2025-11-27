@@ -322,12 +322,12 @@ h2 {
     display:none;    
 }
 /*----------------------FOOTER--------------------*/
+/*
 #footer{
     width:100%;
     height:190px;
     color:#fff;
-    background-color: #d2d1d1;
-    /*#777;     */
+    background-color: #d2d1d1;   
     margin-top: auto;
 }
 
@@ -336,7 +336,7 @@ h2 {
     color:#ffffff;
     text-decoration:none;
 }
-
+*/
 /*--------------------OFERTAS PRINCIPALES---------------*/
 
 .conta-cuadros{
@@ -441,7 +441,7 @@ h2 {
     float:left;
     width:100%;
     margin-top:12px;
-    margin-bottom:12px;    
+   /* margin-bottom:12px;    */
 }
 
 .paginacion {
@@ -450,7 +450,7 @@ h2 {
     align-items: center;
     gap: 0.5rem;
     margin: 0.3rem 0;
-    padding-bottom:12px;
+    /*padding-bottom:12px;*/
     flex-wrap: wrap;
 }
 

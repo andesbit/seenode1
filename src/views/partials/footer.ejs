@@ -1,38 +1,45 @@
-<!--footer>
-    <p>&copy; 2024 Mi Aplicación Express. Todos los derechos reservados.
-        </p -->
-
-<!--/footer-->
-
-<footer class="footer mt-5 py-4 bg-light border-top">
+<footer class="footer">
     <div class="container">
+        <!-- Copyright and Links Row -->
         <div class="row">
             <div class="col-md-6">
-                <p class="text-muted mb-0">
+                <p class="footer-copyright">
                     © 2025 Ofertio. Todos los derechos reservados.
                 </p>
             </div>
-            <div class="col-md-6 text-md-end">
-                <ul>                
-                <li><a href="/terminos" class="text-muted me-3">Términos de Uso</a></li>
-                <li><a href="/privacidad" class="text-muted me-3">Política de Privacidad</a></li>
-                <li><a href="/disclaimer" class="text-muted">Disclaimer</a></li>
+            <div class="col-md-6">
+                <ul class="footer-links">                
+                    <li><a href="/terminos">Términos de Uso</a></li>
+                    <li><a href="/privacidad">Política de Privacidad</a></li>
+                    <li><a href="/disclaimer">Disclaimer</a></li>
                 </ul>
             </div>
         </div>
-        <div class="row mt-2">
+
+        <!-- Disclaimer Text -->
+        <div class="row">
             <div class="col-12">
-                <small class="text-muted">
+                <p class="footer-disclaimer">
                     Este servicio se proporciona "tal cual" sin garantías. 
                     El uso de esta plataforma es bajo su propio riesgo.
-                </small>
+                </p>
             </div>
         </div>
-    </div>
-    <div>
-         <img src="/images/mysqlite-logo.svg" style="width: 190px; height: 190px;" alt="Descripción de la imagen" />   
-       <a href="/images/SKM_C654e25112616540.pdf" download="InformeFinal.pdf">ª</a>   
-       
-       <div style = "display:block;float:right;width:120px;margin-top:40px;">Programador: Andesbit</div>
+
+        <!-- Logo and Credits -->
+        <div class="footer-bottom">
+            <div class="footer-logo">
+                <img src="/images/mysqlite-logo.svg" alt="MySQL Logo" />
+                <a href="/images/SKM_C654e25112616540.pdf" 
+                   download="InformeFinal.pdf" 
+                   class="footer-download" 
+                   title="Descargar informe">
+                    📄
+                </a>
+            </div>
+            <div class="footer-credits">
+                Desarrollado por <strong>Andesbit</strong>
+            </div>
+        </div>
     </div>
 </footer>
