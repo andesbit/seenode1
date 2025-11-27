@@ -1,3 +1,23 @@
+/**
+ * ============================================
+ * DISCLAIMER LEGAL
+ * ============================================
+ * 
+ * Este software se proporciona "TAL CUAL" sin garantías de ningún tipo.
+ * Los desarrolladores NO se hacen responsables de:
+ * - Pérdida de datos
+ * - Uso indebido de la información
+ * - Violaciones de privacidad
+ * - Cualquier daño derivado del uso
+ * 
+ * USO BAJO SU PROPIO RIESGO.
+ * 
+ * Copyright (c) 2025 [Tu Nombre]
+ * Licencia: MIT (Ver LICENSE)
+ * ============================================
+ */
+
+
 import 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -18,6 +38,7 @@ import userDataRoutes from './routes/user-data.js';
 import indexRoutes from './routes/index.js';
 import pruRoutes from './routes/test.js';
 import adminRoutes from './routes/admin.js';
+import legalRoutes from './routes/legal.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -61,6 +82,7 @@ app.use('/user-data', userDataRoutes);
 app.use('/test', pruRoutes);
 app.use('/', indexRoutes);
 app.use('/admin', adminRoutes);
+app.use('/', legalRoutes);  // ← (debe ir después de las otras)
 
 // Asegúrate de cerrar la conexión si el proceso se detiene
 process.on('SIGINT', async () => {
