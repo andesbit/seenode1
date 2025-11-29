@@ -7,7 +7,7 @@ async function searchOffers(filters = {}) {
 
     // Filtros normales (con índices, búsqueda rápida)
     if (filters.name && filters.name.trim() !== '') {
-        conditions.push('name LIKE ?');
+        conditions.push('name ILIKE ?');
         params.push(filters.name.trim());
     }
 
@@ -27,7 +27,7 @@ async function searchOffers(filters = {}) {
     }
 
     if (filters.espe && filters.espe.trim() !== '') {
-        conditions.push('espe LIKE ?');
+        conditions.push('espe ILIKE ?');
         let espec = '%'+filters.espe.trim()+'%';
         params.push(espec);
     }
