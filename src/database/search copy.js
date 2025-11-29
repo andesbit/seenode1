@@ -4,51 +4,42 @@ async function searchOffers(filters = {}) {
     const db = await getDatabase();
     const conditions = [];
     const params = [];
-    
-    // Detectar si es PostgreSQL
-    const isPostgres = process.env.DATABASE_URL !== undefined;
-    
-    // ⭐ Operador de búsqueda: ILIKE (PostgreSQL) o LIKE (SQLite)
-    const LIKE = isPostgres ? 'ILIKE' : 'LIKE';
 
-    // ⭐ Búsquedas parciales case-insensitive (nombre, ciudad, especialidades)
+    // Filtros normales (con índices, búsqueda rápida)
     if (filters.name && filters.name.trim() !== '') {
-        conditions.push(`name ${LIKE} ?`);
-        params.push(`%${filters.name.trim()}%`);
+        conditions.push('name ILIKE ?');
+        params.push(filters.name.trim());
     }
 
-    // ⭐ Búsqueda EXACTA de email (case-sensitive)
     if (filters.email && filters.email.trim() !== '') {
-        conditions.push('email = ?');
+        conditions.push('email = ?');    
         params.push(filters.email.trim());
     }
 
-    // Búsqueda exacta de país
     if (filters.country && filters.country.trim() !== '') {
         conditions.push('country = ?');
         params.push(filters.country.trim());
     }
 
-    // Búsqueda exacta de ciudad
     if (filters.city && filters.city.trim() !== '') {
         conditions.push('city = ?');
         params.push(filters.city.trim());
     }
 
-    // Búsqueda parcial case-insensitive en especialidades
     if (filters.espe && filters.espe.trim() !== '') {
-        conditions.push(`espe ${LIKE} ?`);
-        params.push(`%${filters.espe.trim()}%`);
+        conditions.push('espe ILIKE ?');
+        let espec = '%'+filters.espe.trim()+'%';
+        params.push(espec);
     }
 
     try {
         let sql = 'SELECT * FROM offers';
         
         if (conditions.length > 0) {
-            sql += ' WHERE ' + conditions.join(' OR ');
+            sql += ' WHERE ' + conditions.join(' OR '); // Búsqueda con OR
         }
         
-        sql += ' ORDER BY id DESC';
+        sql += ' ORDER BY id DESC';  // Mostrar las más recientes primero
         
         console.log('📝 SQL:', sql);
         console.log('📊 Params:', params);
@@ -65,7 +56,6 @@ async function searchOffers(filters = {}) {
 }
 
 //============================================
-// ⭐ Búsqueda EXACTA de email
 async function getOfferIdByEmail(email) {
     const db = await getDatabase();
     
@@ -89,7 +79,6 @@ async function getOfferIdByEmail(email) {
 }
 
 //==================================================================
-// ⭐ Búsqueda EXACTA por ID
 async function getOfferById(id) {
     const db = await getDatabase();
     
@@ -100,6 +89,7 @@ async function getOfferById(id) {
         );
         
         if (result) {
+            const sobj = JSON.stringify(result);
             console.log(`✅ Oferta encontrada: ID ${result.id}`);
             return result;
         } else {

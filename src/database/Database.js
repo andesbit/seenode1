@@ -12,7 +12,7 @@ class Database {
     this.dbPath = dbPath;
     this.db = null;
   }
-
+/*
   async connect() {
     return new Promise((resolve, reject) => {
       console.log('Ruta absoluta que se intenta abrir:', path.resolve(this.dbPath));
@@ -36,7 +36,33 @@ class Database {
       });
     });
   }
+  */
 
+  async connect() {
+    return new Promise((resolve, reject) => {
+        console.log('Ruta absoluta que se intenta abrir:', path.resolve(this.dbPath));
+        this.db = new sqlite3Verbose.Database(this.dbPath, (err) => {
+            if (err) {
+                console.error('❌ Error conectando a la base de datos:', err);
+                reject(err);
+            } else {
+                console.log('✅ Base de datos conectada:', this.dbPath);
+                
+                // Habilitar foreign keys
+                this.db.run('PRAGMA foreign_keys = ON');
+                
+                // ⭐ Habilitar case-insensitive para LIKE
+                this.db.run('PRAGMA case_sensitive_like = OFF');
+                
+                // Convertir métodos a promesas (PERO NO run)
+                this.get = promisify(this.db.get.bind(this.db));
+                this.all = promisify(this.db.all.bind(this.db));
+                this.exec = promisify(this.db.exec.bind(this.db));
+                resolve();
+            }
+        });
+    });
+}
   // Método run personalizado que devuelve lastID
   async run(sql, params = []) {
     return new Promise((resolve, reject) => {
