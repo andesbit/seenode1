@@ -12,13 +12,13 @@
  * 
  * USO BAJO SU PROPIO RIESGO.
  * 
- * Copyright (c) 2025 [Tu Nombre]
+ * Copyright (c) 2025 Ofertio
  * Licencia: MIT (Ver LICENSE)
  * ============================================
  */
 
 
-import 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
+//ENPACKAGEJSONAORAimport 'dotenv/config'; // ← Esto debe ir AL PRINCIPIO
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import expressLayouts from 'express-ejs-layouts';
@@ -57,7 +57,7 @@ await getDatabase();
 await modelsPrepare(); // AWAIT ES CRUCIAL AQUI
 //await seedDatabase()
 
-///*
+/*
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true
@@ -70,6 +70,29 @@ app.use(cors({
     credentials: true // Permitir cookies
 }));
 //*/
+
+
+
+// Configurar CORS
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+const corsOptions = {
+    origin: IS_PRODUCTION
+        ? process.env.FRONTEND_URL || 'https://ofertio.net'
+        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+};
+
+app.use(cors(corsOptions));
+
+// Log para debugging
+console.log(`🔐 CORS: ${IS_PRODUCTION ? 'Producción' : 'Desarrollo'}`);
+if (IS_PRODUCTION && process.env.FRONTEND_URL) {
+    console.log(`   Origen permitido: ${process.env.FRONTEND_URL}`);
+}
+
+
 app.use(cookieParser());
 const httpServer = createServer(app);
 
@@ -98,13 +121,51 @@ process.on('SIGINT', async () => {
 });
 ///*
 // Iniciar servidor
+/*
 const PORT = process.env.PORT || 80;
 httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+*/
 //*/
 /*
 httpServer.listen(3000, () => {
     console.log(`🚀 Servidor en http://localhost:3000`);
 });
 //*/
+
+
+// Iniciar servidor
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+//const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+httpServer.listen(PORT, HOST, () => {
+    console.log('\n' + '='.repeat(60));
+    console.log(`🚀 SERVIDOR INICIADO`);
+    console.log('='.repeat(60));
+    console.log(`   Entorno:        ${IS_PRODUCTION ? '🏭 PRODUCCIÓN' : '💻 DESARROLLO'}`);
+    console.log(`   Puerto:         ${PORT}`);
+    console.log(`   Host:           ${HOST}`);
+    console.log(`   Base de datos:  ${process.env.DATABASE_URL ? '🐘 PostgreSQL' : '💾 SQLite'}`);
+    
+    if (!IS_PRODUCTION) {
+        console.log(`   URL Local:      http://localhost:${PORT}`);
+    }
+    
+    console.log('='.repeat(60) + '\n');
+});
+
+httpServer.on('error', (error) => {
+    console.error('\n' + '❌'.repeat(30));
+    if (error.code === 'EADDRINUSE') {
+        console.error(`❌ El puerto ${PORT} ya está en uso`);
+        console.error(`💡 Soluciones:`);
+        console.error(`   1. Cierra la aplicación que usa el puerto ${PORT}`);
+        console.error(`   2. Cambia el puerto en .env: PORT=3001`);
+    } else {
+        console.error('❌ Error al iniciar servidor:', error.message);
+    }
+    console.error('❌'.repeat(30) + '\n');
+    process.exit(1);
+});

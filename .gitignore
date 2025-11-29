@@ -5,8 +5,15 @@ src/data/
 *.sqlite
 *.sqlite3
 DB/MESSAGES/
-*.local
+
+# Variables de entorno
 .env
+.env.local
+.env.production
+.env.*.local
+
+# Mantener ejemplo
+!.env.example
 lindex.js
 windex.js
 

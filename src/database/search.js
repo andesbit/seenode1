@@ -28,7 +28,8 @@ async function searchOffers(filters = {}) {
 
     if (filters.espe && filters.espe.trim() !== '') {
         conditions.push('espe LIKE ?');
-        params.push(filters.espe.trim());
+        let espec = '%'+filters.espe.trim()+'%';
+        params.push(espec);
     }
 
     try {

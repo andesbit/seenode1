@@ -5,14 +5,15 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./src/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1",      
+    "dev": "node -r dotenv/config ./src/index.js dotenv_config_path=.env.local",    
+    "start": "node -r dotenv/config ./src/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andesbit/seenode1.git"
   },
-  "author": "",
+  "author": "Ofertio",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/andesbit/seenode1/issues"
