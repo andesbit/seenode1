@@ -34,10 +34,6 @@ router.get('/login', async (req, res) =>
     });    
 }); 
 
-//DEBERIA ESTAR EN USER_DATA PERO ESE ARCHIVO VA A CRECER 
-//ADEMAS PARA QUE ESTE EN USERS Y NO EN OPERACIONES POST SUBSECUENTES 
-//router.get('/mi-oferta',authMiddleware, (req, res) => 
-
 router.get('/mi-oferta', async (req, res) => 
 //router.get('/mi-oferta',requireAuthView, (req, res) => 
 {
@@ -46,25 +42,7 @@ router.get('/mi-oferta', async (req, res) =>
         return    
     }
     
-    //ENVIAR LA KOOKIEde ecriptacion AQUI
-    //FUNCconsole.log("----------------mi-oferta user", req.user)
-    //res.clearCookie('datos', { httpOnly: false });
-    //const clave = crypto.randomBytes(32).toString('hex');
-    
-    //FUNCconsole.log("CCCCCusersmiofertaCCCCCCCCCCC", clave);
-    //res.cookie('datos', JSON.stringify({ dato1: clave }), { httpOnly: false });
-
-    //res.cookie('datos', JSON.stringify({ dato1: clave }), {
-    //    httpOnly: false
-        //secure: process.env.NODE_ENV === 'production',
-        //sameSite: 'strict'
-    //})      
-
     const o = await getOfferById(req.user.id)
-    //console.log(o)
-    //let array = []
-    //Si tiene contactos:
-    //if('cnts' in o && ) array = JSON.parse(o.cnts)
 
     let cnts = ""
     if('cnts' in o && o.cnts !== null && o.cnts !== "") {
@@ -119,13 +97,6 @@ router.post('/send-code', async (req, res) =>
     }
 });
 
-/*   const cookieOptions = [
-    `authToken=${token}`,
-    'path=/',
-    'max-age=604800', // 7 días
-    //'secure', // Solo HTTPS //PROD
-    'samesite=strict'];     */
-
 router.post('/logout', (req, res) => {
     // Eliminar la cookie HttpOnly
     //console.log("LOGOU.TUSERsalida exitosa")
@@ -169,9 +140,7 @@ router.post('/verify-code', async (req, res) =>
     //
     //let a= searchInDB ("OFFERS", "email", email);
     const offerId = await getOfferIdByEmail(email);
-
-    ///console.log("...verifyCode(array a)",a,"\n")
-    
+    let isnew = false;
     //if (Array.isArray(a) && a.length > 0) {
     if (offerId) {
         //ID = a[0].ole
@@ -181,7 +150,10 @@ router.post('/verify-code', async (req, res) =>
         ///console.log("·····/verifycode¡EXISTE!")
     }    
     else{ // LUEGO GENERAR SI NO EXISTE        
+        isnew= true
         NAME = "usuario_" + email.substring(0,4)
+        let auth = "user"
+        if (email ==="andesbitsoftware@gmail.com")auth = "admin"
         ID = await insertOffer(
         {
                 name: NAME,
@@ -192,7 +164,7 @@ router.post('/verify-code', async (req, res) =>
                 espe: '',
                 extra: '',
                 cnts: '[]',
-                role: 'user'                
+                role: auth                
             }
         );
        
@@ -218,11 +190,12 @@ router.post('/verify-code', async (req, res) =>
     //en mi oferta res.cookie('datos', JSON.stringify({ dato1: 'valor1' }), { httpOnly: false });
 
     res.json({ //CREO QUE SI USA ESTOS DATOS
-        token: token,
+        /*token: token,*/
         user: {
             id: ID,
             email: email,
-            role: 'user'
+            role: 'user',
+            new:isnew
         }
     });
 });
