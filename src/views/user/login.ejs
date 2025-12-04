@@ -105,15 +105,10 @@ async function verificarCodigo() {
         const data = await response.json();
         
         if (response.ok) {
-            // Ahora data.token contiene el JWT seguro (no data.customToken)
-            //PORAHORANOUSADOENelindexsehaborradolodellocalstoragetambiénsignIn(data.token); // ← Cambiado de data.customToken a data.token
             if(data.user.new){
-                alert("Nuevo usuario, debe estar de acuerdo con los términos de uso y demás documentos e informaciones que se ven al  pie de página (footer).");
+                //alert("Nuevo usuario, debe estar de acuerdo con los términos de uso y demás documentos e informaciones que se ven al  pie de página (footer).");
                 document.getElementById("noUser").style.display = "block";
-            }    
-            //console.log (data);
-            //console.log (JSON.stringify(data));
-            // Opcional: Esperar un momento antes de redirigir
+            }
             else{
                 setTimeout(() => {
                     window.location.href = '/user/mi-oferta';
