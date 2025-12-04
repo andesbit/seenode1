@@ -3,29 +3,31 @@ import express from 'express';
 //import {addDocumentDB} from '../utils/database.js'
 const router = express.Router();
 
-router.get('/test', async (req, res) => 
+router.get('/', async (req, res) => 
 {
-    res.render('user/login', {
-        //title: '←LLOGUIN',
-        gifPath: '/images/loading.gif',
-        gifAlt: 'Descripción del GIF'
+    res.render('test', {
     });    
 }); 
 
 
 router.post('/x', (req, res) => 
-    {
+{
         /*
     const t = addDocumentDB("OFFERS", 
         {name : "ARIG", email: "AIM"})
     //console.log ("ttttttttttttttttttt",t)
+    */
+   
+    console.log("xxxxxxxxxxxtest")
+    /*
     res.json({ 
         success: true, 
         action: 'prueba',
-        name: t.name,
+        name: "t.name",
         data: "prueba de datos"
     });
     */
+   return 0;
 });
 
 

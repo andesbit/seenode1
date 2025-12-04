@@ -12,6 +12,11 @@
             <img src="<%= gifPath %>" alt="<%= gifAlt %>">
         </div>
         
+        <div id="noUser" style="display: none; margin-top:12px;" class="auth-form">
+        
+            Usted no se ha inscrito, debe registrarse antes de tratar de entrar.
+        </div>
+
         <div id="step2" style="display: none; margin-top:12px;" class="auth-form">
         
             <div id="specification" style="display:block; width:100%; clear:both; float:left; margin-top: 10px; margin-bottom: 12px; text-align: center; color: #007bff;"></div>
@@ -31,34 +36,59 @@
 
 <script>
         
-    let currentEmail = '';
+let currentEmail = '';
     
-    async function enviarCodigo() {
-        const email = document.getElementById('email').value;
-        currentEmail = email;
-        
-        document.getElementById('gif_login').style.display = 'block';
-        document.getElementById('step1').style.display = 'none';
-        
-        const response = await fetch('/user/send-code', {
+async function enviarCodigo () 
+{
+    const email = document.getElementById('email').value;
+    currentEmail = email;    
+
+    try {
+        const respon = await fetch('/user/search-user', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+                email: currentEmail, 
+                code: code 
+            })
         });
         
-        if (response.ok) {
-            
-            document.getElementById('step2').style.display = 'block';
-            document.getElementById('gif_login').style.display = 'none';
-            document.getElementById('specification').textContent = 'El código fue enviado a ' + email;
-        } else {
-            document.getElementById('message').textContent = 'Error enviando código';
-        }
-    }
+        const dat = await respon.json ()
+        console.log(dat)
+        if ( respon.ok ) 
+            if ( dat.user.new ) {
+                document.getElementById('noUser').style.display = 'block';
+                document.getElementById('step1').style.display = 'none';
+                console.log ( " usuario no encontrado " )   
 
-async function verificarCodigo() 
-{
-    const code = document.getElementById('code').value;
+            } else {
+                document.getElementById('gif_login').style.display = 'block';
+                document.getElementById('step1').style.display = 'none';
+    
+                const response = await fetch('/user/send-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+    
+                if (response.ok) {
+                    
+                    document.getElementById('step2').style.display = 'block';
+                    document.getElementById('gif_login').style.display = 'none';
+                    document.getElementById('specification').textContent = 'El código fue enviado a ' + email;
+                } else {
+                    document.getElementById('message').textContent = 'Error enviando código';
+                }
+            }
+    } catch ( error ) {
+        console.log ( error )
+    }    
+}
+
+async function verificarCodigo() {
+    const code = document.getElementById('code').value;    
     
     try {
         const response = await fetch('/user/verify-code', {
@@ -77,16 +107,19 @@ async function verificarCodigo()
         if (response.ok) {
             // Ahora data.token contiene el JWT seguro (no data.customToken)
             //PORAHORANOUSADOENelindexsehaborradolodellocalstoragetambiénsignIn(data.token); // ← Cambiado de data.customToken a data.token
-            if(data.user.new)alert("Nuevo usuario, debe estar de acuerdo con los términos de uso y demás documentos e informaciones que se ven al  pie de página (footer).");
-            console.log (data);
-        console.log (JSON.stringify(data));
+            if(data.user.new){
+                alert("Nuevo usuario, debe estar de acuerdo con los términos de uso y demás documentos e informaciones que se ven al  pie de página (footer).");
+                document.getElementById("noUser").style.display = "block";
+            }    
+            //console.log (data);
+            //console.log (JSON.stringify(data));
             // Opcional: Esperar un momento antes de redirigir
-            
-            setTimeout(() => {
-                window.location.href = '/user/mi-oferta';
-                //console.log("verificarCodigoF")
-            }, 500);
-            
+            else{
+                setTimeout(() => {
+                    window.location.href = '/user/mi-oferta';
+                    //console.log("verificarCodigoF")
+                }, 500);
+            }
             
         } else {
             document.getElementById('message').textContent = data.error;
@@ -107,6 +140,7 @@ const signIn = (token) => {
 };
 
 // Verificar autenticación en cada request
+/*
 async function fetchWithAuth(url, options = {}) {
     const token = localStorage.getItem('authToken');
     
@@ -129,5 +163,5 @@ async function fetchWithAuth(url, options = {}) {
     }
     
     return response;
-}
+}*/
 </script>

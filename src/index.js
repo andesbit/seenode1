@@ -36,7 +36,7 @@ import cors from 'cors';
 import userRoutes from './routes/user.js';
 import userDataRoutes from './routes/user-data.js';
 import indexRoutes from './routes/index.js';
-import pruRoutes from './routes/test.js';
+import testRoutes from './routes/test.js';
 import adminRoutes from './routes/admin.js';
 import legalRoutes from './routes/legal.js';
 
@@ -108,7 +108,7 @@ app.use(injectUserToViews);
 // Rutas
 app.use('/user', userRoutes);
 app.use('/user-data', userDataRoutes);
-app.use('/test', pruRoutes);
+app.use('/test', testRoutes);
 app.use('/', indexRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', legalRoutes);  // ← (debe ir después de las otras)

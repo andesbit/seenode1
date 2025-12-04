@@ -25,6 +25,19 @@ const DBPATH = join(__dirname, '../DB/');
 
 const router = express.Router();
 
+router.get('/register', async (req, res) => 
+{
+    res.render('user/register', {        
+        gifPath: '/images/loading.gif',
+        gifAlt: 'Descripción del GIF'
+    });    
+}); 
+
+router.post('/register', async (req, res) => 
+{
+
+})
+
 router.get('/login', async (req, res) => 
 {
     res.render('user/login', {
@@ -61,13 +74,25 @@ router.get('/mi-oferta', async (req, res) =>
 
 //=========================================================
 
-router.post('/send-code', async (req, res) => 
-{
-    const { email } = req.body;
+router.post('/search-user', async (req, res) => {
+    const { email } = req.body
+    const u = await getOfferIdByEmail ( email )    
+    let isnew = false;
     
+    if (!u) isnew = true 
+
+    res.json({ 
+        user: {            
+            email: email,            
+            new: isnew
+        }  
+    });
+})
+
+router.post('/send-code', async (req, res) => {
+    const { email } = req.body;    
     // Generar código de 6 dígitos
-    const code = crypto.randomInt(100000, 999999).toString();
-       
+    const code = crypto.randomInt(100000, 999999).toString();       
     // Hashear el código antes de almacenarlo
     const hashedCode = await hashCode(code.toString());
     
@@ -195,7 +220,7 @@ router.post('/verify-code', async (req, res) =>
             id: ID,
             email: email,
             role: 'user',
-            new:isnew
+            new: isnew
         }
     });
 });
