@@ -71,8 +71,6 @@ app.use(cors({
 }));
 //*/
 
-
-
 // Configurar CORS
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
