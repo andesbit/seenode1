@@ -58,6 +58,17 @@ class PostgresDatabase {
         };
     }
 
+    // ⭐ AGREGA ESTE MÉTODO
+    async query(text, params) {
+        try {
+        const result = await this.pool.query(text, params);
+        return result;
+        } catch (error) {
+        console.error('❌ Error en query:', error);
+        throw error;
+        }
+    }
+
     async exec(sql) {
         // Si tiene dollar-quoted strings, ejecutar todo junto
         if (sql.includes('$$')) {
