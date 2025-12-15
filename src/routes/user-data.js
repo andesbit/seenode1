@@ -46,6 +46,19 @@ router.post('/update', async (req, res) => {
     }
 });
 
+// Ruta para guardar el logo
+router.post('/update-logo', async (req, res) => {
+  const { logo } = req.body;
+  const userId = req.user.id;
+  
+  try {
+    await updateOffer(userId, { logo });
+    res.json({ success: true, message: 'Logo actualizado' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 function decryptData(encryptedData) {
   
   const buffer = Buffer.from(encryptedData, 'base64');

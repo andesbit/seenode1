@@ -7,7 +7,7 @@ async function insertOffer(offerData) {
     try {
         // INSERT con 9 columnas
         const result = await db.run(
-            `INSERT INTO offers (name, email, country, city, offer, espe, extra, cnts, role) 
+            `INSERT INTO offers (name, email, country, city, offer, espe, extra, cnts, role. logo) 
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 offerData.name || '',
@@ -18,7 +18,8 @@ async function insertOffer(offerData) {
                 offerData.espe || '',
                 offerData.extra || '',
                 offerData.cnts || '[]',
-                offerData.role || 'user'
+                offerData.role || 'user',
+                offerData.logo || ''
             ]
         );
         

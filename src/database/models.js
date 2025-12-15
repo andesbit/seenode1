@@ -1,9 +1,42 @@
 import { getDatabase } from './index.js';
 
+async function addColumnIfNotExists(db, tableName, columnName, columnType) {
+  const isPostgres = process.env.DATABASE_URL !== undefined;
+  
+  try {
+    let columnExists = false;
+    
+    if (isPostgres) {
+      // PostgreSQL
+      const result = await db.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = $1 AND column_name = $2
+      `, [tableName, columnName]);
+      columnExists = result.rows.length > 0;
+    } else {
+      // SQLite
+      const tableInfo = await db.all(`PRAGMA table_info(${tableName})`);
+      columnExists = tableInfo.some(col => col.name === columnName);
+    }
+    
+    if (!columnExists) {
+      if (isPostgres) {
+        await db.query(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnType}`);
+      } else {
+        await db.run(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnType}`);
+      }
+      console.log(`✅ Columna "${columnName}" agregada a "${tableName}"`);
+    } else {
+      console.log(`ℹ️ Columna "${columnName}" ya existe en "${tableName}"`);
+    }
+  } catch (error) {
+    console.error(`❌ Error agregando columna "${columnName}":`, error);
+  }
+}
+
 async function createOffersTable() {
     const db = await getDatabase();
-    
-    // Detectar si es PostgreSQL o SQLite
     const isPostgres = process.env.DATABASE_URL !== undefined;
     
     const CREATE_TABLE_SQL = isPostgres ? `
@@ -48,10 +81,16 @@ async function createOffersTable() {
 
     try {
         console.log('⏳ Ejecutando comando SQL para crear la tabla...');
-        await db.exec(CREATE_TABLE_SQL);
+        
+        if (isPostgres) {
+            await db.query(CREATE_TABLE_SQL);
+        } else {
+            await db.exec(CREATE_TABLE_SQL);
+        }
+        
         console.log('✅ Tabla "offers" creada o ya existía.');
 
-        // Solo crear trigger en SQLite (es más simple)
+        // Solo crear trigger en SQLite
         if (!isPostgres) {
             console.log('⏳ Creando trigger para updated_at (SQLite)...');
             const SQLITE_TRIGGER = `
@@ -71,9 +110,16 @@ async function createOffersTable() {
 
         console.log('⏳ Creando índices...');
         for (const indexSQL of CREATE_INDEXES_SQL) {
-            await db.exec(indexSQL);
+            if (isPostgres) {
+                await db.query(indexSQL);
+            } else {
+                await db.exec(indexSQL);
+            }
         }
         console.log('✅ Índices creados exitosamente.');
+
+        // Agregar nuevas columnas si no existen
+        await addColumnIfNotExists(db, 'offers', 'logo', 'TEXT');
 
     } catch (error) {
         console.error('❌ Error al intentar crear la tabla, trigger o índices:', error);

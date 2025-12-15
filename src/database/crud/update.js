@@ -57,7 +57,7 @@ async function updateOffer(offerId, offerData) {
 // Función auxiliar para actualizar campos específicos (opcional)
 async function updateOfferFields(offerId, fields) {
     // Validar campos permitidos
-    const allowedFields = ['name', 'email', 'country', 'city', 'offer', 'espe', 'extra', 'cnts', 'role'];
+    const allowedFields = ['name', 'email', 'country', 'city', 'offer', 'espe', 'extra', 'cnts', 'role', 'logo'];
     const invalidFields = Object.keys(fields).filter(f => !allowedFields.includes(f));
     
     if (invalidFields.length > 0) {

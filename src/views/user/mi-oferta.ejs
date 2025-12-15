@@ -84,6 +84,23 @@ button:disabled{
     background-color: #dbeac6;
     cursor:pointer;
 }
+
+/*IMAGES===========|*/
+
+.auth-form .bMin:hover{background:#2c80a0;}
+.auth-form .bMin{
+    padding:5px;
+    width:80px;
+    border-radius:10px;
+    display:inline-block;
+    background:#2c6b9e;color:#fff;border:0;border-radius:10px;cursor:pointer;
+    margin-right:10px;
+    margin-left:10px;
+}
+
+
+/*=ENDIMAGES=======|*/
+
 </style>
 <br>
 <div class="auth-container">    
@@ -101,6 +118,9 @@ button:disabled{
         <!--UESPE:::::::::::::::%= u.espe %-->
 
         <input type= "text" id = "name" value="<%= u.name %>"/>
+    
+
+
         <label>Ingresa tu oferta principal:</label>
         <textarea onclick="this.value = this.value.trim()" id = "offert" cols=40 rows = 10><%= u.offer %></textarea> 
         <!--
@@ -114,8 +134,29 @@ button:disabled{
             <div id = "hola" style = "font-size: 0.8rem; color:#999">habilidades , se borran con click.</div>
         </div>
 
+            
+        <!-- ← IMAGE:===================================== -->
+        
+        <input type='file' id = "sPhoto" name = "sPhoto" style = "display:none"/>
+        <div style="width:100%;margin-top:5px;column-gap:16px;">
+        
+            <button  class = "bMin" id = "bChooseA">Escoger avatar</button>
+            <button  class = "bMin" id = "bUploadA">Subir avatar</button>
+        </div>
+        <span id = "fnPhoto">...</span>
+        
+        <!--img id = "theImg" src = ""/-->
+        <img style="width: 100px;" src="<%= u.logo %>" alt="" id="imagenPrevisualizar">
+        
+        <!-- ← ===================================END IMAGE -->
+
+
         <label>Datos extra:</label>
         <textarea onclick="this.value = this.value.trim()" id = "extra" cols=40 rows = 10><%= u.extra %></textarea> 
+
+
+        
+
 
         <button id = "btnUpdate" type="submit">Guardar cambios</button>
     </form>
@@ -271,11 +312,12 @@ function getFormData(){
     const extra = document.getElementById('extra').value; 
     //const espe = document.getElementById('espe').value;
     const espe = ISkills.join(",");
+    const logo = ""
     let obj = {
       name:name,
       offer:offer,
       extra:extra,
-      espe:espe
+      espe:espe      
     }
     return obj;
 }
@@ -462,7 +504,99 @@ document.getElementById('form-delete').addEventListener('submit', async function
     else deleteUser(<%= u.id %>)
 })
 
+//IMAGES===========================================================================================
 
+const comprimirImagen = (imagenComoArchivo, porcentajeCalidad=60) =>
+{
+    return new Promise((resolve, reject) => {
+			const $canvas = document.createElement("canvas");
+			const imagen = new Image();
+            
+			imagen.onload = () => {
+				$canvas.width = 100;//imagen.width;
+				$canvas.height = 100;//imagen.height;
+				$canvas.getContext("2d").drawImage(imagen, 0, 0, 100, 100);
+                /*CAMBIOS
+                const ctx = $canvas.getContext("2d");
+                // ⭐ LLENAR CON BLANCO PRIMERO
+                ctx.fillStyle = "#FFFFFF"; // Color de fondo blanco
+                ctx.fillRect(0, 0, 100, 100);
+                    // Luego dibujar la imagen encima
+                ctx.drawImage(imagen, 0, 0, 100, 100);
+                */ 
+				$canvas.toBlob(
+					(blob) => {
+						if (blob === null) {
+							return reject(blob);
+						} else {
+							resolve(blob);
+						}
+					},                    
+					imagenComoArchivo.type,  // ⭐ Mantener formato original
+					porcentajeCalidad / 100
+				);
+			}
+            imagen.src = URL.createObjectURL(imagenComoArchivo);
+        })
+}
 
+const blobABase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+const sPhoto = document.querySelector("#sPhoto") ;
+
+const bChooseA = document.querySelector("#bChooseA") ;
+const bUploadA = document.querySelector("#bUploadA") ;
+const imagenPrevisualizar = document.querySelector("#imagenPrevisualizar");
+
+const thisUserEmail = "el_email@prueba.com";
+
+const uploadImage = async(event) =>
+{
+    event.preventDefault();
+    let prename = thisUserEmail.replace("@","_arora_");
+    const file = document.querySelector("#sPhoto").files[0];   //e.target[0]?.files[0]
+    if (!file) return;
+    const name = prename + "_arora_" + file;
+
+    const blob = await comprimirImagen(file);
+    const imagenBase64 = await blobABase64(blob);
+    
+    // 3. Guardar en la base de datos
+    console.log('Base64 para guardar:', imagenBase64);
+    
+    // 4. Enviar al backend
+    const response = await fetch('/user-data/update-logo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ logo: imagenBase64 })
+    });
+    
+    console.log('✅ Logo guardado exitosamente');
+    imagenPrevisualizar.src = URL.createObjectURL(blob);
+}
+
+function setPhoto(){
+    let nameF = sPhoto.files[0].name;
+    ///alert(nameF);
+    document.getElementById("fnPhoto").innerHTML = "<small>archivo a subir:"+nameF+"</small>";
+    bUploadA.disabled = false;
+}
+
+const selectPhoto = (event) =>         //HACE EL SETPHOTO
+{
+    event.preventDefault();    
+    sPhoto.click();
+}
+
+if(bChooseA)bChooseA.addEventListener("click", selectPhoto);
+if(bUploadA)bUploadA.addEventListener("click", uploadImage);
+if(sPhoto)sPhoto.addEventListener("change", setPhoto);
 
 </script>
