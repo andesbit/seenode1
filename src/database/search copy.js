@@ -1,53 +1,65 @@
 import { getDatabase } from './index.js';
 
-
-// ⭐ Búsqueda múltiple: recibe un string y busca cada palabra en todos los campos
-async function searchOffersMultiple(searchText = '') {
+async function searchOffers(filters = {}) {
     const db = await getDatabase();
+    const conditions = [];
+    const params = [];
+    
+    // Detectar si es PostgreSQL
     const isPostgres = process.env.DATABASE_URL !== undefined;
+    
+    // ⭐ Operador de búsqueda: ILIKE (PostgreSQL) o LIKE (SQLite)
     const LIKE = isPostgres ? 'ILIKE' : 'LIKE';
 
-    // Convertir el texto en array de palabras (separadas por espacios)
-    const searchTerms = searchText
-        .trim()                    // Eliminar espacios al inicio y final
-        .split(/\s+/)             // Separar por uno o más espacios
-        .filter(term => term !== ''); // Eliminar strings vacíos
+    // ⭐ Búsquedas parciales case-insensitive (nombre, ciudad, especialidades)
+    if (filters.name && filters.name.trim() !== '') {
+        conditions.push(`name ${LIKE} ?`);
+        params.push(`%${filters.name.trim()}%`);
+    }
 
-    if (searchTerms.length === 0) {
-        // Si no hay términos, devolver todos los registros
-        const sql = 'SELECT * FROM offers ORDER BY id DESC';
-        return await db.all(sql);
+    // ⭐ Búsqueda EXACTA de email (case-sensitive)
+    if (filters.email && filters.email.trim() !== '') {
+        conditions.push('email = ?');
+        params.push(filters.email.trim());
+    }
+
+    // Búsqueda exacta de país
+    if (filters.country && filters.country.trim() !== '') {
+        conditions.push('country = ?');
+        params.push(filters.country.trim());
+    }
+
+    // Búsqueda exacta de ciudad
+    if (filters.city && filters.city.trim() !== '') {
+        conditions.push('city = ?');
+        params.push(filters.city.trim());
+    }
+
+    // Búsqueda parcial case-insensitive en especialidades
+    if (filters.espe && filters.espe.trim() !== '') {
+        conditions.push(`espe ${LIKE} ?`);
+        params.push(`%${filters.espe.trim()}%`);
     }
 
     try {
-        const fields = ['name', 'email', 'country', 'city', 'offer', 'espe', 'cnts'];
-        const conditions = [];
-        const params = [];
-
-        // Para cada término de búsqueda
-        for (const term of searchTerms) {
-            // Buscar el término en TODOS los campos
-            const fieldConditions = fields.map(field => `${field} ${LIKE} ?`);
-            
-            // Agregar el término para cada campo
-            params.push(...Array(fields.length).fill(`%${term}%`));
-            
-            // Agrupar las condiciones del término con OR
-            conditions.push(`(${fieldConditions.join(' OR ')})`);
+        let sql = 'SELECT * FROM offers';
+        
+        if (conditions.length > 0) {
+            sql += ' WHERE ' + conditions.join(' OR ');
         }
-
-        // Unir todas las condiciones de términos con AND
-        const sql = `SELECT * FROM offers WHERE ${conditions.join(' AND ')} ORDER BY id DESC`;
-
-        console.log('📝 SQL Múltiple:', sql);
-        console.log('🔍 Términos de búsqueda:', searchTerms);
+        
+        sql += ' ORDER BY id DESC';
+        
+        console.log('📝 SQL:', sql);
         console.log('📊 Params:', params);
-
+        
         const results = await db.all(sql, params);
+        
         console.log(`✅ Encontrados ${results.length} registros`);
         return results;
+        
     } catch (error) {
-        console.error('❌ Error en búsqueda múltiple:', error);
+        console.error('❌ Error en búsqueda:', error);
         throw error;
     }
 }
@@ -101,5 +113,5 @@ async function getOfferById(id) {
 }
 
 //=============================================================
-export { searchOffersMultiple, getOfferIdByEmail, getOfferById };
+export { searchOffers, getOfferIdByEmail, getOfferById };
 //======================= END ==================================

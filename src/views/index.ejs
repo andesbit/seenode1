@@ -226,16 +226,17 @@ document.getElementById('form-search').addEventListener('submit', async function
 //===================================================
 
 const buscar = async(valor) => {
-    
+    /*
     const name    = valor;     // document.getElementById('nam').value;
     const espe    = valor;     // document.getElementById('esp').value;
     const country = valor;  // document.getElementById('country').value;
     const city    = valor;     // document.getElementById('city').value;
-
+    */
     const response = await fetch('/search-offer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, espe, country, city })
+        body:JSON.stringify({ search_value:valor })
+        //body: JSON.stringify({ name, espe, country, city })
     });
 
     let x = await response.json()

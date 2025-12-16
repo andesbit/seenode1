@@ -1,5 +1,5 @@
 import express from 'express';
-import {searchOffers} from '../database/search.js';
+import {searchOffersMultiple} from '../database/search.js';
 import { getDatabase } from '../database/index.js';
 import {publicKey} from '../utils/keys.js';
 const router = express.Router();
@@ -154,15 +154,15 @@ router.get('/', async(req, res) =>
 router.post('/search-offer', async (req, res) => {
     
     const criterio = req.body;
-    let crts = {}
+    let crts = criterio.search_value; /*{}
 
     for (let clave in criterio) {
         if (criterio[clave]) { // Solo copia si el valor es "verdadero" (no vacío, no null, no undefined)
             crts[clave] = criterio[clave];
         }
     }
-
-    const a = await searchOffers(crts)
+*/
+    const a = await searchOffersMultiple(crts)
 
     res.json({ 
         success: true,
