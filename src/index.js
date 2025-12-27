@@ -24,6 +24,7 @@ import cookieParser from 'cookie-parser';
 import expressLayouts from 'express-ejs-layouts';
 import './utils/keys.js'; // Genera las claves al iniciar
 import { createServer } from 'http';
+import { Server } from 'socket.io';//CHAT
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync, mkdirSync } from 'fs'; // ← AÑADE ESTO
@@ -39,6 +40,12 @@ import indexRoutes from './routes/index.js';
 import testRoutes from './routes/test.js';
 import adminRoutes from './routes/admin.js';
 import legalRoutes from './routes/legal.js';
+
+// Importar funciones del chat
+//import { loadChatHistory, setupPrivateChatSocket } from './utils/chat.js';
+// DESPUÉS:
+import { setupPrivateChatSocket, initializePrivateChatSystem } from './utils/chat.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -94,6 +101,14 @@ if (IS_PRODUCTION && process.env.FRONTEND_URL) {
 app.use(cookieParser());
 const httpServer = createServer(app);
 
+
+
+// 2. Inicializar Socket.IO
+const io = new Server(httpServer);
+
+
+
+
 // Configuración de Express
 app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -110,6 +125,23 @@ app.use('/test', testRoutes);
 app.use('/', indexRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', legalRoutes);  // ← (debe ir después de las otras)
+
+
+
+// Cargar historial del chat al iniciar
+//loadChatHistory().then(() => {
+//    console.log('✅ Servidor iniciado con historial cargado');
+//});
+// Configurar Socket.IO para el chat
+//setupChatSocket(io);
+//setupPrivateChatSocket(io);
+
+
+// Inicializar sistema de chat
+await initializePrivateChatSystem();
+setupPrivateChatSocket(io);
+
+
 
 // Asegúrate de cerrar la conexión si el proceso se detiene
 process.on('SIGINT', async () => {

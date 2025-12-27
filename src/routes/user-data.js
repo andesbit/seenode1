@@ -212,7 +212,7 @@ function fromFileMsg(from, to){
 router.get('/pagina/:n', async(req, res) => {    
     //const o = searchIdDB("OFFERS", req.params.n);
     const o = await getOfferById(req.params.n)//(123);
-        
+    //console.log("0o/pagina/:n",o)    
     if (!o) {
         //Borrar el contacto de la ofeta propia:
         const yo = await getOfferById(req.user.id)//(123);
@@ -238,12 +238,23 @@ router.get('/pagina/:n', async(req, res) => {
     let from = 0;
     if (req.user){ //VIENE DEL INJECTUSER
         from = req.user.id
+        //console.log( "YONIPACHECO",req.user)
+
     }
     const to = parseInt(req.params.n)
     const a_msg = fromFileMsg(from, to)
     const ja =JSON.stringify(a_msg)
-    //console.log ("jastringify:",ja)    
-    res.render('user/pagina', { o: o, a_msg: ja })
+
+   //console.log ("jastringify:",ja)  
+   //console.log ("from,to,name",from,"|",to,"|",o.name)  
+    res.render('user/pagina', { 
+        o: o, 
+        a_msg: ja,
+        userId1: from,
+        userId2: to,
+        currentUserId: from,//req.session.userId,
+        currentUserName: req.user.name//La otra personao.name//req.session.userName 
+    })
     
 })
 

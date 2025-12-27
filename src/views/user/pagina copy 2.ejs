@@ -1,0 +1,149 @@
+<style type = "text/css">
+  .chat-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .chat-messages {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+  }
+  .message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .message.sent {
+    background: #667eea;
+    color: white;
+    text-align: right;
+  }
+  .message.received {
+    background: white;
+  }
+</style>
+
+<div class="auth-container">
+
+
+ 
+    <h1><img style="width: 40px;" src="<%= o.logo %>" alt="" id="imagenPrevisualizar"><%= o.name %></h1>
+    <!--= o.ole -->
+
+    <h2>Datos y oferta</h2>
+    
+    <div>
+        <br>
+        <%= o.offer %>
+    </div>
+    <br>
+    <% if(o.espe) { %>
+    <h4>Especializaciones</h4>
+
+    <div id = "skills_container">
+          <%= o.espe %>  
+    </div>
+    <br>
+    <% } %>
+
+    <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
+     
+    <% if(user) { %>
+
+    <h2>Últimos Mensajes</h2>
+ <% }else { %>
+    <h2></h2>
+    <br>
+    Para acceder a los mensajes, usted debe Iniciar Sesión
+    <% }%>
+
+
+  <div class="chat-container">
+    <h1>Chat</h1>
+    <div id="chat-messages" class="chat-messages">Cargando...</div>
+    <input type="text" id="message-input" placeholder="Escribe..." disabled>
+    <button id="send-btn" disabled>Enviar</button>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+console.log('Socket creado:', socket);
+
+// Variables (pásalas desde Express)
+const USER_ID_1 = '<%= locals.userId1 || "user1" %>';
+const USER_ID_2 = '<%= locals.userId2 || "user2" %>';
+const CURRENT_USER_ID = '<%= locals.currentUserId || "user1" %>';
+const CURRENT_USER_NAME = '<%= locals.currentUserName || "Usuario" %>';
+
+socket.on('connect', () => {
+  console.log('✅ Conectado!');
+  
+  // Inicializar chat
+  socket.emit('init-private-chat', {
+    userId1: USER_ID_1,
+    userId2: USER_ID_2,
+    currentUser: CURRENT_USER_ID
+  });
+});
+
+socket.on('chat-initialized', (data) => {
+  console.log('💬 Chat inicializado:', data);
+  
+  const chatContainer = document.getElementById('chat-messages');
+  chatContainer.innerHTML = '';
+  
+  if (data.messages.length === 0) {
+    chatContainer.innerHTML = '<p>No hay mensajes</p>';
+  } else {
+    data.messages.forEach(msg => addMessageToUI(msg));
+  }
+  
+  document.getElementById('message-input').disabled = false;
+  document.getElementById('send-btn').disabled = false;
+});
+
+socket.on('new-message', (messageData) => {
+  console.log('💬 Nuevo mensaje:', messageData);
+  addMessageToUI(messageData);
+});
+
+function sendMessage() {
+  const input = document.getElementById('message-input');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  socket.emit('send-message', {
+    senderId: CURRENT_USER_ID,
+    senderName: CURRENT_USER_NAME,
+    message: message
+  });
+  
+  input.value = '';
+}
+
+function addMessageToUI(messageData) {
+  const chatContainer = document.getElementById('chat-messages');
+  const messageDiv = document.createElement('div');
+  const isSent = messageData.senderId === CURRENT_USER_ID;
+  
+  messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+  messageDiv.innerHTML = `
+    <strong>${messageData.senderName}</strong>: ${messageData.message}<br>
+    <small>${messageData.timestamp}</small>
+  `;
+  
+  chatContainer.appendChild(messageDiv);
+  chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('message-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+</script>

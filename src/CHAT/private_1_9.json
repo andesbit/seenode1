@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1766693437802,
+    "senderId": "1",
+    "senderName": "usuario_lupa",
+    "message": "asdf",
+    "timestamp": "3:10:37 PM",
+    "date": "12/25/2025",
+    "roomId": "private_1_9"
+  },
+  {
+    "id": 1766693475757,
+    "senderId": "9",
+    "senderName": "Andesit",
+    "message": "bbbb",
+    "timestamp": "3:11:15 PM",
+    "date": "12/25/2025",
+    "roomId": "private_1_9"
+  },
+  {
+    "id": 1766693489338,
+    "senderId": "9",
+    "senderName": "Andesit",
+    "message": "ggg",
+    "timestamp": "3:11:29 PM",
+    "date": "12/25/2025",
+    "roomId": "private_1_9"
+  },
+  {
+    "id": 1766754769632,
+    "senderId": "1",
+    "senderName": "usuario_lupa",
+    "message": "xfg",
+    "timestamp": "8:12:49 AM",
+    "date": "12/26/2025",
+    "roomId": "private_1_9"
+  },
+  {
+    "id": 1766792588118,
+    "senderId": "1",
+    "senderName": "Andesit",
+    "message": "hello",
+    "timestamp": "6:43:08 PM",
+    "date": "12/26/2025",
+    "roomId": "private_1_9"
+  },
+  {
+    "id": 1766843235056,
+    "senderId": "1",
+    "senderName": "Andesit",
+    "message": "sdfds",
+    "timestamp": "8:47:15 AM",
+    "date": "12/27/2025",
+    "roomId": "private_1_9"
+  },
+  {
+    "id": 1766843642792,
+    "senderId": "1",
+    "senderName": "Andesit",
+    "message": "fghhfg fghfgh fghfgh",
+    "timestamp": "8:54:02 AM",
+    "date": "12/27/2025",
+    "roomId": "private_1_9"
+  }
+]

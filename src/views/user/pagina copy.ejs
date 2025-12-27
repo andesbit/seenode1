@@ -1,0 +1,368 @@
+<style type = "text/css">
+    /*********account***************/
+.porFrm{
+    max-width: 420px;
+    margin:10px auto;
+    background-color:#f3e9de;
+    border: 1px solid #8b979e;
+    text-align: left;
+    padding-right: 30px;
+    padding-left: 30px;
+    border-radius: 10px;
+}
+.porFrm label{
+    display: inline-block;
+    margin: 25px 0 15px;
+    /*font-size: 0.6em;*/
+    /*text-transform: uppercase;*/
+    letter-spacing: 1px;
+    /*font-weight: bold;*/
+}
+.porFrm input,select,textarea{
+    display: block;
+    padding: 10px 6px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    /*border-bottom:1px solid #ddd;*/
+    border: 1px solid #8b979e;
+    color: #555;
+    border-radius: 5px;
+}
+.porFrm input:focus,textarea:focus
+{
+    border-bottom:1px solid #ddd;
+}
+.porFrm .tMed{
+    display: inline;
+    width:240px;
+}
+.porFrm .inet{
+    display:inline;
+    margin-right:15px;
+    vertical-align: middle;
+    width:32px;
+    height:32px;
+}
+.porFrm input[type="checkbox"]
+{
+    display:inline-block;
+    width:16px;
+    margin:0 10px 0 0;
+    position: relative;
+    top: 2px;
+}
+.pill{
+    display: inline-block;
+    margin: 20px 20px 0 0;
+    padding: 6px 12px;
+    background: #f9d5a3;
+    border-radius: 20px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+}
+button:disabled{
+    background:#8e9092;
+    color:#eedada;
+}
+#i_read_terms{
+    background-color:#2c6b9e;
+    cursor:pointer;
+    text-align:center;
+    color:#fff;
+    margin-top:29px;
+    line-height:36px;
+    border-radius: 5px;
+}
+#terms{
+    display:none;
+    width:100%;
+    position:absolute;
+    height:auto;
+    top:0px;
+    left:0px;
+    z-index:2;
+    background-color:#f3e9de;
+    padding:16px;
+    box-sizing: border-box;
+}
+#i_close_terms
+{
+    display:block;
+    width:60px;
+    float:right;
+}
+.question{
+    display:inline;
+    font-weight:bold;
+    border:2px solid #ffffff;
+    border-radius:10px;
+}
+#dangerZone{
+    background-color: crimson;
+    display:none;
+    clear: both;
+    float: left;
+    width: 100%;
+    height: auto;
+}
+#dOther{
+    clear:both; width:100%;
+    display:block;
+    padding:5px;
+}
+#otherBtn{
+    float: right;
+    z-index:2;
+}
+#otherOptions
+{
+    display: none;
+}
+#ctnD_A{
+    background-color:aqua;
+    cursor:pointer;
+    width:100%;
+    clear:both;
+    float:left;
+}
+.otherOpts{
+    margin-top:12px;
+}
+/*CHAT*/
+ .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #95a5a6;
+      transition: background 0.3s;
+    }
+
+    .status-dot.online {
+      background: #2ecc71;
+      box-shadow: 0 0 10px #2ecc71;
+      animation: pulse 2s infinite;
+    }
+</style>
+
+<br>
+
+<div class="auth-container">   
+    <!--= user.email -->
+    <!--= user.id -->
+    <!--= user.name -->
+    
+    <h1><img style="width: 40px;" src="<%= o.logo %>" alt="" id="imagenPrevisualizar"><%= o.name %></h1>
+    <!--= o.ole -->
+
+    <h2>Datos y oferta</h2>
+    
+    <div>
+        <br>
+        <%= o.offer %>
+    </div>
+    <br>
+    <% if(o.espe) { %>
+    <h4>Especializaciones</h4>
+
+    <div id = "skills_container">
+          <%= o.espe %>  
+    </div>
+    <br>
+    <% } %>
+
+    <div id="message" style="margin-top: 15px; text-align: center; color: #007bff;"></div>
+     
+    <% if(user) { %>
+
+    <h2>Últimos Mensajes</h2>
+ <% }else { %>
+    <h2></h2>
+    <br>
+    Para acceder a los mensajes, usted debe Iniciar Sesión
+    <% }%>
+
+<!--NUEVO CHAT-->
+ <div class="chat-header">
+      <h1 id="chat-title">Cargando chat...</h1>
+      <div class="status-indicator">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Conectando...</span>
+      </div>
+    </div>
+
+<div id = "on_messages" style = "border-bottom:0px solid #333;">
+</div>
+
+  <% if(user) { %>
+ <form id="f-msg" class="auth-form">
+        <!--label>Mensaje:</label-->
+        <br>
+        <textarea onclick="this.value = this.value.trim()" id = "mes" cols=40 rows = 5>
+        </textarea> 
+        <button type="submit">Enviar mensaje</button>
+    </form>
+  <% } %>
+
+    <div id = "sBack" style="margin-top:20px;">
+        <center>
+        <button id = "back" class = "btnSearch"><b>&nbsp;Volver&nbsp;</b></button>
+        </center>
+    </div>
+
+
+</div>
+
+<br>←←←
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();//CHAT
+console.log('Socket creado:', socket); // Verifica que exista
+
+document.getElementById('back').addEventListener('click', function(){
+    redirectDirect()
+})
+
+function redirectDirect() {
+    window.location.href = '/';
+}
+
+const mm = document.getElementById("mes");
+//const uu = document.querySelector("#message");
+
+document.getElementById('f-msg').addEventListener('submit', async function(evt) {
+    evt.preventDefault();
+    const message = mm.value;
+    <% if(user) { %>
+    try {
+        const response = await fetch('/user-data/message', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                msg: message, 
+                from: <%= user.id %>,
+                from_name: "<%= user.name %>",
+                to: <%= o.id %>,
+                to_name: "<%= o.name %>",
+                timestamp: Date.now() 
+            })
+        });
+
+        if (!response.ok) {
+            alert('Hubo un problema: ' + 'Error desconocido');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error desconocido');
+        }
+
+        const result = await response.json();
+        //console.log('Éxito:', result);
+
+        imtobanae(result.a_msg)
+    } catch (error) {
+        console.error('Error capturado:', error.message);
+        // Mostrar el error al usuario
+        alert('Hubo un problema: ' + error.message);
+    }
+    <% } %>
+});
+
+//const chr = document.querySelector("#chara");
+
+const oms = document.querySelector("#on_messages");
+
+const imtobanae=(k)=>{  
+    let name= "";
+    let msg = "";
+    let posp = 0;
+    let pos2 = 0;
+    let t = `<div id = "portaCuadros" class = "orta-cuadros" >`
+    k.forEach(element => {
+        posp = element.indexOf("_");
+        pos2 = element.indexOf(":");
+        //tid = c.substring(0,posp);        
+        //iid = parseInt(tid);
+        name = element.substring(posp + 1, pos2)
+        msg = element.substring(pos2 + 1)
+
+        t += `
+            <div class = "uadro" style = "padding:8px;">
+                ${name} :&nbsp; ${msg}
+            </div>
+        `;
+    });
+    t += "</div>"
+    oms.innerHTML=t
+}
+
+
+//CHAT=============================================
+
+socket.on('connect', () => {
+    console.log('✅ Conectado al servidor');
+    console.log('   Socket ID:', socket.id);
+    
+    // Inicializar el chat automáticamente
+    initializeChat();
+});
+
+// Cuando el chat se inicializa (recibe historial)
+socket.on('chat-initialized', (data) => {
+    console.log('💬 Chat inicializado:', data);
+    
+    // Mostrar con quién se está chateando
+    //const otherUser = data.participants.find(id => id !== CURRENT_USER_ID);
+    //document.getElementById('chat-title').textContent = `Chat con ${otherUser}`;
+    
+    // Limpiar área de mensajes
+    const chatContainer = document.getElementById('chat-messages');
+    chatContainer.innerHTML = '';
+    
+    // Mostrar historial
+    //if (data.messages.length === 0) {
+    //chatContainer.innerHTML = '<div class="system-message">👋 Inicia la conversación</div>';
+    //} else {
+    //data.messages.forEach(msg => addMessageToUI(msg));
+    //}
+
+    // Habilitar el input para escribir
+    //document.getElementById('message-input').disabled = false;
+    //document.getElementById('send-btn').disabled = false;
+    
+    // Actualizar estado a conectado
+    updateStatus('online', 'Conectado');
+});
+
+// Actualizar indicador de estado
+function updateStatus(status, text) {
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+    
+    if (status === 'online') {
+    statusDot.classList.add('online');
+    } else {
+    statusDot.classList.remove('online');
+    }
+    
+    statusText.textContent = text;
+}
+
+
+//ENDCHAT=============================================
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    //console.log("Evento cargado"); // <-- Agrega esto primero
+    const a = <%- a_msg %>;
+    //console.log("Valor de a:", a); // <-- Más descriptivo
+    //console.log("Tipo de a:", typeof a); // <-- Ver qué tipo es
+    //console.log("Es array?:", Array.isArray(a)); // <-- Confirmar si es array
+    //CHATTTTTTTTTimtobanae(a);
+    // 1. Cliente envía solicitud para unirse
+    //socket.emit('join-room', { roomId, username: currentUser });
+
+})
+</script>
