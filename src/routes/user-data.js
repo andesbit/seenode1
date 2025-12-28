@@ -242,18 +242,22 @@ router.get('/pagina/:n', async(req, res) => {
 
     }
     const to = parseInt(req.params.n)
-    const a_msg = fromFileMsg(from, to)
+    const a_msg = [];//fromFileMsg(from, to)
     const ja =JSON.stringify(a_msg)
 
-   //console.log ("jastringify:",ja)  
-   //console.log ("from,to,name",from,"|",to,"|",o.name)  
+    //console.log ("jastringify:",ja)  
+    //console.log ("from,to,name",from,"|",to,"|",o.name)  
+    let nombre_propio =""
+    if(req.user)
+     nombre_propio = req.user.name
+
     res.render('user/pagina', { 
         o: o, 
         a_msg: ja,
         userId1: from,
         userId2: to,
         currentUserId: from,//req.session.userId,
-        currentUserName: req.user.name//La otra personao.name//req.session.userName 
+        currentUserName: nombre_propio//era La otra persona o.name //req.session.userName 
     })
     
 })
