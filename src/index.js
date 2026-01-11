@@ -81,12 +81,28 @@ app.use(cors({
 // Configurar CORS
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
-const corsOptions = {
+const __corsOptions = {
     origin: IS_PRODUCTION
         ? process.env.FRONTEND_URL || 'https://ofertio.net'
         : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+};
+
+const corsOptions = {
+    origin: IS_PRODUCTION
+        ? process.env.FRONTEND_URL || 'https://ofertio.net'
+        : function (origin, callback) {
+            // En desarrollo, permitir cualquier origen o sin origen
+            if (!origin || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 
 app.use(cors(corsOptions));
@@ -125,8 +141,6 @@ app.use('/test', testRoutes);
 app.use('/', indexRoutes);
 app.use('/admin', adminRoutes);
 app.use('/', legalRoutes);  // ← (debe ir después de las otras)
-
-
 
 // Cargar historial del chat al iniciar
 //loadChatHistory().then(() => {

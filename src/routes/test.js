@@ -12,22 +12,22 @@ router.get('/', async (req, res) =>
 
 router.post('/x', (req, res) => 
 {
-        /*
+    /*
     const t = addDocumentDB("OFFERS", 
         {name : "ARIG", email: "AIM"})
     //console.log ("ttttttttttttttttttt",t)
     */
    
     console.log("xxxxxxxxxxxtest")
-    /*
+    ///*
     res.json({ 
         success: true, 
         action: 'prueba',
         name: "t.name",
         data: "prueba de datos"
     });
-    */
-   return 0;
+    //*/
+   ///return 0;
 });
 
 
