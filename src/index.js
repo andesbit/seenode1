@@ -181,7 +181,8 @@ httpServer.listen(3000, () => {
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
-const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+//const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+const HOST = '0.0.0.0';   // ← la opción más confiable para desarrollo y producción
 //const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 httpServer.listen(PORT, HOST, () => {
